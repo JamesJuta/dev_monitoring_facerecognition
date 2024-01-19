@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% include "head.html" %}
+</head>
+<body>
+    <nav>
+			
+        <div class="logocontainer">
+          <!-- <img src="img/logo.png" class="logopic" alt=""> -->
+          <i class='scanner bx bx-scan'></i>
+          E-<strong>Monitoring</strong>
+        </div>
+        <input id="nav-toggle" type="checkbox">
+      
+        <!-- nav links -->
+        <ul class="links">
+          <li><a href="{{ url_for('home') }}">Home</a></li>
+          <li><a class="active" href="{{ url_for('time_log') }}">Time Log</a></li>
+          <li><a href="{{ url_for('face_register') }}">Face Register</a></li>
+        </ul>
+      
+        <!-- burger icon -->
+        <label for="nav-toggle" class="icon-burger">
+          <div class="line"></div>
+          <div class="line"></div>
+          <div class="line"></div>
+        </label>
+      
+        <!-- search icon -->
+              <!-- <div class="search-box">
+                <input class="search-txt" type="text" name="" placeholder="Type to search">
+                <a class="search-btn" href="#"><i class="fas fa-search"></i></a>
+            </div> -->
+      
+        <!-- <a href="">button</a> -->
+      
+    </nav>
+
+    <div class="container">
+        {% if no_data %}
+        <div class="alert alert-warning" role="alert">
+            No attendance data available for the selected date.
+        </div>
+        {% endif %}
+        <div class="table_container">
+            <h2>Today Scan</h2><br>
+            <table class="table" >
+                <thead>
+                    <tr>
+                        <th>ID number</th>
+                        <th>Name</th>
+                        <th>Building</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                    </tr>
+                </thead>
+                <tbody id="scandata">
+ 
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <footer>© 2023 - 2024 City College of Calamba</footer>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            let lastcnt = 0;
+            let cnt;
+            chkNewScan();
+     
+            function chkNewScan() {
+                countTodayScan();
+                setTimeout(chkNewScan, 1000);
+            }
+     
+            function countTodayScan() {
+                $.ajax({
+                    url: '/countTodayScan',
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(data) {
+                        cnt = data.rowcount;
+                        if (cnt > lastcnt) {
+                            reloadTable();
+                        }
+     
+                        lastcnt = cnt;
+                    },
+                    error: function(result){
+                        console.log('no result!')
+                    }
+                })
+            }
+     
+            function reloadTable() {
+                $.ajax({
+                    url: '/loadData',
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(response){
+                        var tr = $("#scandata");
+                        tr.empty();
+     
+                        $.each(response, function(index, item) {
+                            if (item.length > 0) {
+                                for (let i = 0; i < item.length; i++) {
+                                    tr.append('<tr>'+
+                                                    '<td>'+item[i][1]+'</td>'+
+                                                    '<td>'+item[i][2]+'</td>'+
+                                                    '<td>'+item[i][3]+'</td>'+
+                                                    '<td></td>'+
+                                                    '<td>'+item[i][4]+'</td>'+
+                                               '</tr>');
+                                }
+                            }
+                        });
+                    },
+                    error: function(result){
+                        console.log('no result!')
+                    }
+                });
+            }
+        });
+    </script>
+    
+</body>
+</html>

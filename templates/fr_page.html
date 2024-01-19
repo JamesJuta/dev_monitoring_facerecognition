@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% include "head.html" %}
+</head>
+<body >
+    <nav>
+			
+        <div class="logocontainer">
+          <!-- <img src="img/logo.png" class="logopic" alt=""> -->
+          <i class='scanner bx bx-scan'></i>
+          E-<strong>Monitoring</strong>
+        </div>
+        <input id="nav-toggle" type="checkbox">
+      
+        <!-- nav links -->
+        <ul class="links">
+          <li><a class="active" href="{{ url_for('home') }}">Home</a></li>
+          <li><a href="{{ url_for('time_log') }}">Time Log</a></li>
+          <li><a href="{{ url_for('face_register') }}">Face Register</a></li>
+        </ul>
+      
+        <!-- burger icon -->
+        <label for="nav-toggle" class="icon-burger">
+          <div class="line"></div>
+          <div class="line"></div>
+          <div class="line"></div>
+        </label>
+      
+        <!-- search icon -->
+              <!-- <div class="search-box">
+                <input class="search-txt" type="text" name="" placeholder="Type to search">
+                <a class="search-btn" href="#"><i class="fas fa-search"></i></a>
+            </div> -->
+      
+        <!-- <a href="">button</a> -->
+      
+    </nav>
+    
+
+    <div class="container">
+        <div class="video_feed_time_container" >
+            <div class="video-frame">
+                <!-- <img  class="video-frame" src="{{ url_for('video_feed') }}" width="640" height="480"> -->
+            </div>
+
+            <div class="time_container">
+                <div class="center">
+                    <!-- <i class='clock bx bx-time'></i> -->
+
+
+                    <div class="analog_clock">
+                        <div class="number" style="--n:1"><b>1</b></div>
+                        <div class="number" style="--n:2"><b>2</b></div>
+                        <div class="number" style="--n:3"><b>3</b></div>
+                        <div class="number" style="--n:4"><b>4</b></div>
+                        <div class="number" style="--n:5"><b>5</b></div>
+                        <div class="number" style="--n:6"><b>6</b></div>
+                        <div class="number" style="--n:7"><b>7</b></div>
+                        <div class="number" style="--n:8"><b>8</b></div>
+                        <div class="number" style="--n:9"><b>9</b></div>
+                        <div class="number" style="--n:10"><b>10</b></div>
+                        <div class="number" style="--n:11"><b>11</b></div>
+                        <div class="number" style="--n:12"><b>12</b></div>
+                        <div class="hour-hand" id="hour-hand"></div>
+                        <div class="minute-hand" id="minute-hand"></div>
+                        <div class="second-hand" id="second-hand"></div>
+                        <div class="center-dot"></div>
+                    </div><br>
+
+                    <h1 class="time" id="nowTime">{{ current_time }}</h1>
+                    <!-- <h1 id="">{{ day_of_week }}</h1> -->
+                    <h1 class="date" id="nowDate">{{ current_date }}</h1>
+                    <!-- <p>{{ formatted_datetime }}</p> -->
+                </div>
+                
+            </div>
+        </div>
+    </div>
+
+    <footer>© 2023 - 2024 City College of Calamba</footer>
+    
+ 
+    <!-- <div class="container-fluid">
+        <div class="row mt-5 mb-5">
+            <div class="col-md-8 center">
+                <img src="{{ url_for('video_feed') }}" width="100%" class="img-thumbnail">
+            </div>
+            <div class="col-md-4" style="height:500px; overflow-y:auto;">
+                <h3>Today Scan</h3>
+                <table class="table" >
+                    <thead>
+                        <tr>
+                            <th>Person #</th>
+                            <th>Name</th>
+                            <th>Skill</th>
+                            <th>Added</th>
+                        </tr>
+                    </thead>
+                    <tbody id="scandata">
+    
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div> -->
+
+
+{% if last_recognized_face %}
+    <div class="success-message">
+        <i class='check bx bx-check-circle'></i>
+        <h2 class="form__title" >Success!</h2>
+        <p class="message">Time in Successfull!</p>
+        <p>{{last_recognized_face[1]}}</p>
+        <p>{{last_recognized_face[2]}}</p>
+
+        <!-- <button class="btn" onclick="dismissMessage()">Dismiss</button> -->
+    </div>
+{% endif %}
+
+<!-- <script>
+    function dismissMessage() {
+        document.querySelector('.success-message').style.display = 'none';
+    }
+</script> -->
+
+<script>
+
+     // Function to automatically dismiss the success message after 1 second
+     function dismissMessage() {
+        var successMessage = document.querySelector('.success-message');
+        if (successMessage) {
+            setTimeout(function() {
+                successMessage.style.display = 'none';
+            }, 3000); // Dismiss after 1 second (1000 milliseconds)
+        }
+    }
+
+    // Automatically trigger the dismissMessage function on page load
+    window.onload = function() {
+        dismissMessage();
+    }
+
+    $(document).ready(function() {
+        function updateClock() {
+            // Use JavaScript to update the time every second
+            var currentTime = new Date();
+            var hours = currentTime.getHours();
+            var minutes = currentTime.getMinutes();
+            var seconds = currentTime.getSeconds();
+
+            // Add leading zero if needed
+            minutes = (minutes < 10 ? "0" : "") + minutes;
+            seconds = (seconds < 10 ? "0" : "") + seconds;
+
+            var timeString = hours + ":" + minutes + ":" + seconds;
+
+            // Update the time in the HTML element with id 'current-time'
+            $('#current-time').text(timeString);
+        }
+
+        // Call the updateClock function every second
+        setInterval(updateClock, 1000);
+    });
+
+    var set_server_time = '{{ current_time }}';
+    var serverOffset = moment(set_server_time).diff(new Date());
+    clearInterval(clock_id);
+    var date_now_server = moment();
+    date_now_server.add(serverOffset, 'milliseconds');
+    var dateNow = date_now_server.format('dddd | MMMM DD, YYYY');
+
+    // Set time and date
+    var clock_id = setInterval(function() {
+        if (document.getElementById('nowTime')) {
+            $('#nowDate').html(dateNow);
+            var now_server = moment();
+            now_server.add(serverOffset, 'milliseconds');
+            var timeNow = now_server.format('hh:mm:ss A');
+            $('#nowTime').html(timeNow);
+        } else {
+            clearInterval(clock_id);
+        }
+    }, 1000);
+
+    const secondHand = document.getElementById('second-hand');
+    const minuteHand = document.getElementById('minute-hand');
+    const hourHand = document.getElementById('hour-hand');
+
+    function clockTick(serverOffset) {
+        const dateNow = moment().add(serverOffset, 'milliseconds');
+        const seconds = dateNow.seconds() / 360;
+        const minutes = (seconds + dateNow.minutes()) / 60;
+        const hours = (minutes + dateNow.hours()) / 12;
+
+        rotateClockHand(secondHand, seconds);
+        rotateClockHand(minuteHand, minutes);
+        rotateClockHand(hourHand, hours);
+    }
+
+    function rotateClockHand(element, rotation) {
+        element.style.setProperty('--rotate', rotation * 360);
+    }
+
+    // Call clockTick initially to set the initial rotation based on the server time
+    clockTick(serverOffset);
+
+    // Set interval to update the clock every second
+    setInterval(function () {
+        clockTick(serverOffset);
+    }, 1000);
+  
+
+    $(document).ready(function() {
+        let lastcnt = 0;
+        let cnt;
+        chkNewScan();
+ 
+        function chkNewScan() {
+            countTodayScan();
+            setTimeout(chkNewScan, 1000);
+        }
+ 
+        function countTodayScan() {
+            $.ajax({
+                url: '/countTodayScan',
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    cnt = data.rowcount;
+                    if (cnt > lastcnt) {
+                        reloadTable();
+                    }
+ 
+                    lastcnt = cnt;
+                },
+                error: function(result){
+                    console.log('no result!')
+                }
+            })
+        }
+ 
+        function reloadTable() {
+            $.ajax({
+                url: '/loadData',
+                type: 'GET',
+                dataType: 'json',
+                success: function(response){
+                    var tr = $("#scandata");
+                    tr.empty();
+ 
+                    $.each(response, function(index, item) {
+                        if (item.length > 0) {
+                            for (let i = 0; i < item.length; i++) {
+                                tr.append('<tr>'+
+                                                '<td>'+item[i][1]+'</td>'+
+                                                '<td>'+item[i][2]+'</td>'+
+                                                '<td>'+item[i][3]+'</td>'+
+                                                '<td>'+item[i][4]+'</td>'+
+                                           '</tr>');
+                            }
+                        }
+                    });
+                },
+                error: function(result){
+                    console.log('no result!')
+                }
+            });
+        }
+    });
+
+
+    
+</script>
+ 
+</body>
+</html>

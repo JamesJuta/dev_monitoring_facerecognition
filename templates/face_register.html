@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% include "head.html" %}
+</head>
+<body>
+    <nav>
+			
+        <div class="logocontainer">
+          <!-- <img src="img/logo.png" class="logopic" alt=""> -->
+          <i class='scanner bx bx-scan'></i>
+          E-<strong>Monitoring</strong>
+        </div>
+        <input id="nav-toggle" type="checkbox">
+      
+        <!-- nav links -->
+        <ul class="links">
+          <li><a href="{{ url_for('home') }}">Home</a></li>
+          <li><a href="{{ url_for('time_log') }}">Time Log</a></li>
+          <li><a class="active" href="{{ url_for('face_register') }}">Face Register</a></li>
+        </ul>
+      
+        <!-- burger icon -->
+        <label for="nav-toggle" class="icon-burger">
+          <div class="line"></div>
+          <div class="line"></div>
+          <div class="line"></div>
+        </label>
+      
+        <!-- search icon -->
+              <!-- <div class="search-box">
+                <input class="search-txt" type="text" name="" placeholder="Type to search">
+                <a class="search-btn" href="#"><i class="fas fa-search"></i></a>
+            </div> -->
+      
+        <!-- <a href="">button</a> -->
+      
+    </nav>
+    
+    <div class="container_face_register">
+        <div class="face_register_container">
+
+            <div class="form">
+                <form method="post" action="/register">
+                    <i class='face_scanner bx bx-scan'></i>
+                    <h1 class="form__title"> Register Face</h1><br>
+            
+                    <div class="form__div">
+                        <input type="text" name="id_no" class="form__input" placeholder=" " required>
+                        <label for="id_no" class="form__label"><i class='bx bxs-id-card'></i>  ID no</label>
+                    </div>
+            
+                    <input class="btn" type="submit" name="register" value="Register"><br><br>
+                    <!-- <input class="btn" type="submit" name="capture" value="Capture Image"><br><br> -->
+    
+                    <div id="progressSection" style="display: none;">
+                        <p>Processing...</p>
+                        <progress id="progressBar" max="100" value="0"></progress>
+                        <p id="progressPercent">0%</p>
+                    </div>
+            
+                </form>
+            </div>
+
+            <div class="form">
+
+            </div>
+
+        </div>
+    </div>
+
+    <div class="table_container">
+        <h2>Recently Added User</h2><br>
+        <table class="table" >
+            <thead>
+                <tr>
+                    <th>ID number</th>
+                    <th>Name</th>
+                    <th>Time Added</th>
+                </tr>
+            </thead>
+            <tbody id="scandata">
+
+            </tbody>
+        </table>
+    </div>
+
+    <section class="py-1">
+        <div class="row mt-5">
+            <div class="col-lg-8 offset-lg-2">
+                <h3>Add Personnel</h3>
+                <hr>
+    
+                <form class="form" method="post" action="/addprsn_submit">
+                    <div class="form-group row">
+                        <label for="txtnbr" class="col-sm-2 col-form-label">Person Id</label>
+                        <div class="col-sm-2">
+                            <input type="text" class="form-control" id="txtnbr" name="txtnbr" value={{ newnbr }} readonly>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="txtname" class="col-sm-2 col-form-label">Name</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="txtname" name="txtname" required>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="optskill" class="col-sm-2 col-form-label">Skill</label>
+                        <div class="col-sm-4">
+                            <select class="form-control" name="optskill" id="optskill">
+                                <option value="SOFTWARE">Software</option>
+                                <option value="HARDWARE">Hardware</option>
+                                <option value="ELECTRICAL">Electrical</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label"></label>
+                        <div class="col-sm-8">
+                            <input type="submit" class="btn btn-primary btn-lg" value="Next">
+                            <a href="/" type="button" class="btn btn-warning btn-lg"><b>Back</b></a>
+                        </div>
+                    </div>
+                </form>
+                
+            </div>
+        </div>
+    </section>
+
+    <footer>© 2023 - 2024 City College of Calamba</footer>
+</body>
+</html>
