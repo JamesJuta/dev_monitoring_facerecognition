@@ -161,11 +161,6 @@ def face_recognition():  # generate frame by frame from camera
                     sql = "INSERT INTO `time_log` (`name`, `id_no`, `building_name`, `date`, `time`) VALUES (%s, %s, %s, %s, %s)"
                     values = (pname, pnbr, building_name, current_date, current_time)
                     mycursor.execute(sql, values)
-
-                    # mycursor.execute("""INSERT INTO `time_log` (`name`, `id_no`, `building_name`, `date`, `time`) VALUES
-                    # ('{}', '{}', '{}', '{}', '{}')""".format(pname, pnbr, building_name, current_date, current_time))
-                    # mycursor.execute("insert into accs_hist (accs_date, accs_prsn) values('"+str(date.today())+"', '" + pnbr + "')")
-                    # flash(" Face Recognized Successfully")
                     db_connect.commit()
  
                     cv2.putText(img, pname + ' | ' + pskill, (x - 10, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2, cv2.LINE_AA)
