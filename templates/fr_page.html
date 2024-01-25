@@ -50,27 +50,6 @@
                     <div class="geometric_shape">
                         <img src="{{ url_for('static', filename='img/clock.svg') }}" width="200" alt="">
                     </div>
-                    
-
-
-                    <!-- <div class="analog_clock">
-                        <div class="number" style="--n:1"><b>1</b></div>
-                        <div class="number" style="--n:2"><b>2</b></div>
-                        <div class="number" style="--n:3"><b>3</b></div>
-                        <div class="number" style="--n:4"><b>4</b></div>
-                        <div class="number" style="--n:5"><b>5</b></div>
-                        <div class="number" style="--n:6"><b>6</b></div>
-                        <div class="number" style="--n:7"><b>7</b></div>
-                        <div class="number" style="--n:8"><b>8</b></div>
-                        <div class="number" style="--n:9"><b>9</b></div>
-                        <div class="number" style="--n:10"><b>10</b></div>
-                        <div class="number" style="--n:11"><b>11</b></div>
-                        <div class="number" style="--n:12"><b>12</b></div>
-                        <div class="hour-hand" id="hour-hand"></div>
-                        <div class="minute-hand" id="minute-hand"></div>
-                        <div class="second-hand" id="second-hand"></div>
-                        <div class="center-dot"></div>
-                    </div><br> -->
 
                     <h1 class="time" id="nowTime">{{ current_time }}</h1>
                     <h1 class="date" id="nowDate">{{ current_date }}</h1>
@@ -92,32 +71,6 @@
     </div>
 
     <footer>© 2023 - 2024 City College of Calamba</footer>
-    
- 
-    <!-- <div class="container-fluid">
-        <div class="row mt-5 mb-5">
-            <div class="col-md-8 center">
-                <img src="{{ url_for('video_feed') }}" width="100%" class="img-thumbnail">
-            </div>
-            <div class="col-md-4" style="height:500px; overflow-y:auto;">
-                <h3>Today Scan</h3>
-                <table class="table" >
-                    <thead>
-                        <tr>
-                            <th>Person #</th>
-                            <th>Name</th>
-                            <th>Skill</th>
-                            <th>Added</th>
-                        </tr>
-                    </thead>
-                    <tbody id="scandata">
-    
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div> -->
-
 
 {% if last_recognized_face %}
     <div class="success-message">
@@ -154,28 +107,7 @@
         dismissMessage();
     }
 
-    // $(document).ready(function() {
-    //     function updateClock() {
-    //         // Use JavaScript to update the time every second
-    //         var currentTime = new Date();
-    //         var hours = currentTime.getHours();
-    //         var minutes = currentTime.getMinutes();
-    //         var seconds = currentTime.getSeconds();
-
-    //         // Add leading zero if needed
-    //         minutes = (minutes < 10 ? "0" : "") + minutes;
-    //         seconds = (seconds < 10 ? "0" : "") + seconds;
-
-    //         var timeString = hours + ":" + minutes + ":" + seconds;
-
-    //         // Update the time in the HTML element with id 'current-time'
-    //         $('#current-time').text(timeString);
-    //     }
-
-    //     // Call the updateClock function every second
-    //     setInterval(updateClock, 1000);
-    // });
-
+    // set server time using moment.js library
     var set_server_time = '{{ current_time }}';
     var serverOffset = moment(set_server_time).diff(new Date());
     clearInterval(clock_id);
@@ -195,34 +127,6 @@
             clearInterval(clock_id);
         }
     }, 1000);
-
-    const secondHand = document.getElementById('second-hand');
-    const minuteHand = document.getElementById('minute-hand');
-    const hourHand = document.getElementById('hour-hand');
-
-    function clockTick(serverOffset) {
-        const dateNow = moment().add(serverOffset, 'milliseconds');
-        const seconds = dateNow.seconds() / 360;
-        const minutes = (seconds + dateNow.minutes()) / 60;
-        const hours = (minutes + dateNow.hours()) / 12;
-
-        rotateClockHand(secondHand, seconds);
-        rotateClockHand(minuteHand, minutes);
-        rotateClockHand(hourHand, hours);
-    }
-
-    function rotateClockHand(element, rotation) {
-        element.style.setProperty('--rotate', rotation * 360);
-    }
-
-    // Call clockTick initially to set the initial rotation based on the server time
-    clockTick(serverOffset);
-
-    // Set interval to update the clock every second
-    setInterval(function () {
-        clockTick(serverOffset);
-    }, 1000);
-  
 
     $(document).ready(function() {
         let lastcnt = 0;
@@ -282,8 +186,6 @@
         }
     });
 
-
-    
 </script>
  
 </body>

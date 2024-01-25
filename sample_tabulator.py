@@ -1,3 +1,5 @@
+# example tabulator for time_log table 
+
 from flask import Flask, render_template, jsonify, request, redirect, url_for
 import mysql.connector
 from datetime import datetime

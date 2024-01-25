@@ -7,8 +7,6 @@ import os
 import time  
 from datetime import date
 from datetime import datetime
-import re
-
 
 from flaskext.mysql import MySQL #pip install flask-mysql
 import pymysql
@@ -220,11 +218,6 @@ def face_recognition():  # generate frame by frame from camera
  
 @app.route('/')
 def home():
-    # sql = "SELECT id_no, name, type_of_user, time_added FROM users"
-    # mycursor.execute(sql)
-    # # mycursor.execute("select id_no, name, type_of_user, time_added from users")
-    # data = mycursor.fetchall()
- 
     return render_template('fr_page.html')
 
 @app.route('/time_log')
@@ -235,7 +228,6 @@ def time_log():
 def face_register():
     sql = "SELECT id_no, name, type_of_user, time_added FROM users"
     mycursor.execute(sql)
-    # mycursor.execute("select id_no, name, type_of_user, time_added from users")
     data = mycursor.fetchall()
     return render_template('face_register.html', data=data)
  
@@ -256,14 +248,6 @@ def addprsn_submit():
 
     # face registration details will go to recently added users with face recognition
     #query should be using join statements to join the table of full info of the user and the table for enrollement status and notice
- 
-    # mycursor.execute("""INSERT INTO `users` (`id_no`, `name`, `type_of_user`) VALUES
-    #                 ('{}', '{}', '{}')""".format(prsnbr, prsname, prsskill))
-    # sql = "INSERT INTO `users` (`id_no`, `name`, `type_of_user`) VALUES (%s, %s, %s)"
-    # mycursor.execute(sql, prsnbr, prsname, prsskill)
-    # mycursor.execute("INSERT INTO `users` (`id_no`, `name`, `type_of_user`) VALUES (%s, %s, %s)",
-    #              (prsnbr, prsname, prsskill))
-    
     
     sql = "INSERT INTO `users` (`id_no`, `name`, `type_of_user`) VALUES (%s, %s, %s)"
     values = (prsnbr, prsname, prsskill)

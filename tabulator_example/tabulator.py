@@ -29,7 +29,7 @@ def display_database_table():
         return render_template('tabulator_table.html', data=data, columns=columns, current_datetime=current_datetime, current_date=current_date, current_time=current_time)
 
     except Exception as e:
-        print(e)
+        print(e)    
     finally:
         cursor.close()
         conn.close()
