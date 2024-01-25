@@ -71,10 +71,10 @@ def generate_dataset(nbr):
             file_name_path = "dataset/"+nbr+"."+ str(img_id) + ".jpg"
             cv2.imwrite(file_name_path, face)
             cv2.putText(face, str(count_img), (50, 50), cv2.FONT_HERSHEY_COMPLEX, 1, (0, 255, 0), 2)
- 
-            mycursor.execute("""INSERT INTO `img_dataset` (`img_id`, `img_person`) VALUES
-                                ('{}', '{}')""".format(img_id, nbr))
-            db_connect.commit()
+
+            query = "INSERT INTO `img_dataset` (`img_id`, `img_person`) VALUES (%s, %s)"
+            values = (img_id, nbr)
+            mycursor.execute(query, values)
  
             frame = cv2.imencode('.jpg', face)[1].tobytes()
             yield (b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
@@ -208,7 +208,6 @@ def face_recognition():  # generate frame by frame from camera
         key = cv2.waitKey(1)
         if key == 27:
             break
- 
  
  
 @app.route('/')
