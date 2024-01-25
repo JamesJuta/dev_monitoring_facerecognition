@@ -10,14 +10,14 @@
 <section class="py-1">
     <div class="row mt-5">
         <div class="col-lg-8 offset-lg-2">
-            <h3>Add Personnel</h3>
+            
             <hr>
 
-            <form class="form" method="post" action="/addprsn_submit">
+            <!-- <form class="form" method="post" action="/addprsn_submit">
                 <div class="form-group row">
                     <label for="txtnbr" class="col-sm-2 col-form-label">Person Id</label>
                     <div class="col-sm-2">
-                        <input type="text" class="form-control" id="txtnbr" name="txtnbr" value={{ newnbr }} readonly>
+                        <input type="text" class="form-control" id="txtnbr" name="txtnbr" value="{{ newnbr }}" readonly>
                     </div>
                 </div>
                 <div class="form-group row">
@@ -39,15 +39,56 @@
                 <div class="form-group row">
                     <label class="col-sm-2 col-form-label"></label>
                     <div class="col-sm-8">
-                        <input type="submit" class="btn btn-primary btn-lg" value="Next">
+                        <input type="submit" class="btn btn-primary btn-lg" value="Add">
                         <a href="/" type="button" class="btn btn-warning btn-lg"><b>Back</b></a>
                     </div>
                 </div>
-            </form>
+            </form> -->
             
         </div>
     </div>
 </section>
+
+<div class="container">
+    <div class="video_feed_time_container">
+
+        <form class="form" method="post" action="/addprsn_submit">
+            <h3>Register Face</h3><br>
+            <div class="form__div">
+                <input type="text" name="txtnbr" class="form__input" placeholder=" " required>
+                <label for="txtnbr" class="form__label"><i class='bx bxs-id-card'></i>  ID no</label>
+            </div>
+            <div class="form__div">
+                <input type="text" name="txtname" class="form__input" placeholder=" " required>
+                <label for="txtname" class="form__label"><i class='bx bxs-id-card'></i>  Name</label>
+            </div>
+
+            <!-- <div class="form-group row">
+                <label for="optskill" class="col-sm-2 col-form-label">Skill</label>
+                
+            </div> -->
+
+            <div class="flex">
+                <label for="selected_date">Select: </label>
+                <div class="col-sm-4">
+                    <select class="form-control" name="optskill" id="optskill">
+                        <option value="option_1">Option 1</option>
+                        <option value="option_2">Option 2</option>
+                        <option value="option_3">Option 3</option>
+                    </select>
+                </div>
+            </div><br>
+
+            <input type="submit" class="mybutton" value="Add">
+
+        </form>
+
+        <div class="video-frame">
+            <!-- <img  class="video-frame" src="{{ url_for('video_feed') }}" width="640" height="480"> -->
+        </div>
+        
+    </div>
+</div>
 
 </body>
 </html>

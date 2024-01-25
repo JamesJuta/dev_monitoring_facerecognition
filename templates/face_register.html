@@ -18,6 +18,7 @@
           <li><a href="{{ url_for('home') }}">Home</a></li>
           <li><a href="{{ url_for('time_log') }}">Time Log</a></li>
           <li><a class="active" href="{{ url_for('face_register') }}">Face Register</a></li>
+          <li><a href="{{ url_for('addprsn') }}">Face Register</a></li>
         </ul>
       
         <!-- burger icon -->
@@ -41,23 +42,23 @@
         <div class="face_register_container">
 
             <div class="form">
-                <form method="post" action="/register">
+                <form method="post" action="/addprsn_submit">
                     <i class='face_scanner bx bx-scan'></i>
                     <h1 class="form__title"> Register Face</h1><br>
             
                     <div class="form__div">
-                        <input type="text" name="id_no" class="form__input" placeholder=" " required>
+                        <input type="text" name="txtnbr" class="form__input" placeholder=" " required>
                         <label for="id_no" class="form__label"><i class='bx bxs-id-card'></i>  ID no</label>
                     </div>
             
-                    <input class="btn" type="submit" name="register" value="Register"><br><br>
+                    <input class="mybutton" type="submit" name="register" value="Register"><br><br>
                     <!-- <input class="btn" type="submit" name="capture" value="Capture Image"><br><br> -->
     
-                    <div id="progressSection" style="display: none;">
+                    <!-- <div id="progressSection" style="display: none;">
                         <p>Processing...</p>
                         <progress id="progressBar" max="100" value="0"></progress>
                         <p id="progressPercent">0%</p>
-                    </div>
+                    </div> -->
             
                 </form>
             </div>
@@ -79,13 +80,23 @@
                     <th>Time Added</th>
                 </tr>
             </thead>
-            <tbody id="scandata">
-
+            <tbody>
+                {% for item in data %}
+                    <tr>
+                        <td>{{item[0]}}</td>
+                        <td>{{item[1]}}</td>
+                        <!-- <td>{{item[2]}}</td> -->
+                        <td>{{item[3]}}</td>
+                        
+                    </tr>
+                {% endfor %}
             </tbody>
         </table>
     </div>
 
-    <section class="py-1">
+    <div id="user-table" class="table table-bordered tabulator"></div>
+
+    <!-- <section class="py-1">
         <div class="row mt-5">
             <div class="col-lg-8 offset-lg-2">
                 <h3>Add Personnel</h3>
@@ -125,8 +136,9 @@
                 
             </div>
         </div>
-    </section>
+    </section> -->
 
     <footer>© 2023 - 2024 City College of Calamba</footer>
+    
 </body>
 </html>

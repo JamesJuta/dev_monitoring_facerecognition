@@ -7,12 +7,12 @@
 
 {% include "navbar.html" %}
 
-<section class="py-1">
+<!-- <section class="py-1">
     <div class="row mt-5">
         <div class="col-md-3 offset-lg-2">
             <h3>Generate Dataset {{ prs }}</h3>
             <hr>
-            <img src="{{ url_for('vidfeed_dataset', nbr=prs) }}" width="100%" class="img-thumbnail">
+            <img src="{{ url_for('vidfeed_dataset', nbr=prs) }}" width="480px" class="img-thumbnail">
         </div>
     </div>
 
@@ -22,7 +22,19 @@
             <a class="btn btn-warning btn-lg" href="{{ url_for('train_classifier', nbr=prs) }}"> Training </a>
         </div>
     </div>
-</section>
+</section> -->
+
+<br>
+<div class="container">
+    <div class="generate_dataset_container">
+            
+        <div class="time_container">
+            <h3>Generating Dataset {{ prs }}</h3>
+            <img src="{{ url_for('vidfeed_dataset', nbr=prs) }}" class="img-thumbnail ">
+            <a class="train_dataset_btn" href="{{ url_for('train_classifier', nbr=prs) }}"> Train Dataset </a>
+        </div>
+    </div>
+</div>
 
 </body>
 </html>

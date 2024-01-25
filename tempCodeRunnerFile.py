@@ -1,1 +1,1 @@
-nbr
+current_datetime=current_datetime, current_date=current_date, current_time=current_time

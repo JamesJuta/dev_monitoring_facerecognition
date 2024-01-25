@@ -17,7 +17,8 @@
         <ul class="links">
           <li><a class="active" href="{{ url_for('home') }}">Home</a></li>
           <li><a href="{{ url_for('time_log') }}">Time Log</a></li>
-          <li><a href="{{ url_for('face_register') }}">Face Register</a></li>
+          <!-- <li><a href="{{ url_for('face_register') }}">Face Register</a></li> -->
+          <li><a href="{{ url_for('addprsn') }}">Face Register</a></li>
         </ul>
       
         <!-- burger icon -->
@@ -37,19 +38,22 @@
       
     </nav>
     
-
     <div class="container">
         <div class="video_feed_time_container" >
             <div class="video-frame">
-                <!-- <img  class="video-frame" src="{{ url_for('video_feed') }}" width="640" height="480"> -->
+                <img  class="video-frame" src="{{ url_for('video_feed') }}" width="640" height="480">
             </div>
 
             <div class="time_container">
                 <div class="center">
                     <!-- <i class='clock bx bx-time'></i> -->
+                    <div class="geometric_shape">
+                        <img src="{{ url_for('static', filename='img/clock.svg') }}" width="200" alt="">
+                    </div>
+                    
 
 
-                    <div class="analog_clock">
+                    <!-- <div class="analog_clock">
                         <div class="number" style="--n:1"><b>1</b></div>
                         <div class="number" style="--n:2"><b>2</b></div>
                         <div class="number" style="--n:3"><b>3</b></div>
@@ -66,12 +70,21 @@
                         <div class="minute-hand" id="minute-hand"></div>
                         <div class="second-hand" id="second-hand"></div>
                         <div class="center-dot"></div>
-                    </div><br>
+                    </div><br> -->
 
                     <h1 class="time" id="nowTime">{{ current_time }}</h1>
-                    <!-- <h1 id="">{{ day_of_week }}</h1> -->
                     <h1 class="date" id="nowDate">{{ current_date }}</h1>
-                    <!-- <p>{{ formatted_datetime }}</p> -->
+                    
+                    <br>
+                    <div class="flex">
+                        <label for="selected_date">Select Building: </label>
+                        <select class="form-control" name="optskill" id="optskill">
+                            <option value="Building 1">Building 1</option>
+                            <option value="Building 2">Building 2</option>
+                            <option value="Building 3">Building 3</option>
+                        </select>
+                    </div>
+                    
                 </div>
                 
             </div>
@@ -113,8 +126,8 @@
         <p class="message">Time in Successfull!</p>
         <p>{{last_recognized_face[1]}}</p>
         <p>{{last_recognized_face[2]}}</p>
-
-        <!-- <button class="btn" onclick="dismissMessage()">Dismiss</button> -->
+        <p>{{last_recognized_face[3]}}</p>
+        <button class="btn" onclick="dismissMessage()">Dismiss</button>
     </div>
 {% endif %}
 
@@ -141,27 +154,27 @@
         dismissMessage();
     }
 
-    $(document).ready(function() {
-        function updateClock() {
-            // Use JavaScript to update the time every second
-            var currentTime = new Date();
-            var hours = currentTime.getHours();
-            var minutes = currentTime.getMinutes();
-            var seconds = currentTime.getSeconds();
+    // $(document).ready(function() {
+    //     function updateClock() {
+    //         // Use JavaScript to update the time every second
+    //         var currentTime = new Date();
+    //         var hours = currentTime.getHours();
+    //         var minutes = currentTime.getMinutes();
+    //         var seconds = currentTime.getSeconds();
 
-            // Add leading zero if needed
-            minutes = (minutes < 10 ? "0" : "") + minutes;
-            seconds = (seconds < 10 ? "0" : "") + seconds;
+    //         // Add leading zero if needed
+    //         minutes = (minutes < 10 ? "0" : "") + minutes;
+    //         seconds = (seconds < 10 ? "0" : "") + seconds;
 
-            var timeString = hours + ":" + minutes + ":" + seconds;
+    //         var timeString = hours + ":" + minutes + ":" + seconds;
 
-            // Update the time in the HTML element with id 'current-time'
-            $('#current-time').text(timeString);
-        }
+    //         // Update the time in the HTML element with id 'current-time'
+    //         $('#current-time').text(timeString);
+    //     }
 
-        // Call the updateClock function every second
-        setInterval(updateClock, 1000);
-    });
+    //     // Call the updateClock function every second
+    //     setInterval(updateClock, 1000);
+    // });
 
     var set_server_time = '{{ current_time }}';
     var serverOffset = moment(set_server_time).diff(new Date());
