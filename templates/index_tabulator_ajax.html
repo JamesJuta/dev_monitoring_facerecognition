@@ -45,18 +45,18 @@
 
 <body class="d-flex flex-column h-100vh" style="background-color: #f5f8fe;">
 
-    <nav class="navbar sticky-top bg-body-tertiary shadow-sm p-3">
+    <nav class="navbar sticky-top bg-white shadow p-3">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">
                 <img src="/docs/5.3/assets/brand/bootstrap-logo.svg" alt="" width="30" height="24" class="d-inline-block align-text-top">
-                <span class="navbar-brand mb-0 h1 text-primary">E-Monitoring</span>
+                <span class="navbar-brand mb-0 h1"><b>E-Monitoring</b></span>
             </a>
             <ul class="nav nav-underline">
                 <li class="nav-item">
                     <a class="nav-link" href="#">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#">Time Log</a>
+                    <a class="nav-link active text-primary" aria-current="page" href="#">Time Log</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#">Face Register</a>
@@ -68,7 +68,7 @@
     <div class="container">
         <div class="row" style="padding: 20px;">
             <div class="col-12">
-                <div class="card">
+                <div class="card shadow-sm">
                     <div class="card-header bg-primary text-white fw-semibold d-flex align-items-center justify-content-between flex-wrap" style=" height: 70px;">
                         <h4 class="p-2 text-white"><i class='bx bx-time'></i> <b>Time Log</b></h4>
                         <div class="p-2 d-flex" style="margin-left:auto;" id="DateDemo">
@@ -94,52 +94,36 @@
 
 
     <script>
-        // (function () {
-           
-           
 
-        //     // //trigger download of timelog.csv file
-        //     // document.getElementById("download-csv").addEventListener("click", function () {
-        //     //     table.download("csv", "timelog_" + datetime + ".csv", {
-        //     //         bom: true
-        //     //     });
-        //     // });
+        var datetime = '{{current_datetime}}'
+        var global_date = '{{ initial_date_range }}';
+        var set_server_time = '{{current_datetime}}'
+        var serverOffset = moment(set_server_time).diff(new Date());
+        var now_server = moment();
+        now_server.add(serverOffset, 'milliseconds');
+        var dateLimit = now_server.format('MM-DD-YYYY');
 
-        //     // //trigger download of timelog.xlsx file
-        //     // document.getElementById("download-xlsx").addEventListener("click", function () {
-        //     //     table.download("xlsx", "timelog_" + datetime + ".xlsx", {
-        //     //         sheetName: "My Data"
-        //     //     });
-        //     // });
-
-        //     // //trigger download of timelog.xlsx file
-        //     // document.getElementById("print-table").addEventListener("click", function () {
-        //     //     table.print(false, true);
-        //     // });
-        // });
-
-         var datetime = '{{current_datetime}}'
-            var global_date = '{{ initial_date_range }}';
-            var set_server_time = '{{current_datetime}}'
-            var serverOffset = moment(set_server_time).diff(new Date());
-            var now_server = moment();
-            now_server.add(serverOffset, 'milliseconds');
-            var dateLimit = now_server.format('MM-DD-YYYY');
+        var startDate = moment('{{current_date}}', 'MM-DD-YYYY');
+        var endDate = moment('{{current_date}}', 'MM-DD-YYYY');
 
             $('#date_range').daterangepicker({
                 opens: 'left',
-                maxDate: dateLimit
+                startDate: startDate,
+                endDate: endDate
             }, function (start, end, label) {
-                global_date = start.format('YYYY-MM-DD') + "@" + end.format('YYYY-MM-DD');
+                var start_date = start.format('YYYY-MM-DD');
+                var end_date = end.format('YYYY-MM-DD');
+                
+                // Trigger table update
                 table.setData("/get_data", {
                     table: 'master_schedule',
-                    status: global_date
+                    start_date: start_date,
+                    end_date: end_date
                 });
                 table.setSort([{
                     column: "date",
                     dir: "DESC"
-                }, //sort by this first
-                ]);
+                }]);
             });
 
             var table = new Tabulator('#example-table', {
@@ -206,6 +190,24 @@
             ajaxResponse: function (url, params, response) {
                 return response.data
             },
+        });
+        // Trigger download of CSV file
+        document.getElementById("download-csv").addEventListener("click", function () {
+            table.download("csv", "timelog_" + '{{current_date}}' + ".csv", {
+                bom: true
+            });
+        });
+
+        // Trigger download of XLSX file
+        document.getElementById("download-xlsx").addEventListener("click", function () {
+            table.download("xlsx", "timelog_" + '{{current_date}}' + ".xlsx", {
+                sheetName: "My Data"
+            });
+        });
+
+        // Trigger print
+        document.getElementById("print-table").addEventListener("click", function () {
+            table.print(false, true);
         });
     </script>
 </body>
