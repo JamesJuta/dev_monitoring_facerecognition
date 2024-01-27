@@ -7,11 +7,15 @@ import os
 import time  
 from datetime import date
 from datetime import datetime
+from gtts import gTTS
+import os
+from pygame import mixer
 
-from flaskext.mysql import MySQL #pip install flask-mysql
-import pymysql
+# from flaskext.mysql import MySQL #pip install flask-mysql
+# import pymysql
  
 app = Flask(__name__)
+mixer.init()
  
 cnt = 0
 pause_cnt = 0
@@ -25,13 +29,23 @@ db_connect = mysql.connector.connect(
 )
 mycursor = db_connect.cursor()
 
-mysql = MySQL()
+# mysql = MySQL()
    
-app.config['MYSQL_DATABASE_USER'] = 'root'
-app.config['MYSQL_DATABASE_PASSWORD'] = ''
-app.config['MYSQL_DATABASE_DB'] = 'facerecog_attendance_db'
-app.config['MYSQL_DATABASE_HOST'] = 'localhost'
-mysql.init_app(app)
+# app.config['MYSQL_DATABASE_USER'] = 'root'
+# app.config['MYSQL_DATABASE_PASSWORD'] = ''
+# app.config['MYSQL_DATABASE_DB'] = 'facerecog_attendance_db'
+# app.config['MYSQL_DATABASE_HOST'] = 'localhost'
+# mysql.init_app(app)
+
+def text_to_speech(message):
+    tts = gTTS(text=message, lang='en')
+    tts.save("tts_output.mp3")
+    mixer.music.load("tts_output.mp3")
+    mixer.music.play()
+
+def play_sound():
+    mixer.music.load("error.mp3")
+    mixer.music.play()
  
  
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Generate dataset >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -157,23 +171,27 @@ def face_recognition():  # generate frame by frame from camera
  
                 if int(cnt) == 30:
                     cnt = 0
+                    cv2.putText(img, pname + ' | ' + pskill, (x - 10, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2, cv2.LINE_AA)
+                    time.sleep(1)
+                    text_to_speech("Time in success")
 
                     sql = "INSERT INTO `time_log` (`name`, `id_no`, `building_name`, `date`, `time`) VALUES (%s, %s, %s, %s, %s)"
                     values = (pname, pnbr, building_name, current_date, current_time)
                     mycursor.execute(sql, values)
                     db_connect.commit()
- 
-                    cv2.putText(img, pname + ' | ' + pskill, (x - 10, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2, cv2.LINE_AA)
-                    time.sleep(1)
+
  
                     justscanned = True
                     pause_cnt = 0
  
             else:
                 if not justscanned:
+                    play_sound()
+                    # text_to_speech("Face not recognized!")
                     cv2.putText(img, 'UNKNOWN', (x, y - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2, cv2.LINE_AA)
                     cv2.putText(img, "Face not recognize!", (20, 40),
                                 cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
+                    
                 else:
                     cv2.putText(img, ' ', (x, y - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 255), 2,cv2.LINE_AA)
  
@@ -217,6 +235,20 @@ def home():
 @app.route('/time_log')
 def time_log():
     return render_template('time_log2.html')
+
+
+@app.route('/face_register_password', methods=['GET', 'POST'])
+def face_register_password():
+    correct_password = 'adminpassword'
+    if request.method == 'POST':
+        password_attempt = request.form.get('password')
+
+        if password_attempt == correct_password:
+            return redirect(url_for('addprsn'))
+        else:
+            flash('Incorrect password. Please try again.', 'error')
+
+    return render_template('password_form.html')
 
 @app.route('/face_register')
 def face_register():
@@ -298,68 +330,68 @@ def fr_page():
     return render_template('fr_page.html', data=data, current_date=current_date, current_time=current_time, day_of_week=day_of_week, last_recognized_face=last_recognized_face)
 
 
-@app.route("/ajaxfile",methods=["POST","GET"])
-def ajaxfile():
-    try:
-        conn = mysql.connect()
-        cursor = conn.cursor(pymysql.cursors.DictCursor)
-        if request.method == 'POST':
-            draw = request.form['draw'] 
-            row = int(request.form['start'])
-            rowperpage = int(request.form['length'])
-            searchValue = request.form["search[value]"]
-            print(draw)
-            print(row)
-            print(rowperpage)
-            print(searchValue)
+# @app.route("/ajaxfile",methods=["POST","GET"])
+# def ajaxfile():
+#     try:
+#         conn = mysql.connect()
+#         cursor = conn.cursor(pymysql.cursors.DictCursor)
+#         if request.method == 'POST':
+#             draw = request.form['draw'] 
+#             row = int(request.form['start'])
+#             rowperpage = int(request.form['length'])
+#             searchValue = request.form["search[value]"]
+#             print(draw)
+#             print(row)
+#             print(rowperpage)
+#             print(searchValue)
  
-            ## Total number of records without filtering
-            # sql = "select log_id, name, id_no,building_name, time, date from time_log ORDER BY log_id DESC"
-            # cursor.execute(sql)
-            cursor.execute("select count(*) as allcount from time_log where date = curdate() ORDER BY log_id DESC")
-            rsallcount = cursor.fetchone()
-            totalRecords = rsallcount['allcount']
-            print(totalRecords) 
+#             ## Total number of records without filtering
+#             # sql = "select log_id, name, id_no,building_name, time, date from time_log ORDER BY log_id DESC"
+#             # cursor.execute(sql)
+#             cursor.execute("select count(*) as allcount from time_log where date = curdate() ORDER BY log_id DESC")
+#             rsallcount = cursor.fetchone()
+#             totalRecords = rsallcount['allcount']
+#             print(totalRecords) 
  
-            ## Total number of records with filtering
-            likeString = "%" + searchValue +"%"
-            cursor.execute("SELECT count(*) as allcount from time_log WHERE name LIKE %s OR time LIKE %s OR date LIKE %s OR building_name LIKE %s OR id_no LIKE %s", (likeString, likeString, likeString, likeString, likeString))
-            rsallcount = cursor.fetchone()
-            totalRecordwithFilter = rsallcount['allcount']
-            print(totalRecordwithFilter) 
+#             ## Total number of records with filtering
+#             likeString = "%" + searchValue +"%"
+#             cursor.execute("SELECT count(*) as allcount from time_log WHERE name LIKE %s OR time LIKE %s OR date LIKE %s OR building_name LIKE %s OR id_no LIKE %s", (likeString, likeString, likeString, likeString, likeString))
+#             rsallcount = cursor.fetchone()
+#             totalRecordwithFilter = rsallcount['allcount']
+#             print(totalRecordwithFilter) 
  
-            ## Fetch records
-            if searchValue=='':
-                cursor.execute("SELECT * FROM time_log ORDER BY log_id DESC limit %s, %s;", (row, rowperpage))
-                # cursor.execute("SELECT * FROM time_log ORDER BY date asc limit %s, %s;", (row, rowperpage))
-                timeloglist = cursor.fetchall()
-            else:        
-                cursor.execute("SELECT * FROM time_log WHERE name LIKE %s OR time LIKE %s OR date LIKE %s OR building_name LIKE %s OR id_no LIKE %s limit %s, %s;", (likeString, likeString, likeString, likeString, likeString, row, rowperpage))
-                timeloglist = cursor.fetchall()
+#             ## Fetch records
+#             if searchValue=='':
+#                 cursor.execute("SELECT * FROM time_log ORDER BY log_id DESC limit %s, %s;", (row, rowperpage))
+#                 # cursor.execute("SELECT * FROM time_log ORDER BY date asc limit %s, %s;", (row, rowperpage))
+#                 timeloglist = cursor.fetchall()
+#             else:        
+#                 cursor.execute("SELECT * FROM time_log WHERE name LIKE %s OR time LIKE %s OR date LIKE %s OR building_name LIKE %s OR id_no LIKE %s limit %s, %s;", (likeString, likeString, likeString, likeString, likeString, row, rowperpage))
+#                 timeloglist = cursor.fetchall()
     
-            data = []
-            for row in timeloglist:
-                data.append({
-                    'name': row['name'],
-                    'id_no': row['id_no'],
-                    'building_name': row['building_name'],
-                    'time': row['time'],
-                    'date': row['date'],
-                })
+#             data = []
+#             for row in timeloglist:
+#                 data.append({
+#                     'name': row['name'],
+#                     'id_no': row['id_no'],
+#                     'building_name': row['building_name'],
+#                     'time': row['time'],
+#                     'date': row['date'],
+#                 })
  
-            response = {
-                'draw': draw,
-                'iTotalRecords': totalRecords,
-                'iTotalDisplayRecords': totalRecordwithFilter,
-                'aaData': data,
-            }
-            print(response)
-            return jsonify(response)
-    except Exception as e:
-        print(e)
-    finally:
-        cursor.close() 
-        conn.close()
+#             response = {
+#                 'draw': draw,
+#                 'iTotalRecords': totalRecords,
+#                 'iTotalDisplayRecords': totalRecordwithFilter,
+#                 'aaData': data,
+#             }
+#             print(response)
+#             return jsonify(response)
+#     except Exception as e:
+#         print(e)
+#     finally:
+#         cursor.close() 
+#         conn.close()
  
  
 @app.route('/countTodayScan')
