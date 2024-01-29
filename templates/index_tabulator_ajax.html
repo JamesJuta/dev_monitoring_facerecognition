@@ -6,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Time Log</title>
     <link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'>
-    <link rel="stylesheet" href="	https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
-    <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script> -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/tabulator-tables@5.0.0/dist/css/tabulator.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="{{ url_for('static', filename = 'css/tabulator_bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename = 'css/bootstrap-datetimepicker.min.css') }}">
@@ -51,13 +51,13 @@
             </a>
             <ul class="nav nav-underline">
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Home</a>
+                    <a class="nav-link" href="{{ url_for('home') }}">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active text-primary" aria-current="page" href="#">Time Log</a>
+                    <a class="nav-link active text-primary" aria-current="page" href="{{ url_for('time_log') }}">Time Log</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Face Register</a>
+                    <a class="nav-link" href="#" id="faceRegisterBtn" data-bs-toggle="modal" data-bs-target="#faceRegisterModal">Face Register</a>
                 </li>
             </ul>
         </div>
@@ -83,6 +83,27 @@
                         </div>
                     </div>
                     
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- password modal for face register -->
+    <div class="modal" id="faceRegisterModal" tabindex="-1" aria-labelledby="faceRegisterModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <!-- Modal content remains unchanged -->
+                <div class="modal-header">
+                    <h5 class="modal-title" id="faceRegisterModalLabel">Enter Password</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <label for="passwordInput" class="form-label">Password:</label>
+                    <input type="password" class="form-control" id="passwordInput" placeholder="Enter your password">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="submitPasswordBtn">Submit</button>
                 </div>
             </div>
         </div>
@@ -208,6 +229,18 @@
         // Trigger print function
         document.getElementById("print-table").addEventListener("click", function () {
             table.print(false, true);
+        });
+
+        // Trigger the password modal
+        document.getElementById('submitPasswordBtn').addEventListener('click', function() {
+            // Get the entered password
+            var password = document.getElementById('passwordInput').value;
+
+            // Perform any validation or further actions here
+
+            // Close the modal
+            var modal = new bootstrap.Modal(document.getElementById('faceRegisterModal'));
+            modal.hide();
         });
     </script>
 </body>

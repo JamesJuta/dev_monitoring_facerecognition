@@ -37,12 +37,18 @@ mycursor = db_connect.cursor()
 # app.config['MYSQL_DATABASE_HOST'] = 'localhost'
 # mysql.init_app(app)
 
+current_datetime = datetime.now()
+current_date = current_datetime.strftime('%m-%d-%Y')
+current_time = current_datetime.strftime('%I:%M:%S %p')
+
+# text to speech function
 def text_to_speech(message):
     tts = gTTS(text=message, lang='en')
     tts.save("tts_output.mp3")
     mixer.music.load("tts_output.mp3")
     mixer.music.play()
 
+# play alert sound 
 def play_sound():
     mixer.music.load("error.mp3")
     mixer.music.play()
@@ -234,7 +240,7 @@ def home():
 
 @app.route('/time_log')
 def time_log():
-    return render_template('time_log2.html')
+    return render_template('index_tabulator_ajax.html', current_datetime=current_datetime, current_date=current_date, current_time=current_time)
 
 
 @app.route('/face_register_password', methods=['GET', 'POST'])
@@ -330,68 +336,38 @@ def fr_page():
     return render_template('fr_page.html', data=data, current_date=current_date, current_time=current_time, day_of_week=day_of_week, last_recognized_face=last_recognized_face)
 
 
-# @app.route("/ajaxfile",methods=["POST","GET"])
-# def ajaxfile():
-#     try:
-#         conn = mysql.connect()
-#         cursor = conn.cursor(pymysql.cursors.DictCursor)
-#         if request.method == 'POST':
-#             draw = request.form['draw'] 
-#             row = int(request.form['start'])
-#             rowperpage = int(request.form['length'])
-#             searchValue = request.form["search[value]"]
-#             print(draw)
-#             print(row)
-#             print(rowperpage)
-#             print(searchValue)
- 
-#             ## Total number of records without filtering
-#             # sql = "select log_id, name, id_no,building_name, time, date from time_log ORDER BY log_id DESC"
-#             # cursor.execute(sql)
-#             cursor.execute("select count(*) as allcount from time_log where date = curdate() ORDER BY log_id DESC")
-#             rsallcount = cursor.fetchone()
-#             totalRecords = rsallcount['allcount']
-#             print(totalRecords) 
- 
-#             ## Total number of records with filtering
-#             likeString = "%" + searchValue +"%"
-#             cursor.execute("SELECT count(*) as allcount from time_log WHERE name LIKE %s OR time LIKE %s OR date LIKE %s OR building_name LIKE %s OR id_no LIKE %s", (likeString, likeString, likeString, likeString, likeString))
-#             rsallcount = cursor.fetchone()
-#             totalRecordwithFilter = rsallcount['allcount']
-#             print(totalRecordwithFilter) 
- 
-#             ## Fetch records
-#             if searchValue=='':
-#                 cursor.execute("SELECT * FROM time_log ORDER BY log_id DESC limit %s, %s;", (row, rowperpage))
-#                 # cursor.execute("SELECT * FROM time_log ORDER BY date asc limit %s, %s;", (row, rowperpage))
-#                 timeloglist = cursor.fetchall()
-#             else:        
-#                 cursor.execute("SELECT * FROM time_log WHERE name LIKE %s OR time LIKE %s OR date LIKE %s OR building_name LIKE %s OR id_no LIKE %s limit %s, %s;", (likeString, likeString, likeString, likeString, likeString, row, rowperpage))
-#                 timeloglist = cursor.fetchall()
-    
-#             data = []
-#             for row in timeloglist:
-#                 data.append({
-#                     'name': row['name'],
-#                     'id_no': row['id_no'],
-#                     'building_name': row['building_name'],
-#                     'time': row['time'],
-#                     'date': row['date'],
-#                 })
- 
-#             response = {
-#                 'draw': draw,
-#                 'iTotalRecords': totalRecords,
-#                 'iTotalDisplayRecords': totalRecordwithFilter,
-#                 'aaData': data,
-#             }
-#             print(response)
-#             return jsonify(response)
-#     except Exception as e:
-#         print(e)
-#     finally:
-#         cursor.close() 
-#         conn.close()
+@app.route('/get_data', methods=['GET'])
+def get_data():
+    try:
+        table = request.args.get('table')
+        start_date = request.args.get('start_date')
+        end_date = request.args.get('end_date')
+
+        # connection = get_db_connection()
+        # cursor = connection.cursor(dictionary=True)
+        mycursor = db_connect.cursor(dictionary=True)
+
+        if table is not None and table != '':
+            if start_date and end_date:
+                # If start_date and end_date are provided, filter by date range
+                sql = 'SELECT date, time, name, building_name FROM time_log WHERE DATE(datetime) >= %s AND DATE(datetime) <= %s ORDER BY log_id DESC'
+                values = [start_date, end_date]
+                mycursor.execute(sql, values)
+            else:
+                # If start_date and end_date are not provided, fetch all data
+                mycursor.execute('SELECT date, time, name, building_name FROM time_log ORDER BY log_id DESC')
+
+            data = mycursor.fetchall()
+            return jsonify(data=data)
+        else:
+            return jsonify(error="Table parameter is missing or empty")
+    except mysql.connector.Error as err:
+        print(f"Error: {err}")
+    finally:
+        if 'connection' in locals() and db_connect.is_connected():
+            mycursor.close()
+            db_connect.close()
+    return jsonify(data=[])
  
  
 @app.route('/countTodayScan')
