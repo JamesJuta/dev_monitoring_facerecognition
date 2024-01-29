@@ -61,9 +61,6 @@ def get_data():
             cursor.close()
             connection.close()
     return jsonify(data=[])
-    
-
-
 
 # Run the Flask app
 if __name__ == '__main__':

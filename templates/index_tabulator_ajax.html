@@ -19,13 +19,11 @@
     <script src="{{ url_for('static', filename = 'js/daterangepicker.js') }}"></script>
     <style>
         /* Customize Tabulator pagination styles */
-        
         .tabulator .tabulator-footer .tabulator-page {
             background-color: white; 
             color: #1A73E8; 
             border: 1px solid #1A73E8; 
         }
-
         .tabulator .tabulator-footer .tabulator-page:hover {
             background-color: #2980b9; 
         }
@@ -40,7 +38,6 @@
         .tabulator-row:nth-child(even) {
             background-color: #ffffff; 
         }
-
     </style>
 </head>
 
@@ -147,7 +144,8 @@
             ajaxLoaderLoading: 'Fetching data from Database..',
             paginationSizeSelector: [50, 100, 500, 1000, 2000],
             columns: [
-                {title: "Date", field: "date", 
+                {title: "Date", field: "date",
+                    headerFilterPlaceholder: "Search Date",
                     headerFilter: "input",
                     headerFilterFunc: "like",
                     headerFilterParams: {
@@ -158,6 +156,7 @@
                     vertAlign: 'middle',
                     minWidth: 250},
                 {title: "Time", field: "time", 
+                    headerFilterPlaceholder: "Search Time",
                     headerFilter: "input",
                     headerFilterFunc: "like",
                     headerFilterParams: {
@@ -167,7 +166,8 @@
                     formatter: 'textarea',
                     vertAlign: 'middle',
                     minWidth: 250},
-                {title: "Name", field: "name", 
+                {title: "Name", field: "name",
+                    headerFilterPlaceholder: "Search Name",
                     headerFilter: "input",
                     headerFilterFunc: "like",
                     headerFilterParams: {
@@ -178,6 +178,7 @@
                     vertAlign: 'middle',
                     minWidth: 250},
                 {title: "Building Name", field: "building_name", 
+                    headerFilterPlaceholder: "Search Building Name",
                     headerFilter: "input",
                     headerFilterFunc: "like",
                     headerFilterParams: {
@@ -204,7 +205,6 @@
                 sheetName: "My Data",
             });
         });
-
         // Trigger print function
         document.getElementById("print-table").addEventListener("click", function () {
             table.print(false, true);
