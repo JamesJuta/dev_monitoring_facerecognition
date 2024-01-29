@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Data Table Example with Tabulator and AJAX</title>
+    <title>Time Log</title>
     <link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'>
     <link rel="stylesheet" href="	https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
     <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script> -->
@@ -14,30 +14,31 @@
     <link rel="stylesheet" href="{{ url_for('static', filename = 'css/daterange_picker.css') }}">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="{{ url_for('static', filename = 'js/moment.js') }}"></script>
+    <script src="{{ url_for('static', filename = 'js/xlsx.full.min.js') }}"></script>
     <script src="{{ url_for('static', filename = 'js/tabulator.min.js') }}"></script>
     <script src="{{ url_for('static', filename = 'js/daterangepicker.js') }}"></script>
     <style>
         /* Customize Tabulator pagination styles */
         
         .tabulator .tabulator-footer .tabulator-page {
-            background-color: white; /* Change to your desired color */
-            color: #1A73E8; /* Change to your desired text color */
-            border: 1px solid #1A73E8; /* Change to your desired border color */
+            background-color: white; 
+            color: #1A73E8; 
+            border: 1px solid #1A73E8; 
         }
 
         .tabulator .tabulator-footer .tabulator-page:hover {
-            background-color: #2980b9; /* Change to your desired hover color */
+            background-color: #2980b9; 
         }
         .tabulator .tabulator-footer {
-            background-color: #ffffff; /* Set to white or your desired color */
+            background-color: #ffffff; 
         }
         /* Remove stripes from Tabulator rows */
         .tabulator-row {
-            background-color: #ffffff; /* Set background color to white or your desired color */
+            background-color: #ffffff; 
         }
         /* Style even and odd rows differently if needed */
         .tabulator-row:nth-child(even) {
-            background-color: #ffffff; /* Set background color for even rows */
+            background-color: #ffffff; 
         }
 
     </style>
@@ -197,15 +198,14 @@
                 bom: true
             });
         });
-
-        // Trigger download of XLSX file
+        // Trigger download of xlsx file
         document.getElementById("download-xlsx").addEventListener("click", function () {
             table.download("xlsx", "timelog_" + '{{current_date}}' + ".xlsx", {
-                sheetName: "My Data"
+                sheetName: "My Data",
             });
         });
 
-        // Trigger print
+        // Trigger print function
         document.getElementById("print-table").addEventListener("click", function () {
             table.print(false, true);
         });
