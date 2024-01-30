@@ -1,1 +1,2 @@
-return render_template('index_tabulator_ajax.html', current_datetime=current_datetime, current_date=current_date, current_time=current_time, initial_date_range=initial_date_range)
+# If start_date and end_date are not provided, fetch all data
+                mycursor.execute('SELECT date, time, name, building_name FROM time_log ORDER BY log_id DESC')

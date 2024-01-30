@@ -355,7 +355,7 @@ def get_data():
                 mycursor.execute(sql, values)
             else:
                 # If start_date and end_date are not provided, fetch all data
-                mycursor.execute('SELECT date, time, name, building_name FROM time_log ORDER BY log_id DESC')
+                mycursor.execute('SELECT date, time, name, building_name FROM time_log where DATE(datetime) = curdate() ORDER BY log_id DESC')
 
             data = mycursor.fetchall()
             return jsonify(data=data)
@@ -368,6 +368,29 @@ def get_data():
             mycursor.close()
             db_connect.close()
     return jsonify(data=[])
+
+
+@app.route('/last_recognized_face', methods=['GET'])
+def last_recognized_face():
+    try:
+        mycursor = db_connect.cursor(dictionary=True)
+        # cursor = connection.cursor(dictionary=True)my
+
+        # Assuming you have a column named 'log_id' as an auto-incrementing primary key
+        mycursor.execute('SELECT * FROM time_log ORDER BY log_id DESC LIMIT 1')
+        last_face_info = mycursor.fetchone()
+        print(last_face_info)
+
+        return jsonify(last_face_info)
+
+    except mysql.connector.Error as err:
+        print(f"Error: {err}")
+        return jsonify(error="Error fetching last recognized face information")
+
+    finally:
+        if 'connection' in locals() and db_connect.is_connected():
+            mycursor.close()
+            db_connect.close()
  
  
 @app.route('/countTodayScan')
@@ -381,15 +404,15 @@ def countTodayScan():
     mycursor = db_connect.cursor()
  
     mycursor.execute("select count(*) "
-                     "  from accs_hist "
-                     " where accs_date = curdate() ")
+                     "  from time_log "
+                     " where date = curdate()")
     row = mycursor.fetchone()
     rowcount = row[0]
  
     return jsonify({'rowcount': rowcount})
  
  
-@app.route('/loadData', methods = ['GET', 'POST'])
+@app.route('/loadData', methods = ['GET', 'POST'])  
 def loadData():
     db_connect = mysql.connector.connect(
         host="localhost",
