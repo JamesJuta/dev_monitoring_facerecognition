@@ -15,6 +15,7 @@ from pygame import mixer
 # import pymysql
  
 app = Flask(__name__)
+app.secret_key = 'GAo2wWbWR2vM1BYexzAXs9QDuHXYkgKZ'
 mixer.init()
  
 cnt = 0
@@ -238,9 +239,33 @@ def face_recognition():  # generate frame by frame from camera
 def home():
     return render_template('fr_page.html')
 
-@app.route('/time_log')
+@app.route('/time_log', methods=['GET', 'POST'])
 def time_log():
-    return render_template('index_tabulator_ajax.html', current_datetime=current_datetime, current_date=current_date, current_time=current_time)
+    correct_password = 'adminpassword'
+    if 'password_attempts' not in session:
+        session['password_attempts'] = 0
+
+    if request.method == 'POST':
+        password_attempt = request.form.get('password')
+
+        if password_attempt == correct_password:
+            # flash('Password is correct. Redirecting...', 'success')
+            return redirect(url_for('face_register'))  
+        else:
+            session['password_attempts'] += 1
+            flash('Incorrect password. Please try again.', 'error')
+            
+            if session['password_attempts'] == 5:
+                flash('Maximum attempts reached. Please contact support.', 'error')
+                session['password_attempts'] = 0  # Reset attempts after reaching the maximum
+            else:
+                # Clear all flashed messages if there are more attempts left
+                flash_messages = session.get('_flashes', [])
+                for message in flash_messages:
+                    flash('', 'error')
+                
+
+    return render_template('index_tabulator_ajax.html', current_datetime=current_datetime, current_date=current_date, current_time=current_time, password_attempts=session['password_attempts'])
 
 
 @app.route('/face_register_password', methods=['GET', 'POST'])
@@ -250,7 +275,7 @@ def face_register_password():
         password_attempt = request.form.get('password')
 
         if password_attempt == correct_password:
-            return redirect(url_for('addprsn'))
+            return redirect(url_for('face_register'))
         else:
             flash('Incorrect password. Please try again.', 'error')
 

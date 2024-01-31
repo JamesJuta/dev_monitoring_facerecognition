@@ -17,6 +17,10 @@
     <script src="{{ url_for('static', filename = 'js/xlsx.full.min.js') }}"></script>
     <script src="{{ url_for('static', filename = 'js/tabulator.min.js') }}"></script>
     <script src="{{ url_for('static', filename = 'js/daterangepicker.js') }}"></script>
+
+    <!-- SweetAlert files -->
+    <!-- <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/sweetalert2@11">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> -->
     <style>
         /* Customize Tabulator pagination styles */
         .tabulator .tabulator-footer .tabulator-page {
@@ -91,25 +95,46 @@
     <!-- password modal for face register -->
     <div class="modal" id="faceRegisterModal" tabindex="-1" aria-labelledby="faceRegisterModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
+            <div class="modal-content shadow">
                 <!-- Modal content remains unchanged -->
-                <div class="modal-header">
+                <div class="modal-header bg-primary text-white">
                     <h5 class="modal-title" id="faceRegisterModalLabel">Enter Password</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
-                    <label for="passwordInput" class="form-label">Password:</label>
-                    <input type="password" class="form-control" id="passwordInput" placeholder="Enter your password">
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" id="submitPasswordBtn">Submit</button>
-                </div>
+                <form class="form" method="post" action="{{ url_for('time_log') }}">
+                    <!-- Modal body content... -->
+                    <div class="modal-body">
+                        <label for="passwordInput" class="form-label"><i class='bx bxs-id-card'></i> Password:</label>
+                        <input type="password" name="password" class="form-control" id="passwordInput" placeholder="Enter your password" required><br>
+                        <p class="">Attempts: {{ password_attempts }} </p>
+                        {% with messages = get_flashed_messages() %}
+                            {% if messages %}
+                            
+                                {% for message in messages %}
+                                    <div class="alert alert-danger" id="flash-message" role="alert">{{ message }}</div>
+                                {% endfor %}
+                        
+                            {% endif %}
+                        {% endwith %}
+                    </div>
+                
+                   
+                
+                    <!-- Modal footer... -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <input type="submit" class="btn btn-primary" id="submitPasswordBtn" value="Submit">
+                    </div>
+                </form>
+                
+
+                 
             </div>
         </div>
     </div>
     
     <footer class="text-center text-white p-3" style="background-color:#2f2f41;">© 2023 - 2024 City College of Calamba</footer>
+    
 
 
     <script>
@@ -240,6 +265,22 @@
             // Close the modal
             var modal = new bootstrap.Modal(document.getElementById('faceRegisterModal'));
             modal.hide();
+        });
+        // function showAlert(title, text, icon, confirmButtonText) {
+        //     Swal.fire({
+        //         title: title,
+        //         text: text,
+        //         icon: icon,
+        //         confirmButtonText: confirmButtonText
+        //     });
+        // }
+        document.addEventListener('DOMContentLoaded', function () {
+            var flashMessage = document.getElementById('flash-message');
+            if (flashMessage) {
+                setTimeout(function () {
+                    flashMessage.style.display = 'none';
+                }, 2000); // Dismiss after 1 second (1000 milliseconds)
+            }
         });
     </script>
 </body>
