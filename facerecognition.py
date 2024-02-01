@@ -395,6 +395,34 @@ def get_data():
     return jsonify(data=[])
 
 
+@app.route('/get_recently_added_users_data', methods=['GET'])
+def get_recently_added_users_data():
+    try:
+        # Get the value of the 'user_id' parameter from the GET request
+        table = request.args.get('table')
+
+        # Check if 'user_id' is provided and is not empty
+        if table is not None and table != '':
+            mycursor = db_connect.cursor(dictionary=True)
+
+            # Use the user_id in the SQL query
+            sql = 'SELECT id_no, name, time_added FROM users ORDER BY time_added DESC'
+            mycursor.execute(sql)
+            # mycursor.execute('SELECT general_id,f_name FROM users WHERE user_id = %s', (table,))
+            data = mycursor.fetchall()
+            return jsonify(data=data)
+        else:
+            return jsonify(error="User ID parameter is missing or empty")
+    except mysql.connector.Error as err:
+        print(f"Error: {err}")
+    finally:
+        if 'connection' in locals() and db_connect.is_connected():
+            mycursor.close()
+            db_connect.close()
+    return jsonify(data=[])
+
+
+
 @app.route('/last_recognized_face', methods=['GET'])
 def last_recognized_face():
     try:

@@ -3,98 +3,248 @@
 <head>
     {% include "head.html" %}
 </head>
-<body>
-    <nav>
-			
-        <div class="logocontainer">
-          <!-- <img src="img/logo.png" class="logopic" alt=""> -->
-          <i class='scanner bx bx-scan'></i>
-          E-<strong>Monitoring</strong>
+
+<!-- custom styling -->
+<link rel="stylesheet" href="{{ url_for('static', filename = 'css/style.css.css') }}">
+
+<style>
+    :root{
+        /* ===== Colors ===== */
+        --body-color: #E4E9F7;
+        --sidebar-color: #FFF;
+        --primary-color: #1A73E8;
+        --primary-color-light: #F6F5FF;
+        --secondary-color: #2f2f41;
+        --toggle-color: #DDD;
+        --text-color: #707070;
+        --btn-hover-color: #2a52be;
+        --background-color:#f5f8fe;
+
+        /* ====== Transition ====== */
+        --tran-03: all 0.2s ease;
+        --tran-03: all 0.3s ease;
+        --tran-04: all 0.3s ease;
+        --tran-05: all 0.3s ease;
+
+
+        --first-color: #1A73E8;
+        --input-color: #80868B;
+        --border-color: #DADCE0;
+
+
+        /*===== Fonts =====*/
+        --body-font: 'Roboto', sans-serif;
+        --normal-font-size: 1rem;
+        --small-font-size: .75rem;
+    }
+
+    body {
+        animation: transitionIn 1s
+    }
+    @keyframes transitionIn{
+        from{
+            opacity: 0;
+            transform: translateY(-40px);
+        }
+        to{
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    /* Customize Tabulator pagination styles */
+    .tabulator .tabulator-footer .tabulator-page {
+        background-color: white; 
+        color: #1A73E8; 
+        border: 1px solid #1A73E8; 
+    }
+    .tabulator .tabulator-footer .tabulator-page:hover {
+        background-color: #2980b9; 
+    }
+    .tabulator .tabulator-footer {
+        background-color: #ffffff; 
+    }
+    /* Remove stripes from Tabulator rows */
+    .tabulator-row {
+        background-color: #ffffff; 
+    }
+    /* Style even and odd rows differently if needed */
+    .tabulator-row:nth-child(even) {
+        background-color: #ffffff; 
+    }
+    .tabulator-placeholder {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        height: 100%; /* Optional: Adjust the height if needed */
+    }
+
+    .form__div{
+        position: relative; 
+        height: 48px;
+        margin-bottom: 1rem;
+    }
+    .form__input{
+        position: absolute;
+        width: 100%  ;
+        height: 100%;
+        font-size: var(--normal-font-size);
+        border: 1px solid var(--border-color);
+        border-radius: .5rem;
+        outline: none;
+        padding: 1rem;
+        background: none;
+        z-index: 1;
+    }
+    .form__label{
+        position: absolute;
+        left: 1rem;
+        top: 0.8rem;
+        padding: 0 .25rem;
+        background-color: #fff;
+        color: var(--input-color);
+        font-size: var(--normal-font-size);
+        transition: .3s;
+    }
+
+    /*Input focus move up label*/
+    .form__input:focus + .form__label{
+        top: -.5rem;
+        left: .8rem;
+        color: var(--first-color);
+        font-size: var(--small-font-size);
+        font-weight: 500;
+        z-index: 10;
+    }
+
+    /*Input focus sticky top label*/
+    .form__input:not(:placeholder-shown).form__input:not(:focus)+ .form__label{
+        top: -.5rem;
+        left: .8rem;
+        font-size: var(--small-font-size);
+        font-weight: 500;
+        z-index: 10;
+    }
+
+    /*Input focus*/
+    .form__input:focus{
+        border: 1.5px solid var(--first-color);
+    }
+</style>
+<body class="d-flex flex-column h-100vh" style="background-color: #f5f8fe;">
+   
+
+    <nav class="navbar sticky-top bg-white shadow p-3">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <img src="/docs/5.3/assets/brand/bootstrap-logo.svg" alt="" width="30" height="24" class="d-inline-block align-text-top">
+                <span class="navbar-brand mb-0 h1"><b>E-Monitoring</b></span>
+            </a>
+            <ul class="nav nav-underline">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('home') }}">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page" href="{{ url_for('time_log') }}">Time Log</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active text-primary" href="#" id="faceRegisterBtn">Face Register</a>
+                </li>
+            </ul>
         </div>
-        <input id="nav-toggle" type="checkbox">
-      
-        <!-- nav links -->
-        <ul class="links">
-          <li><a href="{{ url_for('home') }}">Home</a></li>
-          <li><a href="{{ url_for('time_log') }}">Time Log</a></li>
-          <li><a class="active" href="{{ url_for('face_register') }}">Face Register</a></li>
-          <li><a href="{{ url_for('addprsn') }}">Face Register</a></li>
-        </ul>
-      
-        <!-- burger icon -->
-        <label for="nav-toggle" class="icon-burger">
-          <div class="line"></div>
-          <div class="line"></div>
-          <div class="line"></div>
-        </label>
-      
-        <!-- search icon -->
-              <!-- <div class="search-box">
-                <input class="search-txt" type="text" name="" placeholder="Type to search">
-                <a class="search-btn" href="#"><i class="fas fa-search"></i></a>
-            </div> -->
-      
-        <!-- <a href="">button</a> -->
-      
     </nav>
     
-    <div class="container_face_register">
-        <div class="face_register_container">
 
-            <div class="form">
-                <form method="post" action="/addprsn_submit">
-                    <i class='face_scanner bx bx-scan'></i>
-                    <h1 class="form__title"> Register Face</h1><br>
-            
-                    <div class="form__div">
-                        <input type="text" name="txtnbr" class="form__input" placeholder=" " required>
-                        <label for="id_no" class="form__label"><i class='bx bxs-id-card'></i>  ID no</label>
+    <div class="container">
+        <div class="row" style="padding: 20px;">
+            <div class="col-12">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white fw-semibold d-flex align-items-center justify-content-between flex-wrap" style=" height: 60px;">
+                        <h4 class="p-2 text-white"><i class='bx bx-user' ></i> <b>Recently Added Users</b></h4>
+                        <button type="button" class="btn btn-outline-light btn-sm" id="register_user" data-bs-toggle="modal" data-bs-target="#register_user_modal"><i class='bx bx-scan'></i> Register Face</button>
                     </div>
-            
-                    <input class="mybutton" type="submit" name="register" value="Register"><br><br>
-                    <!-- <input class="btn" type="submit" name="capture" value="Capture Image"><br><br> -->
-    
-                    <!-- <div id="progressSection" style="display: none;">
-                        <p>Processing...</p>
-                        <progress id="progressBar" max="100" value="0"></progress>
-                        <p id="progressPercent">0%</p>
-                    </div> -->
-            
-                </form>
+                    <div class="card-body mt-1 bg-white">
+                        <div id="recently-added-table" class="table table-sm tabulator"></div>
+                    </div>
+                    
+                </div>
             </div>
-
-            <div class="form">
-
-            </div>
-
         </div>
     </div>
 
-    <div class="table_container">
-        <h2>Recently Added User</h2><br>
-        <table class="table" >
-            <thead>
-                <tr>
-                    <th>ID number</th>
-                    <th>Name</th>
-                    <th>Time Added</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for item in data %}
-                    <tr>
-                        <td>{{item[0]}}</td>
-                        <td>{{item[1]}}</td>
-                        <!-- <td>{{item[2]}}</td> -->
-                        <td>{{item[3]}}</td>
-                        
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+    <div class="modal fade" id="register_user_modal" aria-hidden="true" aria-labelledby="registerUserModalLabel" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <!-- Modal content remains unchanged -->
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="faceRegisterModalLabel"><i class='bx bx-user' ></i> Register Face</h5>
+                    <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
 
-    <div id="user-table" class="table table-bordered tabulator"></div>
+                <form class="form" method="post" action="{{ url_for('addprsn_submit') }}">
+                    <!-- Modal body content... -->
+                    <div class="modal-body">
+                        <!-- <label for="passwordInput" class="form-label"><i class='bx bxs-id-card'></i> ID No:</label>
+                        <input type="id_no" name="id_no" class="form-control" id="idNoInput" placeholder="Enter ID No." required><br> -->
+
+                        <div class="form__div">
+                            <input type="text" name="txtnbr" class="form__input" placeholder=" " maxlength="10" required>
+                            <label for="txtnbr" class="form__label"><i class='bx bxs-id-card'></i>  ID no</label>
+                        </div>
+                        <div class="form__div">
+                            <input type="text" name="txtname" class="form__input" placeholder=" " required>
+                            <label for="txtname" class="form__label"><i class='bx bxs-id-card'></i>  Name</label>
+                        </div>
+            
+                        <div class="d-flex  justify-content-between">
+                            <label for="selected_date" class="p-2">Select: </label>
+                            <div class="col-sm-4">
+                                <select class="form-control p-2" name="optskill" id="optskill">
+                                    <option value="option_1">Option 1</option>
+                                    <option value="option_2">Option 2</option>
+                                    <option value="option_3">Option 3</option>
+                                </select>
+                            </div>
+                        </div><br>
+
+                    </div>
+                
+                    <!-- Modal footer... -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button class="btn btn-primary" data-bs-target="#exampleModalToggle2" data-bs-toggle="modal">Open second modal</button>
+                        <!-- <input type="submit" class="btn btn-primary" id="submitPasswordBtn" value="Register"> -->
+                        <button type="submit" class="btn btn-primary" id="registerUserBtn">Register</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+      </div>
+      <div class="modal fade" id="exampleModalToggle2" aria-hidden="true" aria-labelledby="exampleModalToggleLabel2" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="faceRegisterModalLabel"><i class='bx bx-user' ></i> Generating Dataset...</h5>
+                <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <h3>Generating Dataset {{ prs }}</h3>
+                <div class="card mx-auto" style="width: 15rem; height: 15rem;">
+                    <div class="card-body">
+                        <img src="{{ url_for('vidfeed_dataset', nbr=prs) }}" class="mx-auto" style="width: 13rem; height: 13rem;">
+                    </div>
+                </div>
+                
+            </div>
+            <div class="modal-footer">
+                <a class="btn btn-primary" href="{{ url_for('train_classifier', nbr=prs) }}"> Train Dataset </a>
+              <!-- <button class="btn btn-primary" data-bs-target="#exampleModalToggle" data-bs-toggle="modal">Back to first</button> -->
+            </div>
+          </div>
+        </div>
+      </div>
+
 
     <!-- <section class="py-1">
         <div class="row mt-5">
@@ -138,7 +288,118 @@
         </div>
     </section> -->
 
-    <footer>© 2023 - 2024 City College of Calamba</footer>
+    <footer class="text-center text-white p-3" style="background-color:#2f2f41;">© 2023 - 2024 City College of Calamba</footer>
+
+    <script>
+
+        var datetime = '{{current_datetime}}'
+        var global_date = '{{ initial_date_range }}';
+        var set_server_time = '{{current_datetime}}'
+        var serverOffset = moment(set_server_time).diff(new Date());
+        var now_server = moment();
+        now_server.add(serverOffset, 'milliseconds');
+        var dateLimit = now_server.format('MM-DD-YYYY');
+
+        var startDate = moment('{{current_date}}', 'MM-DD-YYYY');
+        var endDate = moment('{{current_date}}', 'MM-DD-YYYY');
+
+            $('#date_range').daterangepicker({
+                opens: 'left',
+                startDate: startDate,
+                endDate: endDate
+            }, function (start, end, label) {
+                var start_date = start.format('YYYY-MM-DD');
+                var end_date = end.format('YYYY-MM-DD');
+                
+                // Trigger table update
+                table.setData("/get_data", {
+                    start_date: start_date,
+                    end_date: end_date
+                });
+                table.setSort([{
+                    column: "date",
+                    dir: "DESC"
+                }]);
+            });
+
+            var table = new Tabulator('#recently-added-table', {
+            height: "350px",
+            printAsHtml: true,
+            headerFilterPlaceholder: "Search",
+            layout: 'fitDataStretch',
+            placeholder: 'No Data Found',
+            ajaxURL: '/get_recently_added_users_data',
+            ajaxParams: {
+                table: 'master_schedule',
+                status: global_date
+            },
+            pagination: 'remote',
+            paginationButtonCount: 5,
+            paginationSize: 20,
+            ajaxSorting: true,
+            ajaxFiltering: true,
+            ajaxLoader: true,
+            ajaxLoaderLoading: 'Fetching data from Database..',
+            paginationSizeSelector: [50, 100, 500, 1000, 2000],
+            columns: [
+                {title: "ID No.", field: "id_no",
+                    headerFilterPlaceholder: "Search ID No.",
+                    headerFilter: "input",
+                    headerFilterFunc: "like",
+                    headerFilterParams: {
+                        allowEmpty: true
+                    },
+                    headerFilterLiveFilter: false,
+                    formatter: 'textarea',
+                    vertAlign: 'middle',
+                    minWidth: 330},
+                {title: "Name", field: "name",
+                    headerFilterPlaceholder: "Search Name",
+                    headerFilter: "input",
+                    headerFilterFunc: "like",
+                    headerFilterParams: {
+                        allowEmpty: true
+                    },
+                    headerFilterLiveFilter: false,
+                    formatter: 'textarea',
+                    vertAlign: 'middle',
+                    minWidth: 330},
+                {title: "Time Added", field: "time_added", 
+                    headerFilterPlaceholder: "Search Time Added",
+                    headerFilter: "input",
+                    headerFilterFunc: "like",
+                    headerFilterParams: {
+                        allowEmpty: true
+                    },
+                    headerFilterLiveFilter: false,
+                    formatter: 'textarea',
+                    vertAlign: 'middle',
+                        minWidth: 330},
+            ],
+            ajaxResponse: function (url, params, response) {
+                return response.data
+            },
+        });
+        document.addEventListener('DOMContentLoaded', function () {
+            // Get the "Register" button, the ID input, and the first modal
+            var registerBtn = document.getElementById('registerUserBtn');
+            var idInput = document.getElementById('idNoInput');
+            var firstModal = new bootstrap.Modal(document.getElementById('register_user_modal'));
+
+            // Add a click event listener to the "Register" button
+            registerBtn.addEventListener('click', function () {
+                // Check if there is a value in the ID input
+                if (idInput.value.trim() !== '') {
+                    // Show the second modal
+                    var secondModal = new bootstrap.Modal(document.getElementById('exampleModalToggle2'));
+                    secondModal.show();
+                } else {
+                    // Alert the user and prevent the second modal from showing
+                    alert('Please enter an ID number before registering.');
+                }
+            });
+        });
+    </script>
     
 </body>
 </html>
