@@ -22,6 +22,49 @@
     <!-- <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/sweetalert2@11">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> -->
     <style>
+        :root{
+            /* ===== Colors ===== */
+            --body-color: #E4E9F7;
+            --sidebar-color: #FFF;
+            --primary-color: #1A73E8;
+            --primary-color-light: #F6F5FF;
+            --secondary-color: #2f2f41;
+            --toggle-color: #DDD;
+            --text-color: #707070;
+            --btn-hover-color: #2a52be;
+            --background-color:#f5f8fe;
+    
+            /* ====== Transition ====== */
+            --tran-03: all 0.2s ease;
+            --tran-03: all 0.3s ease;
+            --tran-04: all 0.3s ease;
+            --tran-05: all 0.3s ease;
+    
+    
+            --first-color: #1A73E8;
+            --input-color: #80868B;
+            --border-color: #DADCE0;
+    
+    
+            /*===== Fonts =====*/
+            --body-font: 'Roboto', sans-serif;
+            --normal-font-size: 1rem;
+            --small-font-size: .75rem;
+        }
+    
+        body {
+            animation: transitionIn 1s
+        }
+        @keyframes transitionIn{
+            from{
+                opacity: 0;
+                transform: translateY(-40px);
+            }
+            to{
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
         /* Customize Tabulator pagination styles */
         .tabulator .tabulator-footer .tabulator-page {
             background-color: white; 
@@ -41,6 +84,65 @@
         /* Style even and odd rows differently if needed */
         .tabulator-row:nth-child(even) {
             background-color: #ffffff; 
+        }
+        .tabulator-placeholder {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            height: 100%; /* Optional: Adjust the height if needed */
+        }
+    
+        .form__div{
+            position: relative; 
+            height: 48px;
+            margin-bottom: 1rem;
+        }
+        .form__input{
+            position: absolute;
+            width: 100%  ;
+            height: 100%;
+            font-size: var(--normal-font-size);
+            border: 1px solid var(--border-color);
+            border-radius: .5rem;
+            outline: none;
+            padding: 1rem;
+            background: none;
+            z-index: 1;
+        }
+        .form__label{
+            position: absolute;
+            left: 1rem;
+            top: 0.8rem;
+            padding: 0 .25rem;
+            background-color: #fff;
+            color: var(--input-color);
+            font-size: var(--normal-font-size);
+            transition: .3s;
+        }
+    
+        /*Input focus move up label*/
+        .form__input:focus + .form__label{
+            top: -.5rem;
+            left: .8rem;
+            color: var(--first-color);
+            font-size: var(--small-font-size);
+            font-weight: 500;
+            z-index: 10;
+        }
+    
+        /*Input focus sticky top label*/
+        .form__input:not(:placeholder-shown).form__input:not(:focus)+ .form__label{
+            top: -.5rem;
+            left: .8rem;
+            font-size: var(--small-font-size);
+            font-weight: 500;
+            z-index: 10;
+        }
+    
+        /*Input focus*/
+        .form__input:focus{
+            border: 1.5px solid var(--first-color);
         }
     </style>
 </head>
@@ -70,7 +172,7 @@
     <div class="container">
         <div class="row" style="padding: 20px;">
             <div class="col-12">
-                <div class="card shadow-sm">
+                <div class="card shadow-sm rounded-3">
                     <div class="card-header bg-primary text-white fw-semibold d-flex align-items-center justify-content-between flex-wrap" style=" height: 70px;">
                         <h4 class="p-2 text-white"><i class='bx bx-time'></i> <b>Time Log</b></h4>
                         <div class="p-2 d-flex" style="margin-left:auto;" id="DateDemo">
@@ -93,19 +195,22 @@
     </div>
 
     <!-- password modal for face register -->
-    <div class="modal" id="faceRegisterModal" tabindex="-1" aria-labelledby="faceRegisterModalLabel" aria-hidden="true">
+    <div class="modal fade" id="faceRegisterModal" tabindex="-1" aria-labelledby="faceRegisterModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content shadow">
                 <!-- Modal content remains unchanged -->
                 <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title" id="faceRegisterModalLabel">Enter Password</h5>
+                    <h5 class="modal-title" id="faceRegisterModalLabel"><i class='bx bx-lock-alt'></i> Enter Password</h5>
                     <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form class="form" method="post" action="{{ url_for('time_log') }}">
                     <!-- Modal body content... -->
                     <div class="modal-body">
-                        <label for="passwordInput" class="form-label"><i class='bx bxs-id-card'></i> Password:</label>
-                        <input type="password" name="password" class="form-control" id="passwordInput" placeholder="Enter your password" required><br>
+                        <div class="form__div">
+                            <input type="password" name="password" class="form__input" id="passwordInput" placeholder=" " required>
+                            <label for="passwordInput" class="form__label"><i class='bx bx-lock-alt'></i>  Password</label>
+                        </div>
+
                         <p class="">Attempts: {{ password_attempts }} </p>
                         {% with messages = get_flashed_messages() %}
                             {% if messages %}
