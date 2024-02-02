@@ -2,39 +2,45 @@
 <html lang="en">
 <head>
     {% include "head.html" %}
+    <style>
+        body {
+            animation: transitionIn 1s
+        }
+        @keyframes transitionIn{
+            from{
+                opacity: 0;
+                transform: translateY(-40px);
+            }
+            to{
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
 </head>
-<body>
+<body class="d-flex flex-column h-100vh" style="background-color: #f5f8fe;">
 
-{% include "navbar.html" %}
-
-<!-- <section class="py-1">
-    <div class="row mt-5">
-        <div class="col-md-3 offset-lg-2">
-            <h3>Generate Dataset {{ prs }}</h3>
-            <hr>
-            <img src="{{ url_for('vidfeed_dataset', nbr=prs) }}" width="480px" class="img-thumbnail">
+    <div class="container">
+        <div class="row" style="padding: 20px;">
+            <div class="col-12">
+                <div class="card shadow-sm position-absolute top-50 start-50 translate-middle" style=" width: 400px; ">
+                    <div class="card-header bg-primary text-white fw-semibold " style=" width: 400px; height: 50px;">
+                        <h6 class="p-2 text-white"><i class='bx bx-user' ></i> <b>Generating Dataset for {{ prs }}</b></h6>
+                    </div>
+                    <div class="card-body mt-1 bg-white">
+                        <div class="card mx-auto" style="width: 15rem; height: 15rem;">
+                            <div class="card-body">
+                                <!-- <img src="{{ url_for('vidfeed_dataset', nbr=prs) }}" class="mx-auto" style="width: 13rem; height: 13rem;"> -->
+                                
+                            </div>
+                        </div><br>
+                        <a class="btn btn-primary text-center" style="width: 100%;" href="{{ url_for('train_classifier', nbr=prs) }}"> Train Dataset </a>
+                    </div>
+                    
+                </div>
+            </div>
         </div>
     </div>
-
-    <br>
-    <div class="row">
-        <div class="col-md-3 offset-lg-2">
-            <a class="btn btn-warning btn-lg" href="{{ url_for('train_classifier', nbr=prs) }}"> Training </a>
-        </div>
-    </div>
-</section> -->
-
-<br>
-<div class="container">
-    <div class="generate_dataset_container">
-            
-        <div class="time_container">
-            <h3>Generating Dataset {{ prs }}</h3>
-            <img src="{{ url_for('vidfeed_dataset', nbr=prs) }}" class="img-thumbnail ">
-            <a class="train_dataset_btn" href="{{ url_for('train_classifier', nbr=prs) }}"> Train Dataset </a>
-        </div>
-    </div>
-</div>
 
 </body>
 </html>

@@ -91,11 +91,15 @@ def generate_dataset(nbr):
  
             file_name_path = "dataset/"+nbr+"."+ str(img_id) + ".jpg"
             cv2.imwrite(file_name_path, face)
-            cv2.putText(face, str(count_img), (50, 50), cv2.FONT_HERSHEY_COMPLEX, 1, (0, 255, 0), 2)
+            cv2.putText(face, str(count_img), (30, 30), cv2.FONT_HERSHEY_COMPLEX, 1, (0, 255, 0), 1)
 
             query = "INSERT INTO `img_dataset` (`img_id`, `img_person`) VALUES (%s, %s)"
             values = (img_id, nbr)
-            mycursor.execute(query, values)
+            try:
+                mycursor.execute(query, values)
+                db_connect.commit()
+            except mysql.connector.Error as err:
+                print(f"Error: {err}")
  
             frame = cv2.imencode('.jpg', face)[1].tobytes()
             yield (b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
@@ -163,14 +167,13 @@ def face_recognition():  # generate frame by frame from camera
                 cv2.rectangle(img, (x, y + h + 40), (x + w, y + h + 50), color, 2)
                 cv2.rectangle(img, (x, y + h + 40), (x + int(w_filled), y + h + 50), (153, 255, 255), cv2.FILLED)
  
-                mycursor.execute("select a.img_person, b.name, b.type_of_user "
+                mycursor.execute("select a.img_person, b.name "
                                  "  from img_dataset a "
                                  "  left join users b on a.img_person = b.id_no "
                                  " where img_id = " + str(id))
                 row = mycursor.fetchone()   
                 pnbr = row[0]
                 pname = row[1]
-                pskill = row[2]
                 building_name= "jmc building"
                 current_datetime = datetime.now()
                 current_date = current_datetime.strftime('%m-%d-%Y')
@@ -178,7 +181,7 @@ def face_recognition():  # generate frame by frame from camera
  
                 if int(cnt) == 30:
                     cnt = 0
-                    cv2.putText(img, pname + ' | ' + pskill, (x - 10, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2, cv2.LINE_AA)
+                    cv2.putText(img, pname, (x - 10, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2, cv2.LINE_AA)
                     time.sleep(1)
                     text_to_speech("Time in success")
 
@@ -196,7 +199,7 @@ def face_recognition():  # generate frame by frame from camera
                     play_sound()
                     # text_to_speech("Face not recognized!")
                     cv2.putText(img, 'UNKNOWN', (x, y - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2, cv2.LINE_AA)
-                    cv2.putText(img, "Face not recognize!", (20, 40),
+                    cv2.putText(img, "Face not recognize!", (20, 450),
                                 cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
                     
                 else:
@@ -283,7 +286,7 @@ def face_register_password():
 
 @app.route('/face_register')
 def face_register():
-    sql = "SELECT id_no, name, type_of_user, time_added FROM users"
+    sql = "SELECT id_no, name, time_added FROM users"
     mycursor.execute(sql)
     data = mycursor.fetchall()
     return render_template('face_register.html', data=data)
@@ -301,13 +304,12 @@ def addprsn():
 def addprsn_submit():
     prsnbr = request.form.get('txtnbr')
     prsname = request.form.get('txtname')
-    prsskill = request.form.get('optskill')
 
     # face registration details will go to recently added users with face recognition
     #query should be using join statements to join the table of full info of the user and the table for enrollement status and notice
     
-    sql = "INSERT INTO `users` (`id_no`, `name`, `type_of_user`) VALUES (%s, %s, %s)"
-    values = (prsnbr, prsname, prsskill)
+    sql = "INSERT INTO `users` (`id_no`, `name`) VALUES (%s, %s)"
+    values = (prsnbr, prsname)
     mycursor.execute(sql, values)
     
     db_connect.commit()
@@ -339,7 +341,7 @@ def fr_page():
     day_of_week = current_datetime.strftime('%A')  # Full name of the day (e.g., Monday)
 
     """Video streaming home page."""
-    mycursor.execute("select a.accs_id, a.accs_prsn, b.name, b.type_of_user, a.accs_added "
+    mycursor.execute("select a.accs_id, a.accs_prsn, b.name, a.accs_added "
                      "  from accs_hist a "
                      "  left join users b on a.accs_prsn = b.id_no "
                      " where a.accs_date = curdate() "
@@ -349,7 +351,7 @@ def fr_page():
     if not data:
         return render_template('main.html', no_data=True)
 
-    mycursor.execute("SELECT a.accs_prsn, b.name, b.type_of_user "
+    mycursor.execute("SELECT a.accs_prsn, b.name "
                      "FROM accs_hist a "
                      "LEFT JOIN users b ON a.accs_prsn = b.id_no "
                      "WHERE a.accs_date = curdate() "
@@ -422,7 +424,6 @@ def get_recently_added_users_data():
     return jsonify(data=[])
 
 
-
 @app.route('/last_recognized_face', methods=['GET'])
 def last_recognized_face():
     try:
@@ -475,7 +476,7 @@ def loadData():
     )
     mycursor = db_connect.cursor()
  
-    mycursor.execute("select a.accs_id, a.accs_prsn, b.name, b.type_of_user, date_format(a.accs_added, '%H:%i:%s') "
+    mycursor.execute("select a.accs_id, a.accs_prsn, b.name, date_format(a.accs_added, '%H:%i:%s') "
                      "  from accs_hist a "
                      "  left join users b on a.accs_prsn = b.id_no "
                      " where a.accs_date = curdate() "

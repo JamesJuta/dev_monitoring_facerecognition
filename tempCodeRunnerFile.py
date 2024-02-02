@@ -1,1 +1,1 @@
-/search_enrolled_students
+/get_recently_added_users_data
