@@ -484,6 +484,22 @@ def loadData():
     data = mycursor.fetchall()
  
     return jsonify(response = data)
+
+# Internal Server Error
+@app.errorhandler(401)
+def error_401(e):
+    return render_template("401.html"), 401
+
+# Invalid URL
+@app.errorhandler(404)
+def error_404(e):
+    return render_template("404.html"), 404
+
+# Internal Server Error
+@app.errorhandler(500)
+def error_500(e):
+    return render_template("500.html"), 500
+
  
 if __name__ == "__main__":
     app.run(host='127.0.0.1', port=5000, debug=True)
