@@ -2,138 +2,18 @@
 <html lang="en">
 <head>
     {% include "head.html" %}
+
+    <!-- custom styling -->
+    <link rel="stylesheet" href="{{ url_for('static', filename = 'css/style.css') }}">
+
+    <!-- selectize -->
+    <link rel="stylesheet" href="{{ url_for('static', filename = 'css/selectize.bootstrap5.css') }}">
+    <script src="{{ url_for('static', filename = 'js/selectize.min.js') }}"></script>
 </head>
 
-<!-- custom styling -->
-<link rel="stylesheet" href="{{ url_for('static', filename = 'css/style.css.css') }}">
-
-<style>
-    :root{
-        /* ===== Colors ===== */
-        --body-color: #E4E9F7;
-        --sidebar-color: #FFF;
-        --primary-color: #1A73E8;
-        --primary-color-light: #F6F5FF;
-        --secondary-color: #2f2f41;
-        --toggle-color: #DDD;
-        --text-color: #707070;
-        --btn-hover-color: #2a52be;
-        --background-color:#f5f8fe;
-
-        /* ====== Transition ====== */
-        --tran-03: all 0.2s ease;
-        --tran-03: all 0.3s ease;
-        --tran-04: all 0.3s ease;
-        --tran-05: all 0.3s ease;
-
-
-        --first-color: #1A73E8;
-        --input-color: #80868B;
-        --border-color: #DADCE0;
-
-
-        /*===== Fonts =====*/
-        --body-font: 'Roboto', sans-serif;
-        --normal-font-size: 1rem;
-        --small-font-size: .75rem;
-    }
-
-    body {
-        animation: transitionIn 1s
-    }
-    @keyframes transitionIn{
-        from{
-            opacity: 0;
-            transform: translateY(-40px);
-        }
-        to{
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-    /* Customize Tabulator pagination styles */
-    .tabulator .tabulator-footer .tabulator-page {
-        background-color: white; 
-        color: #1A73E8; 
-        border: 1px solid #1A73E8; 
-    }
-    .tabulator .tabulator-footer .tabulator-page:hover {
-        background-color: #2980b9; 
-    }
-    .tabulator .tabulator-footer {
-        background-color: #ffffff; 
-    }
-    /* Remove stripes from Tabulator rows */
-    .tabulator-row {
-        background-color: #ffffff; 
-    }
-    /* Style even and odd rows differently if needed */
-    .tabulator-row:nth-child(even) {
-        background-color: #ffffff; 
-    }
-    .tabulator-placeholder {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        height: 100%; /* Optional: Adjust the height if needed */
-    }
-
-    .form__div{
-        position: relative; 
-        height: 48px;
-        margin-bottom: 1rem;
-    }
-    .form__input{
-        position: absolute;
-        width: 100%  ;
-        height: 100%;
-        font-size: var(--normal-font-size);
-        border: 1px solid var(--border-color);
-        border-radius: .5rem;
-        outline: none;
-        padding: 1rem;
-        background: none;
-        z-index: 1;
-    }
-    .form__label{
-        position: absolute;
-        left: 1rem;
-        top: 0.8rem;
-        padding: 0 .25rem;
-        background-color: #fff;
-        color: var(--input-color);
-        font-size: var(--normal-font-size);
-        transition: .3s;
-    }
-
-    /*Input focus move up label*/
-    .form__input:focus + .form__label{
-        top: -.5rem;
-        left: .8rem;
-        color: var(--first-color);
-        font-size: var(--small-font-size);
-        font-weight: 500;
-        z-index: 10;
-    }
-
-    /*Input focus sticky top label*/
-    .form__input:not(:placeholder-shown).form__input:not(:focus)+ .form__label{
-        top: -.5rem;
-        left: .8rem;
-        font-size: var(--small-font-size);
-        font-weight: 500;
-        z-index: 10;
-    }
-
-    /*Input focus*/
-    .form__input:focus{
-        border: 1.5px solid var(--first-color);
-    }
-</style>
 <body class="d-flex flex-column h-100vh" style="background-color: #f5f8fe;">
    
-
+    <!-- navbar -->
     <nav class="navbar sticky-top bg-white shadow p-3">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">
@@ -154,7 +34,7 @@
         </div>
     </nav>
     
-
+    <!-- Recently added users table -->
     <div class="container">
         <div class="row" style="padding: 20px;">
             <div class="col-12">
@@ -186,7 +66,9 @@
                     <div class="modal-body">
                         <!-- <label for="passwordInput" class="form-label"><i class='bx bxs-id-card'></i> ID No:</label>
                         <input type="id_no" name="id_no" class="form-control" id="idNoInput" placeholder="Enter ID No." required><br> -->
-
+                        
+                        <input type="text" name="txtnbr" class="selectize" placeholder=" " maxlength="10" required><br>
+                        
                         <div class="form__div">
                             <input type="text" name="txtnbr" class="form__input" placeholder=" " maxlength="10" required>
                             <label for="txtnbr" class="form__label"><i class='bx bxs-id-card'></i>  ID no</label>
@@ -209,8 +91,10 @@
 
             </div>
         </div>
-      </div>
-      <div class="modal fade" id="exampleModalToggle2" aria-hidden="true" aria-labelledby="exampleModalToggleLabel2" tabindex="-1">
+    </div>
+
+    <!-- generate dataset modal -->
+    <div class="modal fade" id="exampleModalToggle2" aria-hidden="true" aria-labelledby="exampleModalToggleLabel2" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
           <div class="modal-content">
             <div class="modal-header bg-primary text-white">
@@ -277,11 +161,39 @@
         </div>
     </section> -->
 
+    <!-- footer -->
     <footer id="footer" class="mt-auto footer base-footer text-center p-3" style="background-color:#2f2f41;">
         <div class="copyright">
             <p class="mb-0 text-white font-size-s">© 2023 - 2024 City College of Calamba</p>
         </div>
     </footer>
+
+    <script>
+        // Initialize Selectize on inputs with the 'selectize' class
+        $('.selectize').selectize({
+            valueField: 'value',
+            labelField: 'text',
+            searchField: 'text',
+            options: [], // Options will be loaded dynamically
+            create: false
+        });
+
+        // Fetch data from the Flask route and populate the Selectize options
+        $.ajax({
+            type: 'GET',
+            url: '/get_enrolled_users_data', // Update with the correct Flask route
+            dataType: 'json',
+            success: function(data) {
+                // Add the data to the Selectize options
+                var selectize = $('.selectize')[0].selectize;
+                selectize.clearOptions();
+                selectize.addOption(data);
+            },
+            error: function(error) {
+                console.log('Error fetching data:', error);
+            }
+        });
+    </script>
 
     <script>
 

@@ -1,0 +1,127 @@
+<!DOCTYPE html>  
+ <html>  
+<head>  
+<title>Login</title>  
+<!-- <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"> -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<!-- <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script> -->
+
+<link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- custom styling -->
+<link rel="stylesheet" href="{{ url_for('static', filename = 'css/style.css') }}">
+
+
+</head>  
+<body class="d-flex flex-column h-100vh" style="background-color: #f5f8fe;">  
+<div class="container" style="width:700px;">  
+                <!-- <h3 align="center">Python Flask Login Form Using Bootstrap Modal with Ajax Jquery password hash and session</h3><br />   -->
+                <br />  
+                <br />  
+                <!--<p>hash : {{ hash }}</p>
+                <p>hash : {{ check_hash }}</p> -->
+                <br />  
+                <br />  
+                <br />  
+                {% if session.logged_in %}
+                <div align="center">  
+                     <h1>Welcome - {{session.username}}</h1><br />  
+                     <a href="/logout">Logout</a>  
+                </div>  
+                {% else %}  
+                <div align="center">  
+                     <a data-target="#myModal" role="button" class="btn btn-warning" data-toggle="modal"><span class="glyphicon glyphicon-hand-up"></span>Login</a>
+                </div>  
+                {% endif %} 
+           </div>  
+           <br />  
+             
+ <div id="myModal" class="modal fade">  
+      <div class="modal-dialog">  
+   <!-- Modal content-->  
+           <div class="modal-content">  
+                <div class="modal-header">  
+                     <button type="button" class="close" data-dismiss="modal">×</button>  
+                     <h4 class="modal-title">Python Flask Login Form Using Bootstrap Modal with Ajax Jquery password hash and session</h4>  
+                </div>  
+                <div class="modal-body">  
+                     <label>Username</label>  
+                     <input type="text" name="username" id="username" class="form-control" />  
+                     <br />  
+                     <label>Password</label>  
+                     <input type="password" name="password" id="password" class="form-control" />  
+                     <br />  
+                     <button type="button" name="login_button" id="login_button" class="btn btn-warning">Login</button>  
+                </div>  
+           </div>  
+      </div>  
+ </div>  
+
+
+ <div class="container">
+    <div class="row" style="padding: 20px;">
+        <div class="col-12">
+            <div class="card shadow-sm position-absolute top-50 start-50 translate-middle" style=" width: 450px; ">
+
+                <div class="card-header bg-primary text-white fw-semibold " style=" width: 450px; height: 60px;">
+                    <h4 class="p-2 text-white"><i class='bx bx-user' ></i> <b>E-Monitoring</b></h4>
+                </div>
+                <div class="card-body mt-1 bg-white">
+                    <h3>Sign In</h3>
+                    <div class="form__div">
+                        <input type="text" name="admin_user_name" class="form__input" placeholder=" " required>
+                        <label for="admin_user_name" class="form__label"><i class='bx bxs-id-card'></i>  Username</label>
+                    </div>
+
+                    <div class="form__div">
+                        <input type="password" name="admin_password" class="form__input" id="passwordInput" placeholder=" " required>
+                        <label for="admin_password" class="form__label"><i class='bx bx-lock-alt'></i>  Password</label>
+                    </div>
+                    <p>Login Attempts:</p>
+
+                    <button class="btn btn-primary text-center" style="width: 100%;">Login</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+ <script>  
+ $(document).ready(function(){  
+      $('#login_button').click(function(){  
+           var username = $('#username').val();  
+           var password = $('#password').val();  
+           if(username != '' && password != '')  
+           {  
+                $.ajax({  
+                     url:"/5",  
+                     method:"POST",  
+                     data: {username:username, password:password},  
+                     success:function(data)  
+                     {  
+                          alert(data);  
+                          if(data == 'No-data')  
+                          {  
+                               alert("Invalid Email Or Password!");  
+                          }  
+                          else 
+                          {  
+                               $('#loginModal').hide();  
+                               location.reload();  
+                          }  
+                     }  
+                });  
+           }  
+           else 
+           {  
+                alert("Both Fields are required");  
+           }  
+      });    
+ });  
+ </script>   
+      </body>  
+ </html>  

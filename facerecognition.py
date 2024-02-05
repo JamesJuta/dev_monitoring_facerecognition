@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, session, redirect, url_for, Response, jsonify, flash
 import mysql.connector
+from db_connect import get_db_connection, close_db_connection
 import cv2
 from PIL import Image
 import numpy as np
@@ -22,21 +23,9 @@ cnt = 0
 pause_cnt = 0
 justscanned = False
  
-db_connect = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    passwd="",
-    database="facerecog_attendance_db"
-)
+# database connection
+db_connect = get_db_connection()
 mycursor = db_connect.cursor()
-
-# mysql = MySQL()
-   
-# app.config['MYSQL_DATABASE_USER'] = 'root'
-# app.config['MYSQL_DATABASE_PASSWORD'] = ''
-# app.config['MYSQL_DATABASE_DB'] = 'facerecog_attendance_db'
-# app.config['MYSQL_DATABASE_HOST'] = 'localhost'
-# mysql.init_app(app)
 
 current_datetime = datetime.now()
 current_date = current_datetime.strftime('%m-%d-%Y')
@@ -49,10 +38,15 @@ def text_to_speech(message):
     mixer.music.load("tts_output.mp3")
     mixer.music.play()
 
-# play alert sound 
-def play_sound():
-    mixer.music.load("error.mp3")
-    mixer.music.play()
+# play mp3 file 
+def play_sound(file_name):
+    try:
+        mixer.music.load(f"sound/{file_name}")
+        mixer.music.play()
+        return True
+    except Exception as e:
+        print(f"Error during sound playback: {e}")
+        return False
  
  
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Generate dataset >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -183,7 +177,7 @@ def face_recognition():  # generate frame by frame from camera
                     cnt = 0
                     cv2.putText(img, pname, (x - 10, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2, cv2.LINE_AA)
                     time.sleep(1)
-                    text_to_speech("Time in success")
+                    play_sound("time_in_success.mp3")
 
                     sql = "INSERT INTO `time_log` (`name`, `id_no`, `building_name`, `date`, `time`) VALUES (%s, %s, %s, %s, %s)"
                     values = (pname, pnbr, building_name, current_date, current_time)
@@ -196,10 +190,9 @@ def face_recognition():  # generate frame by frame from camera
  
             else:
                 if not justscanned:
-                    play_sound()
-                    # text_to_speech("Face not recognized!")
+                    play_sound("error.mp3")
                     cv2.putText(img, 'UNKNOWN', (x, y - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2, cv2.LINE_AA)
-                    cv2.putText(img, "Face not recognize!", (20, 450),
+                    cv2.putText(img, "Face not recognize!", (20, 350),
                                 cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
                     
                 else:
@@ -370,8 +363,6 @@ def get_data():
         start_date = request.args.get('start_date')
         end_date = request.args.get('end_date')
 
-        # connection = get_db_connection()
-        # cursor = connection.cursor(dictionary=True)
         mycursor = db_connect.cursor(dictionary=True)
 
         if table is not None and table != '':
@@ -428,7 +419,6 @@ def get_recently_added_users_data():
 def last_recognized_face():
     try:
         mycursor = db_connect.cursor(dictionary=True)
-        # cursor = connection.cursor(dictionary=True)my
 
         # Assuming you have a column named 'log_id' as an auto-incrementing primary key
         mycursor.execute('SELECT * FROM time_log ORDER BY log_id DESC LIMIT 1')
@@ -449,12 +439,7 @@ def last_recognized_face():
  
 @app.route('/countTodayScan')
 def countTodayScan():
-    db_connect = mysql.connector.connect(
-        host="localhost",
-        user="root",
-        passwd="",
-        database="facerecog_attendance_db"
-    )
+    db_connect = get_db_connection()
     mycursor = db_connect.cursor()
  
     mycursor.execute("select count(*) "
@@ -468,12 +453,7 @@ def countTodayScan():
  
 @app.route('/loadData', methods = ['GET', 'POST'])  
 def loadData():
-    db_connect = mysql.connector.connect(
-        host="localhost",
-        user="root",
-        passwd="",
-        database="facerecog_attendance_db"
-    )
+    db_connect = get_db_connection()
     mycursor = db_connect.cursor()
  
     mycursor.execute("select a.accs_id, a.accs_prsn, b.name, date_format(a.accs_added, '%H:%i:%s') "
@@ -484,6 +464,25 @@ def loadData():
     data = mycursor.fetchall()
  
     return jsonify(response = data)
+
+@app.route('/get_enrolled_users_data', methods=['GET'])
+def get_enrolled_users_data():
+    db_connect = get_db_connection()
+    mycursor = db_connect.cursor(dictionary=True)
+    try:
+        # Fetch data from the database
+        query = "SELECT students_id_no, students_name FROM enrolled_students"
+        mycursor.execute(query)
+        data = mycursor.fetchall()
+
+        # Convert data to a list of dictionaries
+        data_list = [{'value': str(item['students_id_no']), 'text': item['students_name']} for item in data]
+
+        return jsonify(data_list)
+
+    finally:
+        # Close the cursor and connection
+        close_db_connection(db_connect, mycursor)
 
 # Internal Server Error
 @app.errorhandler(401)
@@ -499,7 +498,6 @@ def error_404(e):
 @app.errorhandler(500)
 def error_500(e):
     return render_template("500.html"), 500
-
  
 if __name__ == "__main__":
     app.run(host='127.0.0.1', port=5000, debug=True)
