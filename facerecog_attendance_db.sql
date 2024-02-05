@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.1.1
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 25, 2024 at 07:37 AM
--- Server version: 10.4.22-MariaDB
--- PHP Version: 8.1.1
+-- Generation Time: Feb 05, 2024 at 05:06 AM
+-- Server version: 10.4.32-MariaDB
+-- PHP Version: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -32,7 +32,7 @@ CREATE TABLE `accs_hist` (
   `accs_date` date NOT NULL,
   `accs_prsn` varchar(3) NOT NULL,
   `accs_added` datetime NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- --------------------------------------------------------
 
@@ -45,7 +45,7 @@ CREATE TABLE `attendance` (
   `time_in` varchar(255) DEFAULT NULL,
   `time_out` varchar(255) DEFAULT NULL,
   `date` date NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `attendance`
@@ -58,13 +58,32 @@ INSERT INTO `attendance` (`name`, `time_in`, `time_out`, `date`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `enrolled_students`
+--
+
+CREATE TABLE `enrolled_students` (
+  `students_name` varchar(255) NOT NULL,
+  `students_id_no` varchar(10) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `enrolled_students`
+--
+
+INSERT INTO `enrolled_students` (`students_name`, `students_id_no`) VALUES
+('James Juta', '2020-11120'),
+('Anne Villasoto', '2020-11719');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `img_dataset`
 --
 
 CREATE TABLE `img_dataset` (
   `img_id` int(11) NOT NULL,
   `img_person` varchar(10) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
 -- Dumping data for table `img_dataset`
@@ -106,7 +125,7 @@ CREATE TABLE `time_log` (
   `time` varchar(50) NOT NULL,
   `date` varchar(50) NOT NULL,
   `datetime` datetime NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `time_log`
@@ -114,7 +133,23 @@ CREATE TABLE `time_log` (
 
 INSERT INTO `time_log` (`log_id`, `name`, `id_no`, `building_name`, `time`, `date`, `datetime`) VALUES
 (1, 'James Juta', '2020-11120', 'jmc building', '10:23:41 PM', '01-24-2024', '2024-01-25 10:23:57'),
-(2, 'James Juta', '2020-11120', 'jmc building', '11:15:29 AM', '01-25-2024', '2024-01-25 11:15:29');
+(2, 'James Juta', '2020-11120', 'jmc building', '11:15:29 AM', '01-25-2024', '2024-01-25 11:15:29'),
+(3, 'James Juta', '2020-11120', 'jmc building', '03:12:15 PM', '02-01-2024', '2024-02-01 15:12:17'),
+(4, 'James Juta', '2020-11120', 'jmc building', '10:14:48 AM', '02-02-2024', '2024-02-02 10:14:50'),
+(5, 'James Juta', '2020-11120', 'jmc building', '10:19:47 AM', '02-02-2024', '2024-02-02 10:19:48'),
+(6, 'James Juta', '2020-11120', 'jmc building', '10:55:03 AM', '02-05-2024', '2024-02-05 10:55:09'),
+(7, 'James Juta', '2020-11120', 'jmc building', '11:08:53 AM', '02-05-2024', '2024-02-05 11:08:54'),
+(8, 'James Juta', '2020-11120', 'jmc building', '11:18:50 AM', '02-05-2024', '2024-02-05 11:18:51'),
+(9, 'James Juta', '2020-11120', 'jmc building', '11:19:03 AM', '02-05-2024', '2024-02-05 11:19:04'),
+(10, 'James Juta', '2020-11120', 'jmc building', '11:23:31 AM', '02-05-2024', '2024-02-05 11:23:32'),
+(11, 'James Juta', '2020-11120', 'jmc building', '11:23:46 AM', '02-05-2024', '2024-02-05 11:23:47'),
+(12, 'James Juta', '2020-11120', 'jmc building', '11:33:47 AM', '02-05-2024', '2024-02-05 11:33:48'),
+(13, 'James Juta', '2020-11120', 'jmc building', '11:34:01 AM', '02-05-2024', '2024-02-05 11:34:02'),
+(14, 'James Juta', '2020-11120', 'jmc building', '11:34:17 AM', '02-05-2024', '2024-02-05 11:34:18'),
+(15, 'James Juta', '2020-11120', 'jmc building', '11:34:35 AM', '02-05-2024', '2024-02-05 11:34:36'),
+(16, 'James Juta', '2020-11120', 'jmc building', '11:34:49 AM', '02-05-2024', '2024-02-05 11:34:50'),
+(17, 'James Juta', '2020-11120', 'jmc building', '11:38:30 AM', '02-05-2024', '2024-02-05 11:38:31'),
+(18, 'James Juta', '2020-11120', 'jmc building', '11:40:20 AM', '02-05-2024', '2024-02-05 11:40:21');
 
 -- --------------------------------------------------------
 
@@ -125,16 +160,15 @@ INSERT INTO `time_log` (`log_id`, `name`, `id_no`, `building_name`, `time`, `dat
 CREATE TABLE `users` (
   `id_no` varchar(10) NOT NULL,
   `name` varchar(50) NOT NULL,
-  `type_of_user` varchar(30) NOT NULL,
   `time_added` datetime NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id_no`, `name`, `type_of_user`, `time_added`) VALUES
-('2020-11120', 'James Juta', 'option_1', '2024-01-24 22:21:55');
+INSERT INTO `users` (`id_no`, `name`, `time_added`) VALUES
+('2020-11120', 'James Juta', '2024-01-24 22:21:55');
 
 --
 -- Indexes for dumped tables
@@ -152,6 +186,12 @@ ALTER TABLE `accs_hist`
 --
 ALTER TABLE `attendance`
   ADD PRIMARY KEY (`name`,`date`);
+
+--
+-- Indexes for table `enrolled_students`
+--
+ALTER TABLE `enrolled_students`
+  ADD UNIQUE KEY `students_id_no` (`students_id_no`);
 
 --
 -- Indexes for table `img_dataset`
@@ -185,7 +225,7 @@ ALTER TABLE `accs_hist`
 -- AUTO_INCREMENT for table `time_log`
 --
 ALTER TABLE `time_log`
-  MODIFY `log_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `log_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

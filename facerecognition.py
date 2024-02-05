@@ -11,9 +11,6 @@ from datetime import datetime
 from gtts import gTTS
 import os
 from pygame import mixer
-
-# from flaskext.mysql import MySQL #pip install flask-mysql
-# import pymysql
  
 app = Flask(__name__)
 app.secret_key = 'GAo2wWbWR2vM1BYexzAXs9QDuHXYkgKZ'
@@ -230,11 +227,12 @@ def face_recognition():  # generate frame by frame from camera
         if key == 27:
             break
  
- 
+# route for the index page
 @app.route('/')
 def home():
     return render_template('fr_page.html')
 
+# route for time log page
 @app.route('/time_log', methods=['GET', 'POST'])
 def time_log():
     correct_password = 'adminpassword'
@@ -263,7 +261,7 @@ def time_log():
 
     return render_template('index_tabulator_ajax.html', current_datetime=current_datetime, current_date=current_date, current_time=current_time, password_attempts=session['password_attempts'])
 
-
+# route for face register password
 @app.route('/face_register_password', methods=['GET', 'POST'])
 def face_register_password():
     correct_password = 'adminpassword'
@@ -277,6 +275,7 @@ def face_register_password():
 
     return render_template('password_form.html')
 
+# route for face register page
 @app.route('/face_register')
 def face_register():
     sql = "SELECT id_no, name, time_added FROM users"
@@ -292,7 +291,8 @@ def addprsn():
     # print(int(nbr))
  
     return render_template('addprsn.html', newnbr=int(nbr))
- 
+
+#
 @app.route('/addprsn_submit', methods=['POST'])
 def addprsn_submit():
     prsnbr = request.form.get('txtnbr')
@@ -319,7 +319,7 @@ def vidfeed_dataset(nbr):
     #Video streaming route. Put this in the src attribute of an img tag
     return Response(generate_dataset(nbr), mimetype='multipart/x-mixed-replace; boundary=frame')
  
- 
+# route for the video feed in the face recognition
 @app.route('/video_feed')
 def video_feed():
     # Video streaming route. Put this in the src attribute of an img tag
@@ -355,7 +355,7 @@ def fr_page():
     # Pass data, date, time, and day_of_week to the template
     return render_template('fr_page.html', data=data, current_date=current_date, current_time=current_time, day_of_week=day_of_week, last_recognized_face=last_recognized_face)
 
-
+# route for getting the data for the time log table
 @app.route('/get_data', methods=['GET'])
 def get_data():
     try:
@@ -387,7 +387,7 @@ def get_data():
             db_connect.close()
     return jsonify(data=[])
 
-
+# get recently added users
 @app.route('/get_recently_added_users_data', methods=['GET'])
 def get_recently_added_users_data():
     try:
@@ -436,7 +436,6 @@ def last_recognized_face():
             mycursor.close()
             db_connect.close()
  
- 
 @app.route('/countTodayScan')
 def countTodayScan():
     db_connect = get_db_connection()
@@ -449,7 +448,6 @@ def countTodayScan():
     rowcount = row[0]
  
     return jsonify({'rowcount': rowcount})
- 
  
 @app.route('/loadData', methods = ['GET', 'POST'])  
 def loadData():
@@ -465,6 +463,7 @@ def loadData():
  
     return jsonify(response = data)
 
+# route for getting the enrolled users and will be displayed in the selectize input
 @app.route('/get_enrolled_users_data', methods=['GET'])
 def get_enrolled_users_data():
     db_connect = get_db_connection()
