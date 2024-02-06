@@ -10,6 +10,12 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/sweetalert2@11">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+    <!-- Include jQuery library -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+    <!-- Include SweetAlert library -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script> -->
+
 </head>
 <body class="d-flex flex-column h-100vh" style="background-color: #f5f8fe;">
 
@@ -76,28 +82,10 @@
         </div>
     </footer>
 
-{% if last_recognized_face %}
-    <div class="success-message">
-        <i class='check bx bx-check-circle'></i>
-        <h2 class="form__title" >Success!</h2>
-        <p class="message">Time in Successfull!</p>
-        <p>{{last_recognized_face[1]}}</p>
-        <p>{{last_recognized_face[2]}}</p>
-        <p>{{last_recognized_face[3]}}</p>
-        <button class="btn" onclick="dismissMessage()">Dismiss</button>
-    </div>
-{% endif %}
-
-<!-- <script>
-    function dismissMessage() {
-        document.querySelector('.success-message').style.display = 'none';
-    }
-</script> -->
-
 <script>
 
-     // Function to automatically dismiss the success message after 1 second
-     function dismissMessage() {
+    // Function to automatically dismiss the success message after 1 second
+    function dismissMessage() {
         var successMessage = document.querySelector('.success-message');
         if (successMessage) {
             setTimeout(function() {
@@ -139,7 +127,7 @@
  
         function chkNewScan() {
             countTodayScan();
-            setTimeout(chkNewScan, 1000);
+            setTimeout(chkNewScan, 500);
         }
  
         function countTodayScan() {
@@ -150,7 +138,7 @@
                 success: function(data) {
                     cnt = data.rowcount;
                     if (cnt > lastcnt) {
-                        reloadTable();
+                        showAlert();
                     }
  
                     lastcnt = cnt;
@@ -161,26 +149,21 @@
             })
         }
  
-        function reloadTable() {
+        function showAlert() {
             $.ajax({
                 url: '/loadData',
                 type: 'GET',
                 dataType: 'json',
                 success: function(response){
-                    var tr = $("#scandata");
-                    tr.empty();
- 
-                    $.each(response, function(index, item) {
-                        if (item.length > 0) {
-                            for (let i = 0; i < item.length; i++) {
-                                tr.append('<tr>'+
-                                                '<td>'+item[i][1]+'</td>'+
-                                                '<td>'+item[i][2]+'</td>'+
-                                                '<td>'+item[i][3]+'</td>'+
-                                                '<td>'+item[i][4]+'</td>'+
-                                           '</tr>');
-                            }
-                        }
+                    Swal.fire({
+                        title: "Success!",
+                        text: "Time In Success",
+                        icon: "success",
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true,
+                        html: ` <p><strong>${response.response.id_no}-${response.response.name}</strong></p>
+                                <p>${response.response.date} | ${response.response.time} | ${response.response.building_name}</p>`
                     });
                 },
                 error: function(result){

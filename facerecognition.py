@@ -409,37 +409,16 @@ def get_recently_added_users_data():
             mycursor.close()
             db_connect.close()
     return jsonify(data=[])
-
-
-@app.route('/last_recognized_face', methods=['GET'])
-def last_recognized_face():
-    try:
-        mycursor = db_connect.cursor(dictionary=True)
-
-        # Assuming you have a column named 'log_id' as an auto-incrementing primary key
-        mycursor.execute('SELECT * FROM time_log ORDER BY log_id DESC LIMIT 1')
-        last_face_info = mycursor.fetchone()
-        print(last_face_info)
-
-        return jsonify(last_face_info)
-
-    except mysql.connector.Error as err:
-        print(f"Error: {err}")
-        return jsonify(error="Error fetching last recognized face information")
-
-    finally:
-        if 'connection' in locals() and db_connect.is_connected():
-            mycursor.close()
-            db_connect.close()
  
 @app.route('/countTodayScan')
 def countTodayScan():
     db_connect = get_db_connection()
-    mycursor = db_connect.cursor() 
-    mycursor.execute("SELECT count(*) FROM time_log WHERE DATE(datetime) = curdate()")
+    mycursor = db_connect.cursor()
+    sql = 'SELECT count(*) FROM time_log WHERE DATE(datetime) = curdate()' 
+    mycursor.execute(sql)
     row = mycursor.fetchone()
     rowcount = row[0]
-    print(rowcount)
+    # print(rowcount)
  
     return jsonify({'rowcount': rowcount})
  
@@ -447,15 +426,31 @@ def countTodayScan():
 def loadData():
     db_connect = get_db_connection()
     mycursor = db_connect.cursor()
- 
-    mycursor.execute("select a.accs_id, a.accs_prsn, b.name, date_format(a.accs_added, '%H:%i:%s') "
-                     "  from accs_hist a "
-                     "  left join users b on a.accs_prsn = b.id_no "
-                     " where a.accs_date = curdate() "
-                     " order by 1 desc")
-    data = mycursor.fetchall()
- 
-    return jsonify(response = data)
+    
+    sql = 'SELECT * FROM time_log WHERE DATE(datetime) = curdate() ORDER BY log_id DESC'
+    mycursor.execute(sql)
+    # mycursor.execute("select a.accs_id, a.accs_prsn, b.name, date_format(a.accs_added, '%H:%i:%s') "
+    #                  "  from accs_hist a "
+    #                  "  left join users b on a.accs_prsn = b.id_no "
+    #                  " where a.accs_date = curdate() "
+    #                  " order by 1 desc")
+    # data = mycursor.fetchall()
+    
+    data=mycursor.fetchone()
+    if data:
+        # Convert data to a dictionary
+        data_dict = {
+            'log_id': data[0],
+            'name': data[1],
+            'id_no': data[2],
+            'building_name': data[3],
+            'time': data[4],
+            'date': data[5],
+        }
+        
+        return jsonify(response=data_dict)
+    else:
+        return jsonify(response=None)
 
 # route for getting the enrolled users and will be displayed in the selectize input
 @app.route('/get_enrolled_users_data', methods=['GET'])
