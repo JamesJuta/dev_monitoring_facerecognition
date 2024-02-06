@@ -1,1 +1,0 @@
-/display_database_table
