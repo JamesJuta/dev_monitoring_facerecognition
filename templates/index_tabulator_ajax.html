@@ -22,8 +22,8 @@
     <link rel="stylesheet" href="{{ url_for('static', filename = 'css/style.css') }}">
 
     <!-- SweetAlert files -->
-    <!-- <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/sweetalert2@11">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/sweetalert2@11">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
    
 </head>
 
@@ -92,13 +92,29 @@
                         </div>
 
                         <p class="">Attempts: {{ password_attempts }} </p>
-                        {% with messages = get_flashed_messages() %}
+
+                        {% with messages = get_flashed_messages(with_categories=true) %}
                             {% if messages %}
-                            
-                                {% for message in messages %}
-                                    <div class="alert alert-danger" id="flash-message" role="alert">{{ message }}</div>
+                                <ul class=flashes>
+                                {% for category, message in messages %}
+                                 
+                                    <script>
+                                        Swal.fire({
+                                            title: '{{category}}',
+                                            text: '{{message}}',
+                                            icon: '{{category}}',
+                                            confirmButtonText: 'Dismiss',
+                                            // showCancelButton: true,
+                                            confirmButtonColor: "#1A73E8",  
+                                            // cancelButtonColor: "#d33",
+                                            confirmButtonText: "Dismiss",
+                                            showCloseButton: true,
+                                            timer: 3000,
+                                            timerProgressBar: true,
+                                        })
+                                    </script>
                                 {% endfor %}
-                        
+                                </ul>
                             {% endif %}
                         {% endwith %}
                     </div>
@@ -253,22 +269,6 @@
             // Close the modal
             var modal = new bootstrap.Modal(document.getElementById('faceRegisterModal'));
             modal.hide();
-        });
-        // function showAlert(title, text, icon, confirmButtonText) {
-        //     Swal.fire({
-        //         title: title,
-        //         text: text,
-        //         icon: icon,
-        //         confirmButtonText: confirmButtonText
-        //     });
-        // }
-        document.addEventListener('DOMContentLoaded', function () {
-            var flashMessage = document.getElementById('flash-message');
-            if (flashMessage) {
-                setTimeout(function () {
-                    flashMessage.style.display = 'none';
-                }, 2000); // Dismiss after 1 second (1000 milliseconds)
-            }
         });
     </script>
 </body>

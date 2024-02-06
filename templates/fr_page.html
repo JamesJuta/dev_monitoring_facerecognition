@@ -2,55 +2,14 @@
 <html lang="en">
 <head>
     {% include "head.html" %}
-    <style>
-        :root{
-            /* ===== Colors ===== */
-            --body-color: #E4E9F7;
-            --sidebar-color: #FFF;
-            --primary-color: #1A73E8;
-            --primary-color-light: #F6F5FF;
-            --secondary-color: #2f2f41;
-            --toggle-color: #DDD;
-            --text-color: #707070;
-            --btn-hover-color: #2a52be;
-            --background-color:#f5f8fe;
-    
-            /* ====== Transition ====== */
-            --tran-03: all 0.2s ease;
-            --tran-03: all 0.3s ease;
-            --tran-04: all 0.3s ease;
-            --tran-05: all 0.3s ease;
-    
-    
-            --first-color: #1A73E8;
-            --input-color: #80868B;
-            --border-color: #DADCE0;
-    
-    
-            /*===== Fonts =====*/
-            --body-font: 'Roboto', sans-serif;
-            --normal-font-size: 1rem;
-            --small-font-size: .75rem;
-        }
-        .time{
-            font-size: 50px;
-            color: var(--text-color);
-        }
 
-        .date{
-            background-color: var(--primary-color);
-            color: white;
-            padding: 20px;
-            border-radius: 10px;
-            font-size: 25px;
-        }
-        .geometric_shape{
-            height: 200px;
-            width: 200px;
-            background-color: var(--background-color);
-            border-radius: 59% 41% 70% 30% / 31% 59% 41% 69%  ;
-        }
-    </style>
+     <!-- custom styling -->
+     <link rel="stylesheet" href="{{ url_for('static', filename = 'css/style.css') }}">
+
+    <!-- SweetAlert files -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/sweetalert2@11">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 </head>
 <body class="d-flex flex-column h-100vh" style="background-color: #f5f8fe;">
 

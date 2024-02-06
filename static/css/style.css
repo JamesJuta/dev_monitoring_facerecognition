@@ -120,3 +120,22 @@ body {
 .form__input:focus{
     border: 1.5px solid var(--first-color);
 }
+
+.time{
+    font-size: 50px;
+    color: var(--text-color);
+}
+
+.date{
+    background-color: var(--primary-color);
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    font-size: 25px;
+}
+.geometric_shape{
+    height: 200px;
+    width: 200px;
+    background-color: var(--background-color);
+    border-radius: 59% 41% 70% 30% / 31% 59% 41% 69%  ;
+}

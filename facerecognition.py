@@ -202,6 +202,7 @@ def face_recognition():  # generate frame by frame from camera
         return coords
  
     def recognize(img, clf, faceCascade):
+        img = cv2.flip(img, 1)
         coords = draw_boundary(img, faceCascade, 1.1, 10, (255, 255, 0), "Face", clf)
         return img
  
@@ -252,11 +253,6 @@ def time_log():
             if session['password_attempts'] == 5:
                 flash('Maximum attempts reached. Please contact support.', 'error')
                 session['password_attempts'] = 0  # Reset attempts after reaching the maximum
-            else:
-                # Clear all flashed messages if there are more attempts left
-                flash_messages = session.get('_flashes', [])
-                for message in flash_messages:
-                    flash('', 'error')
                 
 
     return render_template('index_tabulator_ajax.html', current_datetime=current_datetime, current_date=current_date, current_time=current_time, password_attempts=session['password_attempts'])
@@ -439,13 +435,11 @@ def last_recognized_face():
 @app.route('/countTodayScan')
 def countTodayScan():
     db_connect = get_db_connection()
-    mycursor = db_connect.cursor()
- 
-    mycursor.execute("select count(*) "
-                     "  from time_log "
-                     " where date = curdate()")
+    mycursor = db_connect.cursor() 
+    mycursor.execute("SELECT count(*) FROM time_log WHERE DATE(datetime) = curdate()")
     row = mycursor.fetchone()
     rowcount = row[0]
+    print(rowcount)
  
     return jsonify({'rowcount': rowcount})
  
