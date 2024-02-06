@@ -13,9 +13,6 @@
     <!-- Include jQuery library -->
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
-    <!-- Include SweetAlert library -->
-    <!-- <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script> -->
-
 </head>
 <body class="d-flex flex-column h-100vh" style="background-color: #f5f8fe;">
 
@@ -38,7 +35,6 @@
             </ul>
         </div>
     </nav>
-    
     
 
     <div class="container">
@@ -83,21 +79,6 @@
     </footer>
 
 <script>
-
-    // Function to automatically dismiss the success message after 1 second
-    function dismissMessage() {
-        var successMessage = document.querySelector('.success-message');
-        if (successMessage) {
-            setTimeout(function() {
-                successMessage.style.display = 'none';
-            }, 3000); // Dismiss after 1 second (1000 milliseconds)
-        }
-    }
-
-    // Automatically trigger the dismissMessage function on page load
-    window.onload = function() {
-        dismissMessage();
-    }
 
     // set server time using moment.js library
     var set_server_time = '{{ current_time }}';
@@ -163,7 +144,10 @@
                         timer: 3000,
                         timerProgressBar: true,
                         html: ` <p><strong>${response.response.id_no}-${response.response.name}</strong></p>
-                                <p>${response.response.date} | ${response.response.time} | ${response.response.building_name}</p>`
+                                <p>${response.response.date} | ${response.response.time} | ${response.response.building_name}</p>
+                                <div class="alert alert-warning" role="alert">
+                                    <i class="fa-regular fa-circle-exclamation"></i> Notice:
+                                </div>`
                     });
                 },
                 error: function(result){
