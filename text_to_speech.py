@@ -18,4 +18,4 @@ def text_to_speech(text, filename='output.mp3', lang='en'):
         return False
 
 # Example usage:
-text_to_speech("Face not recognized", filename='face_not_recognize.mp3', lang='en')
+text_to_speech("Maximum attempts reached. Please contact support.", filename='maximum_attempts_reached.mp3', lang='en')

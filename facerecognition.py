@@ -56,7 +56,7 @@ def generate_dataset(nbr):
         # scaling factor=1.3
         # Minimum neighbor = 5
  
-        if faces is ():
+        if not faces:
             return None
         for (x, y, w, h) in faces:
             cropped_face = img[y:y + h, x:x + w]
@@ -248,36 +248,21 @@ def time_log():
             return redirect(url_for('face_register'))  
         else:
             session['password_attempts'] += 1
+            play_sound("incorrect_password.mp3")
             flash('Incorrect password. Please try again.', 'error')
             
             if session['password_attempts'] == 5:
+                play_sound("maximum_attempts_reached.mp3")
                 flash('Maximum attempts reached. Please contact support.', 'error')
                 session['password_attempts'] = 0  # Reset attempts after reaching the maximum
                 
 
     return render_template('index_tabulator_ajax.html', current_datetime=current_datetime, current_date=current_date, current_time=current_time, password_attempts=session['password_attempts'])
 
-# route for face register password
-@app.route('/face_register_password', methods=['GET', 'POST'])
-def face_register_password():
-    correct_password = 'adminpassword'
-    if request.method == 'POST':
-        password_attempt = request.form.get('password')
-
-        if password_attempt == correct_password:
-            return redirect(url_for('face_register'))
-        else:
-            flash('Incorrect password. Please try again.', 'error')
-
-    return render_template('password_form.html')
-
 # route for face register page
 @app.route('/face_register')
 def face_register():
-    sql = "SELECT id_no, name, time_added FROM users"
-    mycursor.execute(sql)
-    data = mycursor.fetchall()
-    return render_template('face_register.html', data=data)
+    return render_template('face_register.html')
  
 @app.route('/addprsn')
 def addprsn():
@@ -475,17 +460,21 @@ def get_enrolled_users_data():
 # Internal Server Error
 @app.errorhandler(401)
 def error_401(e):
+    play_sound("error_401.mp3")
     return render_template("401.html"), 401
 
 # Invalid URL
 @app.errorhandler(404)
 def error_404(e):
+    # play_sound("error_404.mp3")   
     return render_template("404.html"), 404
 
 # Internal Server Error
 @app.errorhandler(500)
 def error_500(e):
+    play_sound("error_500.mp3")
     return render_template("500.html"), 500
  
 if __name__ == "__main__":
+    # play_sound("initializing.mp3")
     app.run(host='127.0.0.1', port=5000, debug=True)

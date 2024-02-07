@@ -1,26 +1,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-<!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}" type="text/css"> -->
-<link rel="stylesheet" href="{{ url_for('static', filename='css/font-awesome.min.css') }}" type="text/css">
-<link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'>
-<!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/custom-style.css') }}" type="text/css"> -->
-
-<!-- datatables -->
-<link href='https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css' rel='stylesheet' type='text/css'>
-<link rel="stylesheet" href="{{ url_for('static', filename='css/dataTables.css') }}" type="text/css">
-
-<script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
-<!-- <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script> -->
-<script src="{{ url_for('static', filename='js/moment.js') }}"></script>
-
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-
+<!-- favicon -->
+<link rel="shortcut icon" href="{{ url_for('static', filename='img/e_monitoring_logo.png') }}">
 
 <!--  -->
+<link rel="stylesheet" href="{{ url_for('static', filename='css/font-awesome.min.css') }}" type="text/css">
 <link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+<!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}" type="text/css"> -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <link href="https://cdn.jsdelivr.net/npm/tabulator-tables@5.0.0/dist/css/tabulator.min.css" rel="stylesheet" />
 <link rel="stylesheet" href="{{ url_for('static', filename = 'css/tabulator_bootstrap.min.css') }}">
@@ -32,4 +20,15 @@
 <script src="{{ url_for('static', filename = 'js/tabulator.min.js') }}"></script>
 <script src="{{ url_for('static', filename = 'js/daterangepicker.js') }}"></script>
 
-<title>Flask MySQL</title>
+<!-- custom styling -->
+<link rel="stylesheet" href="{{ url_for('static', filename = 'css/style.css') }}">
+
+<!-- SweetAlert files -->
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/sweetalert2@11">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+ <!-- selectize -->
+ <link rel="stylesheet" href="{{ url_for('static', filename = 'css/selectize.bootstrap5.css') }}">
+ <script src="{{ url_for('static', filename = 'js/selectize.min.js') }}"></script>
+
+<title>E-Monitoring System</title>

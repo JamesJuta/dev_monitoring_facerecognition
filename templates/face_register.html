@@ -2,33 +2,26 @@
 <html lang="en">
 <head>
     {% include "head.html" %}
-
-    <!-- custom styling -->
-    <link rel="stylesheet" href="{{ url_for('static', filename = 'css/style.css') }}">
-
-    <!-- selectize -->
-    <link rel="stylesheet" href="{{ url_for('static', filename = 'css/selectize.bootstrap5.css') }}">
-    <script src="{{ url_for('static', filename = 'js/selectize.min.js') }}"></script>
 </head>
 
 <body class="d-flex flex-column h-100vh" style="background-color: #f5f8fe;">
    
     <!-- navbar -->
-    <nav class="navbar sticky-top bg-white shadow p-3">
+    <nav class="navbar sticky-top bg-white shadow p-2">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">
-                <img src="/docs/5.3/assets/brand/bootstrap-logo.svg" alt="" width="30" height="24" class="d-inline-block align-text-top">
-                <span class="navbar-brand mb-0 h1"><b>E-Monitoring</b></span>
+            <a class="navbar-brand d-flex align-items-center" href="#">
+                <img src="{{ url_for('static', filename='img/e_monitoring_logo.png') }}" alt="" width="55" height="55" class="d-inline-block align-text-top p-1">
+                <span class="navbar-brand mb-0 h1 p-1"><b>E-Monitoring</b></span>
             </a>
             <ul class="nav nav-underline">
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('home') }}">Home</a>
+                    <a class="nav-link" href="{{ url_for('home') }}"><i class='bx bx-home'></i> Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" aria-current="page" href="{{ url_for('time_log') }}">Time Log</a>
+                    <a class="nav-link" aria-current="page" href="{{ url_for('time_log') }}"><i class='bx bx-time'></i> Time Log</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active text-primary" href="#" id="faceRegisterBtn">Face Register</a>
+                    <a class="nav-link active text-primary" href="#" id="faceRegisterBtn"><i class='bx bx-user' ></i> Face Register</a>
                 </li>
             </ul>
         </div>
@@ -162,11 +155,7 @@
     </section> -->
 
     <!-- footer -->
-    <footer id="footer" class="mt-auto footer base-footer text-center p-3" style="background-color:#2f2f41;">
-        <div class="copyright">
-            <p class="mb-0 text-white font-size-s">© 2023 - 2024 City College of Calamba</p>
-        </div>
-    </footer>
+    {% include "footer.html" %}
 
     <script>
         // Initialize Selectize on inputs with the 'selectize' class

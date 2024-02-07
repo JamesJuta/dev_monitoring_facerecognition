@@ -2,47 +2,36 @@
 <html lang="en">
 <head>
     {% include "head.html" %}
-
-     <!-- custom styling -->
-     <link rel="stylesheet" href="{{ url_for('static', filename = 'css/style.css') }}">
-
-    <!-- SweetAlert files -->
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/sweetalert2@11">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-    <!-- Include jQuery library -->
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-
 </head>
 <body class="d-flex flex-column h-100vh" style="background-color: #f5f8fe;">
 
-    <nav class="navbar sticky-top bg-white shadow p-3">
+    <nav class="navbar sticky-top bg-white shadow p-2">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">
-                <img src="/docs/5.3/assets/brand/bootstrap-logo.svg" alt="" width="30" height="24" class="d-inline-block align-text-top">
-                <span class="navbar-brand mb-0 h1"><b>E-Monitoring</b></span>
+            <a class="navbar-brand d-flex align-items-center" href="#">
+                <img src="{{ url_for('static', filename='img/e_monitoring_logo.png') }}" alt="" width="55" height="55" class="d-inline-block align-text-top p-1">
+                <span class="navbar-brand mb-0 h1 p-1"><b>E-Monitoring</b></span>
             </a>
             <ul class="nav nav-underline">
                 <li class="nav-item">
-                    <a class="nav-link active text-primary" href="{{ url_for('home') }}">Home</a>
+                    <a class="nav-link active text-primary" href="{{ url_for('home') }}"><i class='bx bx-home'></i> Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" aria-current="page" href="{{ url_for('time_log') }}">Time Log</a>
+                    <a class="nav-link" aria-current="page" href="{{ url_for('time_log') }}"><i class='bx bx-time'></i> Time Log</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#" id="faceRegisterBtn" data-bs-toggle="modal" data-bs-target="#faceRegisterModal">Face Register</a>
+                    <a class="nav-link" href="#" id="faceRegisterBtn" data-bs-toggle="modal" data-bs-target="#faceRegisterModal"><i class='bx bx-user' ></i> Face Register</a>
                 </li>
             </ul>
         </div>
-    </nav>
+      </nav>
     
-
+    <!-- Face recognition  -->
     <div class="container">
         <div class="row" style="padding: 20px;">
             <div class="col-12">
                 <div class="card shadow-sm">
                     <div class="card-header bg-primary text-white fw-semibold d-flex align-items-center justify-content-between flex-wrap" style=" height: 60px;">
-                        <h4 class="p-2 text-white"><i class='bx bx-time'></i> <b>Face Recognition</b></h4>
+                        <h4 class="p-2 text-white"><i class='bx bx-scan' ></i> <b>Face Recognition</b></h4>
                     </div>
                     <div class="card-body mt-1 bg-white d-flex " style="gap: 10px;">
                        
@@ -72,11 +61,7 @@
         </div>
     </div>
 
-    <footer id="footer" class="mt-auto footer base-footer text-center p-3" style="background-color:#2f2f41;">
-        <div class="copyright">
-            <p class="mb-0 text-white font-size-s">© 2023 - 2024 City College of Calamba</p>
-        </div>
-    </footer>
+    {% include "footer.html" %}
 
 <script>
 
