@@ -29,7 +29,8 @@
 }
 
 body {
-    animation: transitionIn 1s
+    animation: transitionIn 1s;
+    min-height: 100vh;
 }
 @keyframes transitionIn{
     from{
@@ -44,8 +45,8 @@ body {
 /* Customize Tabulator pagination styles */
 .tabulator .tabulator-footer .tabulator-page {
     background-color: white; 
-    color: #1A73E8; 
-    border: 1px solid #1A73E8; 
+    color: var(--primary-color); 
+    border: 1px solid var(--primary-color); 
 }
 .tabulator .tabulator-footer .tabulator-page:hover {
     background-color: #2980b9; 
@@ -101,7 +102,7 @@ body {
 .form__input:focus + .form__label{
     top: -.5rem;
     left: .8rem;
-    color: var(--first-color);
+    color: var(--primary-color);
     font-size: var(--small-font-size);
     font-weight: 500;
     z-index: 10;
@@ -118,7 +119,7 @@ body {
 
 /*Input focus*/
 .form__input:focus{
-    border: 1.5px solid var(--first-color);
+    border: 1.5px solid var(--primary-color);
 }
 
 .time{
@@ -143,4 +144,13 @@ body {
 .custom-tooltip {
     --bs-tooltip-bg: var(--primary-color);
     --bs-tooltip-color: white;
-  }
+}
+
+.bg_custom{
+    background-color: var(--primary-color);
+}
+
+.sticky-footer{
+    position:sticky;
+    top: 100%;
+}

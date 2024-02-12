@@ -8,7 +8,7 @@
     <nav class="navbar sticky-top bg-white shadow p-2">
         <div class="container-fluid">
             <a class="navbar-brand d-flex align-items-center" href="#">
-                <img src="{{ url_for('static', filename='img/e_monitoring_logo.png') }}" alt="" width="55" height="55" class="d-inline-block align-text-top p-1">
+                <img src="{{ url_for('static', filename='img/e_monitoring_logo') }}" alt="" width="55" height="55" class="d-inline-block align-text-top p-1">
                 <span class="navbar-brand mb-0 h1 p-1"><b>E-Monitoring</b></span>
             </a>
             <ul class="nav nav-underline">
@@ -19,11 +19,11 @@
                     <a class="nav-link" aria-current="page" href="{{ url_for('time_log') }}"><i class='bx bx-time'></i> Time Log</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#" id="faceRegisterBtn" data-bs-toggle="modal" data-bs-target="#faceRegisterModal"><i class='bx bx-user' ></i> Face Register</a>
+                    <a class="nav-link" href="#" id="showPasswordModal" data-bs-toggle="modal" data-bs-target="#faceRegisterModal"><i class='bx bx-user' ></i> Face Register</a>
                 </li>
             </ul>
         </div>
-      </nav>
+    </nav>
     
     <!-- Face recognition  -->
     <div class="container">
@@ -60,11 +60,11 @@
             </div>
         </div>
     </div>
-
+    
+    {% include "password_modal.html" %}
     {% include "footer.html" %}
 
 <script>
-
     // set server time using moment.js library
     var set_server_time = '{{ current_time }}';
     var serverOffset = moment(set_server_time).diff(new Date());
@@ -89,13 +89,14 @@
     $(document).ready(function() {
         let lastcnt = 0;
         let cnt;
+        let firstLoad = true; // Add a flag to track if it's the first load
         chkNewScan();
- 
+
         function chkNewScan() {
             countTodayScan();
             setTimeout(chkNewScan, 500);
         }
- 
+
         function countTodayScan() {
             $.ajax({
                 url: '/countTodayScan',
@@ -103,18 +104,19 @@
                 dataType: 'json',
                 success: function(data) {
                     cnt = data.rowcount;
-                    if (cnt > lastcnt) {
+                    if (!firstLoad && cnt > lastcnt) { // Only show the alert if it's not the first load and there's new data
                         showAlert();
                     }
- 
+
                     lastcnt = cnt;
+                    firstLoad = false; // Update the flag after the first load
                 },
-                error: function(result){
-                    console.log('no result!')
+                error: function(result) {
+                    console.log('Error in /countTodayScan:', result);
                 }
-            })
+            });
         }
- 
+
         function showAlert() {
             $.ajax({
                 url: '/loadData',
@@ -135,13 +137,12 @@
                                 </div>`
                     });
                 },
-                error: function(result){
-                    console.log('no result!')
+                error: function(result) {
+                    console.log('Error in /loadData:', result);
                 }
             });
         }
     });
-
 </script>
  
 </body>

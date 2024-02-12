@@ -10,7 +10,7 @@
     <nav class="navbar sticky-top bg-white shadow p-2">
         <div class="container-fluid">
             <a class="navbar-brand d-flex align-items-center" href="#">
-                <img src="{{ url_for('static', filename='img/e_monitoring_logo.png') }}" alt="" width="55" height="55" class="d-inline-block align-text-top p-1">
+                <img src="{{ url_for('static', filename='img/e_monitoring_logo') }}" alt="" width="55" height="55" class="d-inline-block align-text-top p-1">
                 <span class="navbar-brand mb-0 h1 p-1"><b>E-Monitoring</b></span>
             </a>
             <ul class="nav nav-underline">
@@ -60,7 +60,7 @@
                         <!-- <label for="passwordInput" class="form-label"><i class='bx bxs-id-card'></i> ID No:</label>
                         <input type="id_no" name="id_no" class="form-control" id="idNoInput" placeholder="Enter ID No." required><br> -->
                         
-                        <input type="text" name="txtnbr" class="selectize" placeholder=" " maxlength="10" required><br>
+                        <!-- <input type="text" name="txtnbr" class="selectize" placeholder=" " maxlength="10" required><br> -->
                         
                         <div class="form__div">
                             <input type="text" name="txtnbr" class="form__input" placeholder=" " maxlength="10" required>
@@ -110,49 +110,6 @@
           </div>
         </div>
     </div>
-
-
-    <!-- <section class="py-1">
-        <div class="row mt-5">
-            <div class="col-lg-8 offset-lg-2">
-                <h3>Add Personnel</h3>
-                <hr>
-    
-                <form class="form" method="post" action="/addprsn_submit">
-                    <div class="form-group row">
-                        <label for="txtnbr" class="col-sm-2 col-form-label">Person Id</label>
-                        <div class="col-sm-2">
-                            <input type="text" class="form-control" id="txtnbr" name="txtnbr" value={{ newnbr }} readonly>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="txtname" class="col-sm-2 col-form-label">Name</label>
-                        <div class="col-sm-8">
-                            <input type="text" class="form-control" id="txtname" name="txtname" required>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="optskill" class="col-sm-2 col-form-label">Skill</label>
-                        <div class="col-sm-4">
-                            <select class="form-control" name="optskill" id="optskill">
-                                <option value="SOFTWARE">Software</option>
-                                <option value="HARDWARE">Hardware</option>
-                                <option value="ELECTRICAL">Electrical</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-sm-2 col-form-label"></label>
-                        <div class="col-sm-8">
-                            <input type="submit" class="btn btn-primary btn-lg" value="Next">
-                            <a href="/" type="button" class="btn btn-warning btn-lg"><b>Back</b></a>
-                        </div>
-                    </div>
-                </form>
-                
-            </div>
-        </div>
-    </section> -->
 
     <!-- footer -->
     {% include "footer.html" %}

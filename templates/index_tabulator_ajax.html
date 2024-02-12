@@ -10,7 +10,7 @@
     <nav class="navbar sticky-top bg-white shadow p-2">
         <div class="container-fluid">
             <a class="navbar-brand d-flex align-items-center" href="#">
-                <img src="{{ url_for('static', filename='img/e_monitoring_logo.png') }}" alt="" width="55" height="55" class="d-inline-block align-text-top p-1">
+                <img src="{{ url_for('static', filename='img/e_monitoring_logo') }}" alt="" width="55" height="55" class="d-inline-block align-text-top p-1">
                 <span class="navbar-brand mb-0 h1 p-1"><b>E-Monitoring</b></span>
             </a>
             <ul class="nav nav-underline">
@@ -21,7 +21,7 @@
                     <a class="nav-link active text-primary" aria-current="page" href="{{ url_for('time_log') }}"><i class='bx bx-time'></i> Time Log</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#" id="faceRegisterBtn" data-bs-toggle="modal" data-bs-target="#faceRegisterModal"><i class='bx bx-user' ></i> Face Register</a>
+                    <a class="nav-link" href="#" id="showPasswordModal" data-bs-toggle="modal" data-bs-target="#faceRegisterModal"><i class='bx bx-user' ></i> Face Register</a>
                 </li>
             </ul>
         </div>
@@ -53,62 +53,7 @@
         </div>
     </div>
 
-    <!-- password modal for face register -->
-    <div class="modal fade" id="faceRegisterModal" tabindex="-1" aria-labelledby="faceRegisterModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content shadow">
-
-                <!-- Modal content remains unchanged -->
-                <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title" id="faceRegisterModalLabel"><i class='bx bx-lock-alt'></i> Enter Password</h5>
-                    <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-
-                <form class="form" method="post" action="{{ url_for('time_log') }}">
-                    <!-- Modal body content... -->
-                    <div class="modal-body">
-                        <div class="form__div">
-                            <input type="password" name="password" class="form__input" id="passwordInput" placeholder=" " required>
-                            <label for="passwordInput" class="form__label"><i class='bx bx-lock-alt'></i>  Password</label>
-                        </div>
-
-                        <p class="">Attempts: {{ password_attempts }} </p>
-
-                        {% with messages = get_flashed_messages(with_categories=true) %}
-                            {% if messages %}
-                                <ul class=flashes>
-                                {% for category, message in messages %}
-                                 
-                                    <script>
-                                        Swal.fire({
-                                            title: '{{category}}',
-                                            text: '{{message}}',
-                                            icon: '{{category}}',
-                                            confirmButtonText: 'Dismiss',
-                                            confirmButtonColor: "#1A73E8",  
-                                            confirmButtonText: "Dismiss",
-                                            showCloseButton: true,
-                                            timer: 3000,
-                                            timerProgressBar: true,
-                                        })
-                                    </script>
-                                {% endfor %}
-                                </ul>
-                            {% endif %}
-                        {% endwith %}
-                    </div>
-                
-                    <!-- Modal footer... -->
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <input type="submit" class="btn btn-primary" id="submitPasswordBtn" value="Submit">
-                    </div>
-                </form>
-                
-            </div>
-        </div>
-    </div>
-    
+    {% include "password_modal.html" %}
     {% include "footer.html" %}
 
     <script>
@@ -230,18 +175,6 @@
         // Trigger print function
         document.getElementById("print-table").addEventListener("click", function () {
             table.print(false, true);
-        });
-
-        // Trigger the password modal
-        document.getElementById('submitPasswordBtn').addEventListener('click', function() {
-            // Get the entered password
-            var password = document.getElementById('passwordInput').value;
-
-            // Perform any validation or further actions here
-
-            // Close the modal
-            var modal = new bootstrap.Modal(document.getElementById('faceRegisterModal'));
-            modal.hide();
         });
     </script>
 </body>

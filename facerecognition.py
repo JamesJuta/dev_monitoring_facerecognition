@@ -27,6 +27,17 @@ mycursor = db_connect.cursor()
 current_datetime = datetime.now()
 current_date = current_datetime.strftime('%m-%d-%Y')
 current_time = current_datetime.strftime('%I:%M:%S %p')
+current_year = current_datetime.strftime('%Y')
+day_of_week = current_datetime.strftime('%A')  # Full name of the day (e.g., Monday)
+
+# Number of maximum attempts
+MAX_ATTEMPTS = 5
+# Lockout time in seconds
+LOCKOUT_TIME = 60  # 3 minutes in seconds
+
+# Keeping track of attempts and last attempt time
+attempt_count = 0
+last_attempt_time = None
 
 # text to speech function
 def text_to_speech(message):
@@ -56,7 +67,7 @@ def generate_dataset(nbr):
         # scaling factor=1.3
         # Minimum neighbor = 5
  
-        if not faces:
+        if faces is ():
             return None
         for (x, y, w, h) in faces:
             cropped_face = img[y:y + h, x:x + w]
@@ -231,38 +242,49 @@ def face_recognition():  # generate frame by frame from camera
 # route for the index page
 @app.route('/')
 def home():
-    return render_template('fr_page.html')
+    if 'attempt_count' not in session:
+        session['attempt_count'] = 0
+    return render_template('fr_page.html', current_year=current_year)
 
 # route for time log page
 @app.route('/time_log', methods=['GET', 'POST'])
 def time_log():
-    correct_password = 'adminpassword'
-    if 'password_attempts' not in session:
-        session['password_attempts'] = 0
+    if 'attempt_count' not in session:
+        session['attempt_count'] = 0          
 
-    if request.method == 'POST':
-        password_attempt = request.form.get('password')
+    return render_template('index_tabulator_ajax.html', current_datetime=current_datetime, current_date=current_date, current_time=current_time, current_year=current_year)
 
-        if password_attempt == correct_password:
-            # flash('Password is correct. Redirecting...', 'success')
-            return redirect(url_for('face_register'))  
+# route for validating the password when going to the face register page
+@app.route('/validate_password', methods=['POST'])
+def validate_password():
+    if 'attempt_count' not in session:
+        session['attempt_count'] = 0
+
+    # Check if the button has been locked out
+    if 'last_attempt_time' in session and time.time() - session['last_attempt_time'] < LOCKOUT_TIME:
+        return jsonify({'success': False, 'message': f'You are locked out. Please try again in {LOCKOUT_TIME // 60} minutes.'})
+
+    # Get password from the form
+    password = request.form['password']
+
+    # Check if password is correct
+    if password == 'adminpassword':
+        session['attempt_count'] = 0  # Reset attempt count
+        return jsonify({'success': True})
+    else:
+        session['attempt_count'] += 1
+        # Check if max attempts reached
+        if session['attempt_count'] >= MAX_ATTEMPTS:
+            session['last_attempt_time'] = time.time()  # Set lockout time
+            session['attempt_count'] = 0  # Reset attempt count
+            return jsonify({'success': False, 'lockout': True, 'message': f'You are locked out for {LOCKOUT_TIME // 60} minutes.', 'attempts': session['attempt_count']})
         else:
-            session['password_attempts'] += 1
-            play_sound("incorrect_password.mp3")
-            flash('Incorrect password. Please try again.', 'error')
-            
-            if session['password_attempts'] == 5:
-                play_sound("maximum_attempts_reached.mp3")
-                flash('Maximum attempts reached. Please contact support.', 'error')
-                session['password_attempts'] = 0  # Reset attempts after reaching the maximum
-                
-
-    return render_template('index_tabulator_ajax.html', current_datetime=current_datetime, current_date=current_date, current_time=current_time, password_attempts=session['password_attempts'])
+            return jsonify({'success': False, 'message': 'Incorrect password. Please try again.', 'attempts': session['attempt_count']})
 
 # route for face register page
 @app.route('/face_register')
 def face_register():
-    return render_template('face_register.html')
+    return render_template('face_register.html', current_year=current_year)
  
 @app.route('/addprsn')
 def addprsn():
@@ -312,29 +334,9 @@ def fr_page():
     current_datetime = datetime.now()
     current_date = current_datetime.strftime('%Y-%m-%d')
     current_time = current_datetime.strftime('%H:%M:%S %p')
-    day_of_week = current_datetime.strftime('%A')  # Full name of the day (e.g., Monday)
-
-    """Video streaming home page."""
-    mycursor.execute("select a.accs_id, a.accs_prsn, b.name, a.accs_added "
-                     "  from accs_hist a "
-                     "  left join users b on a.accs_prsn = b.id_no "
-                     " where a.accs_date = curdate() "
-                     " order by 1 desc")
-    data = mycursor.fetchall()
-
-    if not data:
-        return render_template('main.html', no_data=True)
-
-    mycursor.execute("SELECT a.accs_prsn, b.name "
-                     "FROM accs_hist a "
-                     "LEFT JOIN users b ON a.accs_prsn = b.id_no "
-                     "WHERE a.accs_date = curdate() "
-                     "ORDER BY a.accs_added DESC "
-                     "LIMIT 1")
-    last_recognized_face = mycursor.fetchone()
  
     # Pass data, date, time, and day_of_week to the template
-    return render_template('fr_page.html', data=data, current_date=current_date, current_time=current_time, day_of_week=day_of_week, last_recognized_face=last_recognized_face)
+    return render_template('fr_page.html', current_date=current_date, current_time=current_time, day_of_week=day_of_week)
 
 # route for getting the data for the time log table
 @app.route('/get_data', methods=['GET'])
