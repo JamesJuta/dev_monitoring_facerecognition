@@ -14,8 +14,10 @@
                 <img src="{{ url_for('static', filename='img/e_monitoring_logo') }}" alt="" width="55" height="55" class="d-inline-block align-text-top p-1">
                 <span class="navbar-brand mb-0 h1 p-1"><b>E-Monitoring</b></span>
             </a>
-            <button class="navbar-toggler btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
+            <button class="navbar-toggler collapsed btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="toggler-icon top-bar"></span>
+                <span class="toggler-icon middle-bar"></span>
+                <span class="toggler-icon bottom-bar"></span>
             </button>
             <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
                 <ul class="navbar-nav mb-2 mb-lg-0">
@@ -48,9 +50,9 @@
                     <div class="card-body mt-1 bg-white">
                         <div id="example-table" class="table table-sm tabulator"></div>
                         <div>
-                            <button type="button" class="btn btn-outline-primary btn-sm" id="download-csv" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="Download CSV File"><i class='bx bx-download'></i> Download CSV</button>
-                            <button type="button" class="btn btn-outline-primary btn-sm" id="download-xlsx" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="Download Excel File"><i class='bx bx-download'></i> Download XLSX</button>
-                            <button type="button" class="btn btn-outline-primary btn-sm" id="print-table" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="Print Time Log Data"><i class='bx bx-printer'></i> Print</button>
+                            <button type="button" class="btn btn-outline-primary btn-sm" id="download-csv" ><i class='bx bx-download'></i> Download CSV</button>
+                            <button type="button" class="btn btn-outline-primary btn-sm" id="download-xlsx" ><i class='bx bx-download'></i> Download XLSX</button>
+                            <button type="button" class="btn btn-outline-primary btn-sm" id="print-table" ><i class='bx bx-printer'></i> Print</button>
                         </div>
                     </div>
                     
