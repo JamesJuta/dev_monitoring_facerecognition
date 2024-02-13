@@ -50,9 +50,9 @@
                     <div class="card-body mt-1 bg-white">
                         <div id="example-table" class="table table-sm tabulator"></div>
                         <div>
-                            <button type="button" class="btn btn-outline-primary btn-sm" id="download-csv" ><i class='bx bx-download'></i> Download CSV</button>
-                            <button type="button" class="btn btn-outline-primary btn-sm" id="download-xlsx" ><i class='bx bx-download'></i> Download XLSX</button>
-                            <button type="button" class="btn btn-outline-primary btn-sm" id="print-table" ><i class='bx bx-printer'></i> Print</button>
+                            <button type="button" class="btn btn-outline-primary btn-sm" id="download-csv"><i class='bx bx-download'></i> Download CSV</button>
+                            <button type="button" class="btn btn-outline-primary btn-sm" id="download-xlsx"><i class='bx bx-download'></i> Download XLSX</button>
+                            <button type="button" class="btn btn-outline-primary btn-sm" id="print-table"><i class='bx bx-printer'></i> Print</button>
                         </div>
                     </div>
                     
@@ -66,9 +66,6 @@
 
     <script>
 
-        const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
-        const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
-
         var datetime = '{{current_datetime}}'
         var global_date = '{{ initial_date_range }}';
         var set_server_time = '{{current_datetime}}'
@@ -80,26 +77,26 @@
         var startDate = moment('{{current_date}}', 'MM-DD-YYYY');
         var endDate = moment('{{current_date}}', 'MM-DD-YYYY');
 
-            $('#date_range').daterangepicker({
-                opens: 'left',
-                startDate: startDate,
-                endDate: endDate
-            }, function (start, end, label) {
-                var start_date = start.format('YYYY-MM-DD');
-                var end_date = end.format('YYYY-MM-DD');
-                
-                // Trigger table update
-                table.setData("/get_data", {
-                    start_date: start_date,
-                    end_date: end_date
-                });
-                table.setSort([{
-                    column: "date",
-                    dir: "DESC"
-                }]);
+        $('#date_range').daterangepicker({
+            opens: 'left',
+            startDate: startDate,
+            endDate: endDate
+        }, function (start, end, label) {
+            var start_date = start.format('YYYY-MM-DD');
+            var end_date = end.format('YYYY-MM-DD');
+            
+            // Trigger table update
+            table.setData("/get_data", {
+                start_date: start_date,
+                end_date: end_date
             });
+            table.setSort([{
+                column: "date",
+                dir: "DESC"
+            }]);
+        });
 
-            var table = new Tabulator('#example-table', {
+        var table = new Tabulator('#example-table', {
             height: "350px",
             printAsHtml: true,
             headerFilterPlaceholder: "Search",
