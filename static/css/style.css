@@ -122,6 +122,11 @@ body {
     border: 1.5px solid var(--primary-color);
 }
 
+.time_date_container{
+    width: 50%; 
+    height: 480; 
+    padding:100px
+}
 .time{
     font-size: 50px;
     color: var(--text-color);
@@ -154,3 +159,56 @@ body {
     position:sticky;
     top: 100%;
 }
+
+@media (max-width: 991.98px) {
+    .card-body {
+        flex-direction: column;
+    }
+    .card-body img {
+        width: 100%;
+        max-width: none;
+    }
+    .time_date_container{
+        width: 100%;
+    }
+    .date{
+        font-size: 20px;
+    }
+    .navbar-collapse {
+        position: fixed;
+        top: 80px;
+        right: -100%;
+        width: 250px;
+        height: 100%;
+        background-color: #fff;
+        transition: right 0.5s ease;
+        box-shadow: -1px 0 3px rgba(0, 0, 0, 0.1); /* Add shadow on the left side only */
+    }
+    .navbar-collapse.show {
+        right: 0;
+    }
+    .navbar-nav {
+        text-align: left;
+        padding: 10px 25px;
+        /* padding-top: 10px;
+        padding-left: 25px;  */
+    }
+}
+
+/* Custom styles for the navbar-toggler */
+.navbar-toggler {
+    border: none;
+}
+  
+/* Custom styles for the navbar-toggler icon */
+.navbar-toggler-icon {
+    width: 25px;
+    height: 25px;
+}
+
+/* Active state for the navbar-toggler */
+.navbar-toggler:focus {
+    box-shadow: none;
+    outline: none;
+}
+
