@@ -242,6 +242,7 @@ def face_recognition():  # generate frame by frame from camera
 # route for the index page
 @app.route('/')
 def home():
+    session.pop('authenticated', None)
     if 'attempt_count' not in session:
         session['attempt_count'] = 0
     return render_template('fr_page.html', current_year=current_year)
@@ -249,10 +250,30 @@ def home():
 # route for time log page
 @app.route('/time_log', methods=['GET', 'POST'])
 def time_log():
+    session.pop('authenticated', None)
     if 'attempt_count' not in session:
         session['attempt_count'] = 0          
 
     return render_template('index_tabulator_ajax.html', current_datetime=current_datetime, current_date=current_date, current_time=current_time, current_year=current_year)
+
+
+# Middleware function to check if the user is authenticated before accessing the face register page
+@app.before_request
+def check_authentication():
+    if request.endpoint == 'face_register' and 'authenticated' not in session:
+        return redirect(url_for('face_register_password'))
+
+# route for removing the flag of authenticated session variable
+@app.route('/logout')
+def logout():
+    session.pop('authenticated', None)
+    return redirect(url_for('home'))
+    
+
+@app.route('/face_register_password', methods=['GET', 'POST'])
+def face_register_password():
+    return render_template('face_register_password.html', error=None)
+
 
 # route for validating the password when going to the face register page
 @app.route('/validate_password', methods=['POST'])
@@ -270,6 +291,7 @@ def validate_password():
     # Check if password is correct
     if password == 'adminpassword':
         session['attempt_count'] = 0  # Reset attempt count
+        session['authenticated'] = True
         return jsonify({'success': True})
     else:
         session['attempt_count'] += 1

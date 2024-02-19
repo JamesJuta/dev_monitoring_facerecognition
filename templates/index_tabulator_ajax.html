@@ -27,9 +27,13 @@
                     <li class="nav-item">
                         <a class="nav-link active text-primary" aria-current="page" href="{{ url_for('time_log') }}"><i class='bx bx-time'></i> Time Log</a>
                     </li>
+
                     <li class="nav-item">
-                        <a class="nav-link" href="#" id="showPasswordModal" data-bs-toggle="modal" data-bs-target="#faceRegisterModal"><i class='bx bx-user' ></i> Face Register</a>
+                        <a class="nav-link" aria-current="page" href="{{ url_for('face_register_password') }}"><i class='bx bx-user' ></i> Face Register</a>
                     </li>
+                    <!-- <li class="nav-item">
+                        <a class="nav-link" href="#" id="showPasswordModal" data-bs-toggle="modal" data-bs-target="#faceRegisterModal"><i class='bx bx-user' ></i> Face Register</a>
+                    </li> -->
                 </ul>
             </div>
         </div>
