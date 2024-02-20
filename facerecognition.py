@@ -20,7 +20,7 @@ cnt = 0
 pause_cnt = 0
 justscanned = False
  
-# database connection
+# get database connection from db_connect file
 db_connect = get_db_connection()
 mycursor = db_connect.cursor()
 
