@@ -125,17 +125,17 @@ body {
 
 .time_date_container{
     width: 50%; 
-    height: 480; 
+    height: 480px; 
     padding:100px;
     /* border: 1px solid var(--primary-color); */
     border-bottom: 3px solid var(--primary-color);
-    transition: 0.8s;
+    /* transition: 1s ease-in-out; */
 }
 
 .time_date_container:hover{
-    width: 50%; 
+    /* width: 50%; 
     height: 480; 
-    padding:100px;
+    padding:100px; */
     position: relative;
 	background-color: #f5f8fe;
 }
