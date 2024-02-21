@@ -1,3 +1,11 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
 :root{
     /* ===== Colors ===== */
     --body-color: #E4E9F7;
@@ -271,4 +279,10 @@ body {
 /* Color of Toggler when collapsed */
 .navbar-toggler.collapsed .toggler-icon {
     background-color: #777777;
+}
+
+/*line of codes that will format every class with a name of title */
+.title{
+    font-weight: 600;
+    margin-bottom: 1rem;
 }
