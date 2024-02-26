@@ -135,7 +135,10 @@ def train_classifier(nbr):
     clf.train(faces, ids)
     clf.write("classifier.xml")
  
-    return redirect('/')
+    # return redirect('/')
+    # Display success message using SweetAlert
+    message = "Images trained successfully!"
+    return jsonify({'success': True, 'message': message, 'redirect': url_for('face_register')})
  
  
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Face Recognition >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -214,7 +217,7 @@ def face_recognition():  # generate frame by frame from camera
  
     def recognize(img, clf, faceCascade):
         img = cv2.flip(img, 1)
-        coords = draw_boundary(img, faceCascade, 1.1, 10, (255, 255, 0), "Face", clf)
+        coords = draw_boundary(img, faceCascade, 1.1, 10, (255, 255, 255), "Face", clf)
         return img
  
     faceCascade = cv2.CascadeClassifier("resources/haarcascade_frontalface_default.xml")
@@ -292,7 +295,7 @@ def validate_password():
     if password == 'adminpassword':
         session['attempt_count'] = 0  # Reset attempt count
         session['authenticated'] = True
-        return jsonify({'success': True})
+        return jsonify({'success': True, 'redirect': url_for('face_register')})
     else:
         session['attempt_count'] += 1
         # Check if max attempts reached
@@ -322,6 +325,9 @@ def addprsn():
 def addprsn_submit():
     prsnbr = request.form.get('txtnbr')
     prsname = request.form.get('txtname')
+
+    # sql1= "SELECT students_id_no, students_name FROM enrolled_students WHERE students_id_no=%s"
+    # mycursor.execute(sql1, prsnbr)
 
     # face registration details will go to recently added users with face recognition
     #query should be using join statements to join the table of full info of the user and the table for enrollement status and notice
@@ -473,7 +479,7 @@ def get_enrolled_users_data():
         data = mycursor.fetchall()
 
         # Convert data to a list of dictionaries
-        data_list = [{'value': str(item['students_id_no']), 'text': item['students_name']} for item in data]
+        data_list = [{'value': str(item['students_id_no']), 'text': item['students_id_no']} for item in data]
 
         return jsonify(data_list)
 

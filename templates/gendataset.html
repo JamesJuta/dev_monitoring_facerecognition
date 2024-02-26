@@ -34,13 +34,50 @@
                                 
                             </div>
                         </div><br>
-                        <a class="btn btn-primary text-center" style="width: 100%;" href="{{ url_for('train_classifier', nbr=prs) }}"> Train Dataset </a>
+
+                        <form id="trainForm" action="/train_classifier" data-nbr="{{ prs }}">
+                            <button type="submit" class="btn btn-primary text-center" style="width: 100%;">Train Dataset</button>
+                        </form>
+                        <!-- <a class="btn btn-primary text-center" style="width: 100%;" href="{{ url_for('train_classifier', nbr=prs) }}"> Train Dataset </a> -->
                     </div>
                     
                 </div>
             </div>
         </div>
     </div>
+
+    <script>
+        $(document).ready(function(){
+            // Handle form submission for training classifier
+            $("#trainForm").submit(function(event){
+                event.preventDefault();
+                var nbr = $(this).data('nbr'); // Get the 'nbr' attribute from the form
+                $.ajax({
+                    type: "GET",
+                    url: $(this).attr('action') + '/' + nbr,
+                    success: function(response){
+                        if (response.success) {
+                            // Display success message using SweetAlert
+                            Swal.fire({
+                                title: "Success!",
+                                text: response.message,
+                                icon: "success",
+                                timer: 3000, // Display the success message for 3 seconds
+                                timerProgressBar: true,
+                                showConfirmButton: false // Disable the "OK" button
+                            }).then(() => {
+                                // Redirect to the face_register route
+                                window.location.href = response.redirect;
+                            });
+                        } else {
+                            // Display error message using SweetAlert
+                            Swal.fire("Error!", response.message, "error");
+                        }
+                    }
+                });
+            });
+        });
+    </script>
 
 </body>
 </html>

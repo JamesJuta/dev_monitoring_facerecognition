@@ -1,1 +1,1 @@
-render_template
+train_classifier/<nbr>
