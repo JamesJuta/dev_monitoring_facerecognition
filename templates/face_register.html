@@ -11,7 +11,7 @@
         <div class="container-fluid">
             <a class="navbar-brand d-flex align-items-center" href="#">
                 <img src="{{ url_for('static', filename='img/e_monitoring_logo') }}" alt="" width="55" height="55" class="d-inline-block align-text-top p-1">
-                <span class="navbar-brand mb-0 h1 p-1"><b>E-Monitoring</b></span>
+                <span class="navbar-brand mb-0 h1 p-1"><b>e-Monitoring</b></span>
             </a>
             <button class="navbar-toggler collapsed btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="toggler-icon top-bar"></span>
@@ -29,6 +29,7 @@
                     <li class="nav-item">
                         <a class="nav-link active text-primary" href="#" id="faceRegisterBtn"><i class='bx bx-user' ></i> Face Register</a>
                     </li>
+                    <!-- {% include "navbar_account.html" %} -->
                 </ul>
             </div>
         </div>
@@ -53,7 +54,7 @@
     </div>
 
     <div class="modal fade" id="register_user_modal" aria-hidden="true" aria-labelledby="registerUserModalLabel" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-dialog modal-xl modal-dialog-centered d-flex">
             <div class="modal-content">
 
                 <div class="modal-header bg-primary text-white">
@@ -61,8 +62,15 @@
                     <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
 
-                <form class="form" method="post" action="{{ url_for('addprsn_submit') }}">
-                    <div class="modal-body">
+                
+                <!-- id="face_register_form" -->
+                <form class="form d-flex" id="face_register_form" method="post" action="{{ url_for('register') }}">
+                    <img  class="card shadow-sm p-2" alt="img" src="{{ url_for('video_feed_face_register') }}" width="640" height="480">
+                    <div class="modal-body p-4">
+                        <div class="geometric_shape mx-auto">
+                            <img src="{{ url_for('static', filename='img/clock.svg') }}" width="200" alt="">
+                        </div>
+                        <h5 class="text-center m-3">Register Face Here</h5>
                         
                         <input type="text" name="txtnbr" class="selectize" placeholder=" " maxlength="10" required><br>
                         
@@ -75,15 +83,18 @@
                             <label for="txtname" class="form__label"><i class='bx bxs-id-card'></i>  Name</label>
                         </div>
 
-                    </div>
-                
-                    <!-- Modal footer... -->
-                    <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                         <!-- <button class="btn btn-primary" data-bs-target="#exampleModalToggle2" data-bs-toggle="modal">Open second modal</button> -->
                         <!-- <input type="submit" class="btn btn-primary" id="submitPasswordBtn" value="Register"> -->
                         <button type="submit" class="btn btn-primary" id="registerUserBtn">Register</button>
+
                     </div>
+                
+                    <!-- Modal footer... -->
+                    <!-- <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary" id="registerUserBtn">Register</button>
+                    </div> -->
                 </form>
 
             </div>
@@ -232,6 +243,50 @@
                     // Alert the user and prevent the second modal from showing
                     alert('Please enter an ID number before registering.');
                 }
+            });
+        });
+    </script>
+
+    <script>
+        $(document).ready(function() {
+            $('#face_register_form').submit(function(event) {
+                event.preventDefault();
+                $.ajax({
+                    url: '/register',
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    success: function(response) {
+                        if (response.success) {
+                            Swal.fire({
+                                title: 'Success!',
+                                text: response.message,
+                                icon: 'success',
+                                showConfirmButton: false,
+                                timer: 3000,
+                                timerProgressBar: true
+                            });
+                        } else {
+                            Swal.fire({
+                                title: 'Error!',
+                                text: response.message,
+                                icon: 'error',
+                                showConfirmButton: false,
+                                timer: 3000,
+                                timerProgressBar: true
+                            });
+                        }
+                    },
+                    error: function() {
+                        Swal.fire({
+                            title: 'Error!',
+                            text: 'Failed to capture images',
+                            icon: 'error',
+                            showConfirmButton: false,
+                            timer: 3000,
+                            timerProgressBar: true
+                        });
+                    }
+                });
             });
         });
     </script>

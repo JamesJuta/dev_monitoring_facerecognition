@@ -72,7 +72,9 @@ CREATE TABLE `enrolled_students` (
 
 INSERT INTO `enrolled_students` (`students_name`, `students_id_no`) VALUES
 ('James Juta', '2020-11120'),
-('Anne Villasoto', '2020-11719');
+('Anne Villasoto', '2020-11719'),
+('Michael Ivan Landicho', '2020-11456'),
+('Jezreel Di Rinehart', '2020-11739');
 
 -- --------------------------------------------------------
 

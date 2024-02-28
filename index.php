@@ -25,25 +25,86 @@
 
 
 <?php
+// session_start();
+
+// if(isset($_POST['loginBtn'])) {
+    
+//     $username = $_POST['username'];
+//     $password = $_POST['password'];
+
+//     if($username === 'user' && $password === 'password') {
+        
+//         $faceRecognitionAppUrl = "http://localhost:5000";
+//         $redirectUrl = "$faceRecognitionAppUrl?username=$username";
+//         header("Location: $redirectUrl");
+//         exit();
+//     } else {
+        
+//         echo "Invalid username or password. Please try again.";
+//     }
+// }
+?>
+
+
+<?php
+// session_start();
+
+// if(isset($_POST['loginBtn'])) {
+//     $username = $_POST['username'];
+//     $password = $_POST['password'];
+
+//     if($username === 'user' && $password === 'password') {
+ 
+//         $data = $username;
+
+//         $encryptionKey = "g5K8Ht+6oCOOG8IJnZIoR59Doa8shfBjqRvvhb9yIGU=";
+//         $encryptedData = openssl_encrypt($data, 'aes-256-cbc', $encryptionKey, 0, $encryptionKey);
+
+    
+//         $faceRecognitionAppUrl = "http://localhost:5000";
+//         $redirectUrl = "$faceRecognitionAppUrl?data=$encryptedData";
+//         header("Location: $redirectUrl");
+//         exit();
+//     } else {
+//         echo "Invalid username or password. Please try again.";
+//     }
+// }
+?>
+
+<?php
 session_start();
 
 if(isset($_POST['loginBtn'])) {
-    
     $username = $_POST['username'];
     $password = $_POST['password'];
 
     if($username === 'user' && $password === 'password') {
-        
-        $faceRecognitionAppUrl = "http://localhost:5000";
-        $redirectUrl = "$faceRecognitionAppUrl?username=$username";
+        // Construct the data to be encrypted (the username)
+        $data = $username;
+
+        // Generate a random initialization vector (IV)
+        $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length('aes-256-cbc'));
+
+        // Encrypt the data with PKCS7 padding
+        $encryptionKey = "g5K8Ht+6oCOOG8IJnZIoR59Doa8shfBjqRvvhb9yIGU="; // Should be a secure key
+        $encryptedData = openssl_encrypt($data, 'aes-256-cbc', $encryptionKey, OPENSSL_RAW_DATA, $iv);
+
+        // Convert IV to hexadecimal string for safe inclusion in URL
+        $hexIV = bin2hex($iv);
+
+        // Construct the redirect URL with the encrypted data and IV
+        $encodedEncryptedData = base64_encode($encryptedData); // Encode the encrypted data for URL safety
+        $redirectUrl = "http://localhost:5000?data=$encodedEncryptedData&iv=$hexIV";
         header("Location: $redirectUrl");
         exit();
     } else {
-        
         echo "Invalid username or password. Please try again.";
     }
 }
 ?>
+
+
+
 
 
 <!DOCTYPE html>
