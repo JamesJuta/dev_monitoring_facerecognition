@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 05, 2024 at 05:06 AM
+-- Generation Time: Mar 05, 2024 at 09:32 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -71,10 +71,14 @@ CREATE TABLE `enrolled_students` (
 --
 
 INSERT INTO `enrolled_students` (`students_name`, `students_id_no`) VALUES
+('unknown', '195730'),
 ('James Juta', '2020-11120'),
-('Anne Villasoto', '2020-11719'),
 ('Michael Ivan Landicho', '2020-11456'),
-('Jezreel Di Rinehart', '2020-11739');
+('Anne Villasoto', '2020-11719'),
+('Jezreel Di Rinehart', '2020-11739'),
+('Aro Sanuel D. Alca', '2020-898'),
+('Nico', '26262'),
+('Sherwin Carias', '4846');
 
 -- --------------------------------------------------------
 
@@ -116,6 +120,26 @@ INSERT INTO `img_dataset` (`img_id`, `img_person`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `notice`
+--
+
+CREATE TABLE `notice` (
+  `id` varchar(10) NOT NULL,
+  `notice_message` varchar(255) NOT NULL,
+  `notice_status` varchar(20) NOT NULL,
+  `date` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `notice`
+--
+
+INSERT INTO `notice` (`id`, `notice_message`, `notice_status`, `date`) VALUES
+('2020-11120', 'notice sample: sample notice to the user', '0', '2024-03-05 03:19:31');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `time_log`
 --
 
@@ -151,7 +175,10 @@ INSERT INTO `time_log` (`log_id`, `name`, `id_no`, `building_name`, `time`, `dat
 (15, 'James Juta', '2020-11120', 'jmc building', '11:34:35 AM', '02-05-2024', '2024-02-05 11:34:36'),
 (16, 'James Juta', '2020-11120', 'jmc building', '11:34:49 AM', '02-05-2024', '2024-02-05 11:34:50'),
 (17, 'James Juta', '2020-11120', 'jmc building', '11:38:30 AM', '02-05-2024', '2024-02-05 11:38:31'),
-(18, 'James Juta', '2020-11120', 'jmc building', '11:40:20 AM', '02-05-2024', '2024-02-05 11:40:21');
+(18, 'James Juta', '2020-11120', 'jmc building', '11:40:20 AM', '02-05-2024', '2024-02-05 11:40:21'),
+(19, 'James Juta', '2020-11120', 'jmc building', '03:42:19 PM', '03-05-2024', '2024-03-05 15:42:20'),
+(20, 'James Juta', '2020-11120', 'jmc building', '03:42:38 PM', '03-05-2024', '2024-03-05 15:42:39'),
+(21, 'James Juta', '2020-11120', 'jmc building', '03:43:20 PM', '03-05-2024', '2024-03-05 15:43:21');
 
 -- --------------------------------------------------------
 
@@ -202,6 +229,12 @@ ALTER TABLE `img_dataset`
   ADD PRIMARY KEY (`img_id`);
 
 --
+-- Indexes for table `notice`
+--
+ALTER TABLE `notice`
+  ADD UNIQUE KEY `id` (`id`);
+
+--
 -- Indexes for table `time_log`
 --
 ALTER TABLE `time_log`
@@ -227,7 +260,7 @@ ALTER TABLE `accs_hist`
 -- AUTO_INCREMENT for table `time_log`
 --
 ALTER TABLE `time_log`
-  MODIFY `log_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `log_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

@@ -271,42 +271,73 @@ def decrypt_data(encrypted_data, key, iv):
 
     return decrypted_data.decode('utf-8').strip()  # Remove leading/trailing whitespace
 
-# route for the index page
+# route for the home page
 @app.route('/')
 def home():
-    session.pop('authenticated', None)
     if 'attempt_count' not in session:
         session['attempt_count'] = 0
 
-    # encrypted_data = request.args.get('data')
-    # hex_iv = request.args.get('iv')
+    # Check if the user is already logged in
+    if 'logged_in' in session:
+        decrypted_data = session.get('decrypted_data')
+        decrypted_data_parts = decrypted_data.split(',')
+        username = decrypted_data_parts[0]
+        general_id = decrypted_data_parts[1]
+        position = decrypted_data_parts[2]
 
-    # if encrypted_data and hex_iv:
-    #     # Decrypt the data using the same key used in PHP
-    #     decryptionKey = b'g5K8Ht+6oCOOG8IJnZIoR59Doa8shfBjqRvvhb9yIGU='
-    #     try:
-    #         decrypted_username = decrypt_data(encrypted_data, decryptionKey, hex_iv)
-    #         session['username'] = decrypted_username  # Store decrypted username in session
-    #         return render_template('fr_page.html', username=decrypted_username)
-    #     except Exception as e:
-    #         return f"Error decrypting data: {str(e)}"
-    # else:
-    #     return "No data to decrypt"
+        return render_template('fr_page.html', username=username, general_id=general_id, position=position)
     
-    return render_template('fr_page.html', current_year=current_year)
+    # If the user is not logged in, attempt to decrypt the data
+    encrypted_data = request.args.get('data')
+    hex_iv = request.args.get('iv')
+
+    if encrypted_data and hex_iv:
+        # Decrypt the data using the same key used in PHP
+        decryptionKey = b'g5K8Ht+6oCOOG8IJnZIoR59Doa8shfBjqRvvhb9yIGU='
+        try:
+            decrypted_data = decrypt_data(encrypted_data, decryptionKey, hex_iv)
+
+            decrypted_data_parts = decrypted_data.split(',')
+            username = decrypted_data_parts[0]
+            general_id = decrypted_data_parts[1]
+            # full_name = decrypted_data_parts[2]
+            # shortname = decrypted_data_parts[3]
+            position = decrypted_data_parts[2]
+
+            session['decrypted_data'] = decrypted_data  # Store decrypted data in session
+            session['username'] = username  # Store decrypted username in session
+            session['general_id'] = general_id  # Store decrypted general_id in session
+            # session['full_name'] = full_name  # Store decrypted full_name in session
+            # session['shortname'] = shortname  # Store decrypted shortname in session
+            session['position'] = position  # Store decrypted position in session
+
+            session['logged_in'] = True  # Set session variable to indicate logged in
+        except Exception as e:
+            return f"Error decrypting data: {str(e)}"
+    else:
+        return "No data to decrypt"
+
+    decrypted_data = session.get('decrypted_data')
+    decrypted_data_parts = decrypted_data.split(',')
+    username = decrypted_data_parts[0]
+    general_id = decrypted_data_parts[1]
+    position = decrypted_data_parts[2]
+
+    return render_template('fr_page.html', username=username, general_id=general_id, position=position)
 
 # route for time log page
 @app.route('/time_log', methods=['GET', 'POST'])
 def time_log():
 
-    # decrypted_username = session.get('username')
+    username = session.get('username')
+    position = session.get('position')
 
     session.pop('authenticated', None)
     if 'attempt_count' not in session:
         session['attempt_count'] = 0          
 
-    return render_template('index_tabulator_ajax.html', current_datetime=current_datetime, current_date=current_date, current_time=current_time, current_year=current_year)
-    # return render_template('index_tabulator_ajax.html', current_datetime=current_datetime, current_date=current_date, current_time=current_time, current_year=current_year, username=decrypted_username)
+    # return render_template('index_tabulator_ajax.html', current_datetime=current_datetime, current_date=current_date, current_time=current_time, current_year=current_year)
+    return render_template('index_tabulator_ajax.html', current_datetime=current_datetime, current_date=current_date, current_time=current_time, current_year=current_year, username=username, position=position)
 
 
 # Middleware function to check if the user is authenticated before accessing the face register page
@@ -315,12 +346,8 @@ def check_authentication():
     if request.endpoint == 'face_register' and 'authenticated' not in session:
         return redirect(url_for('face_register_password'))
 
-# route for removing the flag of authenticated session variable
-@app.route('/logout')
-def logout():
-    session.pop('authenticated', None)
-    return redirect(url_for('home'))
 
+# route for rendering the face_register_password
 @app.route('/face_register_password', methods=['GET', 'POST'])
 def face_register_password():
     return render_template('face_register_password.html', error=None)
@@ -357,9 +384,11 @@ def validate_password():
 # route for face register page
 @app.route('/face_register')
 def face_register():
-    # decrypted_username = session.get('username')
-    # return render_template('face_register.html', current_year=current_year, username=decrypted_username)
-    return render_template('face_register.html', current_year=current_year)
+    username = session.get('username')
+    position = session.get('position')
+    
+    return render_template('face_register.html', current_year=current_year, username=username, position=position)
+    # return render_template('face_register.html', current_year=current_year)
  
 @app.route('/addprsn')
 def addprsn():
@@ -448,7 +477,7 @@ def get_data():
             db_connect.close()
     return jsonify(data=[])
 
-# get recently added users
+#route for getting recently added users
 @app.route('/get_recently_added_users_data', methods=['GET'])
 def get_recently_added_users_data():
     try:
@@ -491,6 +520,17 @@ def countTodayScan():
 def loadData():
     db_connect = get_db_connection()
     mycursor = db_connect.cursor()
+
+    # make an inner join  between two time_log and notice table to show the information fetch from it to the sweet alert in the face recognition video feed, 
+    # the notice to the specific user should only be shown once the notice is shown it should update the noticestatus 
+    # the data that should be fetch from the time_log table is the log_id, name, id_no, building_name, time and date
+    # the data that should be fetch from the notice table is the id and the notice status
+    # notice_status = 0: notice not shown  
+    # notice_status = 1: the notice is already dislayed
+
+    # sql = "SELECT a.log_id, a.name, a.id_no, a.building_name, b.notice_message, a.time, a.date FROM time_log a LEFT JOIN notice b ON a.id_no = b.id WHERE a.date = CURDATE();"
+    # mycursor.execute(sql)
+
     
     sql = 'SELECT * FROM time_log WHERE DATE(datetime) = curdate() ORDER BY log_id DESC'
     mycursor.execute(sql)
@@ -511,6 +551,7 @@ def loadData():
             'building_name': data[3],
             'time': data[4],
             'date': data[5],
+            # 'notice_status': data[6],
         }
         
         return jsonify(response=data_dict)
@@ -623,12 +664,12 @@ def generate_frames():
             yield (b'--frame\r\n'
                     b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
-####
+# route for the video feed in the face register page
 @app.route('/video_feed_face_register')
 def video_feed_face_register():
     return Response(generate_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
-
+# route for the register button in the face register page
 @app.route('/register', methods=['GET', 'POST'])
 def register():
 
@@ -655,24 +696,30 @@ def register():
     max_imgid = img_id + 20
     count_img = 0
     
-    
     if not capture_in_progress:
         capture_in_progress = True
         image_count = 0
+
     if request.method == 'POST':
         nbr = request.form['txtnbr']
         prsname = request.form.get('txtname')
 
+        # Check if the user with the provided id_no already exists
+        mycursor.execute("SELECT * FROM users WHERE id_no = %s", (nbr,))
+        existing_user = mycursor.fetchone()
+
+        if existing_user:
+            return jsonify({'success': False, 'message': 'User already registered.'})
+
+        # Insert the new user
         sql = "INSERT INTO `users` (`id_no`, `name`) VALUES (%s, %s)"
         values = (nbr, prsname)
         mycursor.execute(sql, values)
-        
         db_connect.commit()
 
         while capture_in_progress and image_count < total_images:
             success, frame = camera.read()
             if success:
-
                 if face_cropped(frame) is not None:
                     image_count += 1
                     img_id += 1
@@ -691,7 +738,6 @@ def register():
                     except mysql.connector.Error as err:
                         print(f"Error: {err}")
 
-
         if capture_in_progress:
             capture_in_progress = False
 
@@ -702,8 +748,17 @@ def register():
         else:
             return 'Failed to capture image.'
 
-    # return render_template('register.html')   
-    return jsonify({'success': True, 'message': message})
+    return jsonify({'success': True, 'message': 'Invalid request.'})
+
+# logout route 
+@app.route('/logout', methods=['POST'])
+def logout():
+    # Clear all session variables
+    # session.pop('logged_in', None)  # Remove session variable indicating logged in
+    session.clear()
+
+    # Redirect the user to the specified URL
+    return redirect("http://localhost/dev_eguro/app/index.php")
 
 if __name__ == "__main__":
     # play_sound("initializing.mp3")

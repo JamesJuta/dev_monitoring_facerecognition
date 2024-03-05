@@ -1,9 +1,24 @@
 <li class="nav-item dropdown">
-    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-      Account
-    </a>
-    <ul class="dropdown-menu">
-      <li><a class="dropdown-item" href="#"><i class='bx bx-user' ></i> {{username}}</a></li>
-      <li><a class="dropdown-item" href="{{ url_for('logout') }}"><i class='bx bx-log-out'></i> Logout</a></li>
-    </ul>
+  <a class="nav-link d-flex align-items-center pe-0" href="#" id="dropdownMenuClickableInside" data-bs-toggle="dropdown" data-bs-auto-close="outside">
+      <!-- <img src="" alt="Profile picture" class="rounded-circle" style="aspect-ratio: 1 / 1; object-fit: cover;"> -->
+      <span class="d-none d-md-block dropdown-toggle ps-2">Account</span>
+  </a>
+
+  <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile" style="width: 230px;" aria-labelledby="dropdownMenuClickableInside">
+      <li class="dropdown-header mt-3">
+          <h6 class="text-center"><b>{{username}}</b></h6>
+          <p class="text-center">{{position}}</p>
+      </li>
+     
+      <li>
+          <hr class="dropdown-divider">
+      </li>
+      <li>
+          <form id="logout_form" action="{{ url_for('logout') }}" method="post">
+              <button type="submit" class="dropdown-item d-flex align-items-center" id="logoutSubmit" name="logoutSubmit" value="submitLogout">
+                  <span><i class='bx bx-log-out'></i> Sign Out</span>
+              </button>
+          </form>
+      </li>
+  </ul>
 </li>

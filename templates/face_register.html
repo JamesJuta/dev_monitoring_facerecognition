@@ -7,17 +7,20 @@
 <body class="d-flex flex-column h-100vh" style="background-color: #f5f8fe;">
    
     <!-- navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow p-2 p-2 pe-5 ps-5">
+    <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm p-2 p-2 pe-5 ps-5">
         <div class="container-fluid">
+
             <a class="navbar-brand d-flex align-items-center" href="#">
                 <img src="{{ url_for('static', filename='img/e_monitoring_logo') }}" alt="" width="55" height="55" class="d-inline-block align-text-top p-1">
                 <span class="navbar-brand mb-0 h1 p-1"><b>e-Monitoring</b></span>
             </a>
+
             <button class="navbar-toggler collapsed btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="toggler-icon top-bar"></span>
                 <span class="toggler-icon middle-bar"></span>
                 <span class="toggler-icon bottom-bar"></span>
             </button>
+
             <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
                 <ul class="navbar-nav mb-2 mb-lg-0">
                     <li class="nav-item">
@@ -29,9 +32,10 @@
                     <li class="nav-item">
                         <a class="nav-link active text-primary" href="#" id="faceRegisterBtn"><i class='bx bx-user' ></i> Face Register</a>
                     </li>
-                    <!-- {% include "navbar_account.html" %} -->
+                    {% include "navbar_account.html" %}
                 </ul>
             </div>
+
         </div>
     </nav>
     
@@ -266,14 +270,25 @@
                                 timerProgressBar: true
                             });
                         } else {
-                            Swal.fire({
-                                title: 'Error!',
-                                text: response.message,
-                                icon: 'error',
-                                showConfirmButton: false,
-                                timer: 3000,
-                                timerProgressBar: true
-                            });
+                            if (response.message === 'User already registered.') {
+                                Swal.fire({
+                                    title: 'Warning!',
+                                    text: response.message,
+                                    icon: 'error',
+                                    showConfirmButton: false,
+                                    timer: 3000,
+                                    timerProgressBar: true
+                                });
+                            } else {
+                                Swal.fire({
+                                    title: 'Error!',
+                                    text: response.message,
+                                    icon: 'error',
+                                    showConfirmButton: false,
+                                    timer: 3000,
+                                    timerProgressBar: true
+                                });
+                            }
                         }
                     },
                     error: function() {
@@ -290,6 +305,6 @@
             });
         });
     </script>
-    
+ 
 </body>
 </html>
