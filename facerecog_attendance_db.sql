@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 05, 2024 at 09:32 AM
+-- Generation Time: Mar 12, 2024 at 08:22 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -24,36 +24,21 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Table structure for table `accs_hist`
+-- Table structure for table `activity_log`
 --
 
-CREATE TABLE `accs_hist` (
-  `accs_id` int(11) NOT NULL,
-  `accs_date` date NOT NULL,
-  `accs_prsn` varchar(3) NOT NULL,
-  `accs_added` datetime NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `attendance`
---
-
-CREATE TABLE `attendance` (
-  `name` varchar(255) NOT NULL,
-  `time_in` varchar(255) DEFAULT NULL,
-  `time_out` varchar(255) DEFAULT NULL,
-  `date` date NOT NULL
+CREATE TABLE `activity_log` (
+  `datetime` varchar(20) NOT NULL,
+  `name` varchar(20) NOT NULL,
+  `action` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `attendance`
+-- Dumping data for table `activity_log`
 --
 
-INSERT INTO `attendance` (`name`, `time_in`, `time_out`, `date`) VALUES
-('Aro', '01:02 PM', NULL, '2024-01-16'),
-('james', '01:32 PM', '01:33 PM', '2024-01-14');
+INSERT INTO `activity_log` (`datetime`, `name`, `action`) VALUES
+('2024-03-12 01:59:42', 'misd@ccc.edu.ph', 'SUCCESS - FACE REGISTRATION - Detail: {id_no:26262, name: misd@ccc.edu.ph, time_added: 2024-03-12 01:59:42}');
 
 -- --------------------------------------------------------
 
@@ -63,22 +48,26 @@ INSERT INTO `attendance` (`name`, `time_in`, `time_out`, `date`) VALUES
 
 CREATE TABLE `enrolled_students` (
   `students_name` varchar(255) NOT NULL,
-  `students_id_no` varchar(10) NOT NULL
+  `students_id_no` varchar(10) NOT NULL,
+  `first_name` varchar(100) NOT NULL,
+  `middle_name` varchar(100) NOT NULL,
+  `surname` varchar(100) NOT NULL,
+  `account_status` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `enrolled_students`
 --
 
-INSERT INTO `enrolled_students` (`students_name`, `students_id_no`) VALUES
-('unknown', '195730'),
-('James Juta', '2020-11120'),
-('Michael Ivan Landicho', '2020-11456'),
-('Anne Villasoto', '2020-11719'),
-('Jezreel Di Rinehart', '2020-11739'),
-('Aro Sanuel D. Alca', '2020-898'),
-('Nico', '26262'),
-('Sherwin Carias', '4846');
+INSERT INTO `enrolled_students` (`students_name`, `students_id_no`, `first_name`, `middle_name`, `surname`, `account_status`) VALUES
+('unknown', '195730', '', '', '', 1),
+('James Juta', '2020-11120', 'James', 'Fajardo', 'Juta', 1),
+('Michael Ivan Landicho', '2020-11456', 'MIchael Ivan', '', 'Landicho', 1),
+('Anne Villasoto', '2020-11719', 'Anne Ferdilyn', '', 'Villasoto', 1),
+('Jezreel Di Rinehart', '2020-11739', 'Jezreel Di', '', 'Rinehart', 1),
+('Aro Sanuel D. Alca', '2020-898', 'Aro Sanuel', '', 'Alca', 1),
+('Nico', '26262', '', '', '', 1),
+('Sherwin Carias', '4846', 'Sherwin', '', 'Carias', 1);
 
 -- --------------------------------------------------------
 
@@ -135,7 +124,8 @@ CREATE TABLE `notice` (
 --
 
 INSERT INTO `notice` (`id`, `notice_message`, `notice_status`, `date`) VALUES
-('2020-11120', 'notice sample: sample notice to the user', '0', '2024-03-05 03:19:31');
+('2020-11120', 'notice sample: sample notice to the user', '0', '2024-03-05 03:19:31'),
+('2020-11121', 'sample notice for this day', '0', '2024-03-07 01:05:39');
 
 -- --------------------------------------------------------
 
@@ -187,9 +177,9 @@ INSERT INTO `time_log` (`log_id`, `name`, `id_no`, `building_name`, `time`, `dat
 --
 
 CREATE TABLE `users` (
-  `id_no` varchar(10) NOT NULL,
-  `name` varchar(50) NOT NULL,
-  `time_added` datetime NOT NULL DEFAULT current_timestamp()
+  `id_no` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `time_added` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
@@ -204,35 +194,16 @@ INSERT INTO `users` (`id_no`, `name`, `time_added`) VALUES
 --
 
 --
--- Indexes for table `accs_hist`
---
-ALTER TABLE `accs_hist`
-  ADD PRIMARY KEY (`accs_id`),
-  ADD KEY `accs_date` (`accs_date`);
-
---
--- Indexes for table `attendance`
---
-ALTER TABLE `attendance`
-  ADD PRIMARY KEY (`name`,`date`);
-
---
 -- Indexes for table `enrolled_students`
 --
 ALTER TABLE `enrolled_students`
-  ADD UNIQUE KEY `students_id_no` (`students_id_no`);
+  ADD PRIMARY KEY (`students_id_no`);
 
 --
 -- Indexes for table `img_dataset`
 --
 ALTER TABLE `img_dataset`
   ADD PRIMARY KEY (`img_id`);
-
---
--- Indexes for table `notice`
---
-ALTER TABLE `notice`
-  ADD UNIQUE KEY `id` (`id`);
 
 --
 -- Indexes for table `time_log`
@@ -245,22 +216,6 @@ ALTER TABLE `time_log`
 --
 ALTER TABLE `users`
   ADD PRIMARY KEY (`id_no`);
-
---
--- AUTO_INCREMENT for dumped tables
---
-
---
--- AUTO_INCREMENT for table `accs_hist`
---
-ALTER TABLE `accs_hist`
-  MODIFY `accs_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=299;
-
---
--- AUTO_INCREMENT for table `time_log`
---
-ALTER TABLE `time_log`
-  MODIFY `log_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

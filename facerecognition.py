@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, session, redirect, url_for, Response, jsonify, flash
+from flask import Flask, render_template, request, session, redirect, url_for, Response, jsonify, abort
 import mysql.connector
 from db_connect import get_db_connection, close_db_connection
 import cv2
@@ -15,19 +15,33 @@ import dlib
 
 # imports for decrypting the data in the URL
 from Crypto.Cipher import AES
-from Crypto.Util.Padding import unpad
+from Crypto.Util.Padding import pad, unpad
 import base64
  
 app = Flask(__name__)
 app.secret_key = 'GAo2wWbWR2vM1BYexzAXs9QDuHXYkgKZ'
 mixer.init()
 
+# Define constants
+CASCADE_PATH = "resources/haarcascade_frontalface_default.xml"
+DATASET_PATH = "dataset/"
+BATCH_SIZE = 200
+
+# Number of maximum attempts
+MAX_ATTEMPTS = 5
+# Lockout time in seconds
+LOCKOUT_TIME = 60  # 3 minutes in seconds
+
+# Keeping track of attempts and last attempt time
+attempt_count = 0
+last_attempt_time = None
+
 camera = cv2.VideoCapture(0)
 capture_in_progress = False
 image_count = 0
-total_images = 100  # Total images to capture
+total_images = 200  # Total images to capture
 detector = dlib.get_frontal_face_detector()
-face_cascade = cv2.CascadeClassifier("resources/haarcascade_frontalface_default.xml")
+face_cascade = cv2.CascadeClassifier(CASCADE_PATH)
  
 cnt = 0
 pause_cnt = 0
@@ -42,15 +56,6 @@ current_date = current_datetime.strftime('%m-%d-%Y')
 current_time = current_datetime.strftime('%I:%M:%S %p')
 current_year = current_datetime.strftime('%Y')
 day_of_week = current_datetime.strftime('%A')  # Full name of the day (e.g., Monday)
-
-# Number of maximum attempts
-MAX_ATTEMPTS = 5
-# Lockout time in seconds
-LOCKOUT_TIME = 60  # 3 minutes in seconds
-
-# Keeping track of attempts and last attempt time
-attempt_count = 0
-last_attempt_time = None
 
 # text to speech function
 def text_to_speech(message):
@@ -71,8 +76,8 @@ def play_sound(file_name):
  
  
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Generate dataset >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-def generate_dataset(nbr):
-    face_classifier = cv2.CascadeClassifier("resources/haarcascade_frontalface_default.xml")
+def generate_dataset(nbr):  
+    face_classifier = cv2.CascadeClassifier(CASCADE_PATH)
  
     def face_cropped(img):
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -196,6 +201,11 @@ def face_recognition():  # generate frame by frame from camera
                 current_datetime = datetime.now()
                 current_date = current_datetime.strftime('%m-%d-%Y')
                 current_time = current_datetime.strftime('%I:%M:%S %p')
+
+
+                # name = row[]
+                # middle_name = row[]
+                # last_name = row[]
  
                 if int(cnt) == 30:
                     cnt = 0
@@ -224,7 +234,7 @@ def face_recognition():  # generate frame by frame from camera
  
                 if pause_cnt > 80:
                     justscanned = False
- 
+    
             coords = [x, y, w, h]
         return coords
  
@@ -233,7 +243,7 @@ def face_recognition():  # generate frame by frame from camera
         coords = draw_boundary(img, faceCascade, 1.1, 10, (255, 255, 255), "Face", clf)
         return img
  
-    faceCascade = cv2.CascadeClassifier("resources/haarcascade_frontalface_default.xml")
+    faceCascade = cv2.CascadeClassifier(CASCADE_PATH)
     clf = cv2.face.LBPHFaceRecognizer_create()
     clf.read("classifier.xml")
  
@@ -256,22 +266,84 @@ def face_recognition():  # generate frame by frame from camera
             break
 
 # Decryption function
+# def decrypt_data(encrypted_data, key, iv):
+#     # Ensure the key is the correct length
+#     key = key[:32]  # Trim to 32 bytes if longer
+
+#     # Convert IV from hexadecimal string to bytes
+#     iv_bytes = bytes.fromhex(iv)
+
+#     cipher = AES.new(key, AES.MODE_CBC, iv_bytes)
+#     decrypted_data = cipher.decrypt(base64.b64decode(encrypted_data))
+
+#     # Unpad the decrypted data
+#     decrypted_data = unpad(decrypted_data, AES.block_size)
+
+#     return decrypted_data.decode('utf-8').strip()  # Remove leading/trailing whitespace
+        
+
+# Decrypt data function
 def decrypt_data(encrypted_data, key, iv):
-    # Ensure the key is the correct length
-    key = key[:32]  # Trim to 32 bytes if longer
-
-    # Convert IV from hexadecimal string to bytes
-    iv_bytes = bytes.fromhex(iv)
-
-    cipher = AES.new(key, AES.MODE_CBC, iv_bytes)
+    cipher = AES.new(key, AES.MODE_CBC, iv)
     decrypted_data = cipher.decrypt(base64.b64decode(encrypted_data))
-
-    # Unpad the decrypted data
-    decrypted_data = unpad(decrypted_data, AES.block_size)
-
-    return decrypted_data.decode('utf-8').strip()  # Remove leading/trailing whitespace
+    unpadded_data = unpad(decrypted_data, AES.block_size)
+    return unpadded_data.decode('utf-8')
 
 # route for the home page
+# @app.route('/')
+# def home():
+#     if 'attempt_count' not in session:
+#         session['attempt_count'] = 0
+
+#     # Check if the user is already logged in
+#     if 'logged_in' in session:
+#         decrypted_data = session.get('decrypted_data')
+#         decrypted_data_parts = decrypted_data.split(',')
+#         username = decrypted_data_parts[0]
+#         general_id = decrypted_data_parts[1]
+#         position = decrypted_data_parts[2]
+
+#         return render_template('fr_page.html', username=username, general_id=general_id, position=position)
+    
+#     # If the user is not logged in, attempt to decrypt the data
+#     encrypted_data = request.args.get('data')
+#     hex_iv = request.args.get('iv')
+
+#     if encrypted_data and hex_iv:
+#         # Decrypt the data using the same key used in PHP
+#         decryptionKey = b'g5K8Ht+6oCOOG8IJnZIoR59Doa8shfBjqRvvhb9yIGU='
+#         try:
+#             decrypted_data = decrypt_data(encrypted_data, decryptionKey, hex_iv)
+
+#             decrypted_data_parts = decrypted_data.split(',')
+#             username = decrypted_data_parts[0]
+#             general_id = decrypted_data_parts[1]
+#             # full_name = decrypted_data_parts[2]
+#             # shortname = decrypted_data_parts[3]
+#             position = decrypted_data_parts[2]
+
+#             session['decrypted_data'] = decrypted_data  # Store decrypted data in session
+#             session['username'] = username  # Store decrypted username in session
+#             session['general_id'] = general_id  # Store decrypted general_id in session
+#             # session['full_name'] = full_name  # Store decrypted full_name in session
+#             # session['shortname'] = shortname  # Store decrypted shortname in session
+#             session['position'] = position  # Store decrypted position in session
+
+#             session['logged_in'] = True  # Set session variable to indicate logged in
+#         except Exception as e:
+#             return f"Error decrypting data: {str(e)}"
+#     else:
+#         return "No data to decrypt"
+
+#     decrypted_data = session.get('decrypted_data')
+#     decrypted_data_parts = decrypted_data.split(',')
+#     username = decrypted_data_parts[0]
+#     general_id = decrypted_data_parts[1]
+#     position = decrypted_data_parts[2]
+
+#     return render_template('fr_page.html', username=username, general_id=general_id, position=position)
+
+
 @app.route('/')
 def home():
     if 'attempt_count' not in session:
@@ -293,27 +365,27 @@ def home():
 
     if encrypted_data and hex_iv:
         # Decrypt the data using the same key used in PHP
-        decryptionKey = b'g5K8Ht+6oCOOG8IJnZIoR59Doa8shfBjqRvvhb9yIGU='
+        # decryptionKey = b'g5K8Ht+6oCOOG8IJnZIoR59Doa8shfBjqRvvhb9yIGU=' 
+        decryptionKey = b'g5K8Ht+6oCOOG8IJnZIoR59Doa8shfBj'  # 32 bytes
+
         try:
-            decrypted_data = decrypt_data(encrypted_data, decryptionKey, hex_iv)
+            decrypted_data = decrypt_data(encrypted_data, decryptionKey, bytes.fromhex(hex_iv))
 
             decrypted_data_parts = decrypted_data.split(',')
             username = decrypted_data_parts[0]
             general_id = decrypted_data_parts[1]
-            # full_name = decrypted_data_parts[2]
-            # shortname = decrypted_data_parts[3]
             position = decrypted_data_parts[2]
 
             session['decrypted_data'] = decrypted_data  # Store decrypted data in session
             session['username'] = username  # Store decrypted username in session
             session['general_id'] = general_id  # Store decrypted general_id in session
-            # session['full_name'] = full_name  # Store decrypted full_name in session
-            # session['shortname'] = shortname  # Store decrypted shortname in session
             session['position'] = position  # Store decrypted position in session
 
             session['logged_in'] = True  # Set session variable to indicate logged in
         except Exception as e:
             return f"Error decrypting data: {str(e)}"
+            # error_message = {"error": "Error decrypting data", "details": str(e)}
+            # return jsonify(error_message), 500  # Return JSON response with error message and status code
     else:
         return "No data to decrypt"
 
@@ -338,7 +410,6 @@ def time_log():
 
     # return render_template('index_tabulator_ajax.html', current_datetime=current_datetime, current_date=current_date, current_time=current_time, current_year=current_year)
     return render_template('index_tabulator_ajax.html', current_datetime=current_datetime, current_date=current_date, current_time=current_time, current_year=current_year, username=username, position=position)
-
 
 # Middleware function to check if the user is authenticated before accessing the face register page
 @app.before_request
@@ -672,15 +743,18 @@ def video_feed_face_register():
 # route for the register button in the face register page
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-
     global image_count, total_images, capture_in_progress
-    face_classifier = cv2.CascadeClassifier("resources/haarcascade_frontalface_default.xml")
+
+    # Check if image capture is already in progress
+    if capture_in_progress:
+        play_sound("image_capture_in_progress.mp3")
+        return jsonify({'success': False, 'message': 'Image capture in progress. Please wait.'})
+
+    face_classifier = cv2.CascadeClassifier(CASCADE_PATH)
 
     def face_cropped(img):
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         faces = face_classifier.detectMultiScale(gray, 1.3, 5)
-        # scaling factor=1.3
-        # Minimum neighbor = 5
  
         if faces is ():
             return None
@@ -696,26 +770,39 @@ def register():
     max_imgid = img_id + 20
     count_img = 0
     
-    if not capture_in_progress:
-        capture_in_progress = True
-        image_count = 0
-
     if request.method == 'POST':
         nbr = request.form['txtnbr']
-        prsname = request.form.get('txtname')
 
         # Check if the user with the provided id_no already exists
         mycursor.execute("SELECT * FROM users WHERE id_no = %s", (nbr,))
         existing_user = mycursor.fetchone()
 
         if existing_user:
+            play_sound("user_already_registered.mp3")
             return jsonify({'success': False, 'message': 'User already registered.'})
+        
+        # Fetch data from enrolled_students table
+        mycursor.execute("SELECT students_id_no, students_name FROM `enrolled_students` WHERE students_id_no = %s", (nbr,))
+        user = mycursor.fetchone()
 
-        # Insert the new user
-        sql = "INSERT INTO `users` (`id_no`, `name`) VALUES (%s, %s)"
-        values = (nbr, prsname)
-        mycursor.execute(sql, values)
-        db_connect.commit()
+        if user:
+            id_no = user[0]
+            name = user[1]
+            current_date = current_datetime.strftime('%Y-%m-%d')
+            current_time = current_datetime.strftime('%I:%M:%S')
+            date_added = current_date + " " + current_time
+
+            # Insert the new user
+            sql = "INSERT INTO `users` (`id_no`, `name`, `time_added`) VALUES (%s, %s, %s)"
+            values = (id_no, name, date_added)
+            mycursor.execute(sql, values)
+            db_connect.commit()
+
+            # Set capture_in_progress to True only if the user doesn't exist in the database
+            capture_in_progress = True
+            image_count = 0
+
+        batch_images = []  # List to store images to be inserted in a batch
 
         while capture_in_progress and image_count < total_images:
             success, frame = camera.read()
@@ -730,19 +817,32 @@ def register():
                     cv2.imwrite(file_name_path, face)
                     cv2.putText(face, str(count_img), (30, 30), cv2.FONT_HERSHEY_COMPLEX, 1, (0, 255, 0), 1)
 
-                    query = "INSERT INTO `img_dataset` (`img_id`, `img_person`) VALUES (%s, %s)"
-                    values = (img_id, nbr)
-                    try:
-                        mycursor.execute(query, values)
-                        db_connect.commit()
-                    except mysql.connector.Error as err:
-                        print(f"Error: {err}")
+                    # Append image data to batch list
+                    batch_images.append((img_id, nbr))
+
+                    # If batch size reaches a threshold, insert batch into database
+                    if len(batch_images) >= BATCH_SIZE:
+                        insert_batch_images(batch_images)
+                        batch_images = []
 
         if capture_in_progress:
             capture_in_progress = False
 
-            train_classifier(nbr)
+            # If there are remaining images in the batch, insert them into the database
+            # if batch_images:
+            #     insert_batch_images(batch_images)
 
+            username = session.get('username')
+            general_id = session.get('general_id')
+            details = "{id_no: " + id_no  + ", name: " + name + ", time_added: " + date_added + "}"
+            action = f"SUCCESS - FACE REGISTRATION - " + "[" + general_id + "]"  +" Details: "+ details   
+            activity_log_query = "INSERT INTO `activity_log` (`datetime`, `name`, `action`) VALUES (%s, %s, %s)"
+            values = (date_added, username, action)
+            mycursor.execute(activity_log_query, values)
+            db_connect.commit() 
+
+            # train_classifier(nbr)
+            play_sound("images_captured_successfully.mp3")
             message = "Images captured successfully!"
             return jsonify({'success': True, 'message': message})
         else:
@@ -750,11 +850,53 @@ def register():
 
     return jsonify({'success': True, 'message': 'Invalid request.'})
 
+
+def insert_batch_images(batch_images):
+    # Insert batch of images into the database
+    sql = "INSERT INTO `img_dataset` (`img_id`, `img_person`) VALUES (%s, %s)"
+    mycursor.executemany(sql, batch_images)
+    db_connect.commit()
+
+
+# activity log route 
+@app.route('/activity_log', methods=['POST'])
+def activity_log():
+    session.pop('authenticated', None)
+
+    username = session.get('username')
+    position = session.get('position')
+    general_id = session.get('general_id')
+   
+    return render_template("activity_log.html", username=username, position=position, general_id=general_id)
+
+
+#route for getting recently added users
+@app.route('/get_activity_log_data', methods=['GET'])
+def get_activity_log_data():
+    try:
+        table = request.args.get('table')
+
+        if table is not None and table != '':
+            mycursor = db_connect.cursor(dictionary=True)
+
+            sql = 'SELECT datetime, name, action FROM activity_log ORDER BY datetime DESC'
+            mycursor.execute(sql)
+            data = mycursor.fetchall()
+            return jsonify(data=data)
+        else:
+            return jsonify(error="User ID parameter is missing or empty")
+    except mysql.connector.Error as err:
+        print(f"Error: {err}")
+    finally:
+        if 'connection' in locals() and db_connect.is_connected():
+            mycursor.close()
+            db_connect.close()
+    return jsonify(data=[])
+
 # logout route 
 @app.route('/logout', methods=['POST'])
 def logout():
     # Clear all session variables
-    # session.pop('logged_in', None)  # Remove session variable indicating logged in
     session.clear()
 
     # Redirect the user to the specified URL

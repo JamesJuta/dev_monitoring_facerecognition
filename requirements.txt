@@ -5,3 +5,5 @@ Pillow
 gtts
 pygame
 numpy
+
+dlib

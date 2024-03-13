@@ -10,13 +10,14 @@
     /* ===== Colors ===== */
     --body-color: #E4E9F7;
     --sidebar-color: #FFF;
-    --primary-color: #1A73E8;
-    /* --primary-color: #522fc5; */
+    /* --primary-color: #1A73E8; */
+    --primary-color: #290c5e;
+    /* --primary-color: linear-gradient(to bottom right, #5837c7, #290c5e); */
     --primary-color-light: #F6F5FF;
     --secondary-color: #2f2f41;
     --toggle-color: #DDD;
     --text-color: #707070;
-    --btn-hover-color: #2a52be;
+    --btn-hover-color: #5837c7;
     --background-color:#f5f8fe;
 
     /* ====== Transition ====== */
@@ -40,6 +41,7 @@
 body {
     animation: transitionIn 1s;
     min-height: 100vh;
+    background-color: #f5f8fe;
 }
 @keyframes transitionIn{
     from{
@@ -57,6 +59,11 @@ body {
     color: var(--primary-color); 
     border: 1px solid var(--primary-color); 
 }
+
+.tabulator-header .tabulator-col .tabulator-col-title {
+    text-align: center;
+}
+
 .tabulator .tabulator-footer .tabulator-page:hover {
     background-color: #2980b9; 
 }
@@ -80,7 +87,8 @@ body {
 }
 
 .form__div{
-    position: relative; 
+    position: relative;
+    width: 90%; 
     height: 48px;
     margin-bottom: 1rem;
 }
@@ -171,11 +179,30 @@ body {
     --bs-tooltip-color: white;
 }
 
-/* .bg_custom{
-    background-color: var(--primary-color);
-} */
+.bg_custom{
+    /* background-color: var(--primary-color); */
+    background-image: linear-gradient(to right, #5837c7, #290c5e);
+    border: none;
+}
 
 .color_custom{
+    color: var(--primary-color);
+}
+
+.btn-primary:hover{
+    background-color: var(--btn-hover-color);
+}
+
+
+.btn-outline-primary{
+    border: 1px solid var(--primary-color);
+}
+.btn-outline-primary:hover{
+    background-color: var(--primary-color);
+    border: 1px solid var(--primary-color); 
+}
+
+.text-primary{
     color: var(--primary-color);
 }
 
@@ -285,4 +312,12 @@ body {
 .title{
     font-weight: 600;
     margin-bottom: 1rem;
+}
+
+/* password toggle */
+.password-toggle{
+    position: absolute;
+    top: 13px;
+    left: 415px;
+    z-index: 100px;
 }

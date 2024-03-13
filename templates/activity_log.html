@@ -1,0 +1,129 @@
+{% include "head.html" %}
+
+<body class="d-flex flex-column h-100vh">
+   
+    <!-- navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm p-2 p-2 pe-5 ps-5">
+        <div class="container-fluid">
+
+            <!-- navbar logo and toggler -->
+            {% include "navbar_logo_toggler.html" %}
+
+            <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
+                <ul class="navbar-nav mb-2 mb-lg-0 nav-underline">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('home') }}"><i class="bi bi-house-door"></i> Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="{{ url_for('time_log') }}"><i class="bi bi-clock"></i> Time Log</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('face_register_password') }}" id="faceRegisterBtn"><i class="bi bi-person-bounding-box"></i> Face Register</a>
+                    </li>
+                    
+                    <!-- navbar account -->
+                    {% include "navbar_account.html" %}
+                </ul>
+            </div>
+
+        </div>
+    </nav>
+    
+    <!-- Recently added users table -->
+    <div class="container">
+        <div class="row" style="padding: 20px;">
+            <div class="col-12">
+                <div class="card shadow-sm">
+
+                    <div class="card-header bg_custom text-white fw-semibold d-flex align-items-center justify-content-between flex-wrap" style=" height: 55px;">
+                        <h5 class="p-2 text-white title"><i class="bi bi-person-lines-fill"></i> Activity Log</h5>
+                    </div>
+
+                    <div class="card-body mt-1 bg-white">
+                        <div id="activity-log-table" class="table table-sm tabulator"></div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- footer -->
+    {% include "footer.html" %}
+
+    <script>
+
+        var datetime = '{{current_datetime}}'
+        var global_date = '{{ initial_date_range }}';
+        var set_server_time = '{{current_datetime}}'
+        var serverOffset = moment(set_server_time).diff(new Date());
+        var now_server = moment();
+        now_server.add(serverOffset, 'milliseconds');
+        var dateLimit = now_server.format('MM-DD-YYYY');
+
+        var startDate = moment('{{current_date}}', 'MM-DD-YYYY');
+        var endDate = moment('{{current_date}}', 'MM-DD-YYYY');
+
+        var table = new Tabulator('#activity-log-table', {
+            height: "400px",
+            printAsHtml: true,
+            headerFilterPlaceholder: "Search",
+            layout: 'fitDataStretch',
+            placeholder: 'No Data Found',
+            ajaxURL: '/get_activity_log_data',
+            ajaxParams: {
+                table: 'master_schedule',
+                status: global_date
+            },
+            pagination: 'remote',
+            paginationButtonCount: 5,
+            paginationSize: 20,
+            ajaxSorting: true,
+            ajaxFiltering: true,
+            ajaxLoader: true,
+            ajaxLoaderLoading: 'Fetching data from Database..',
+            paginationSizeSelector: [50, 100, 500, 1000, 2000],
+            columns: [
+                {title: "Date & Time", field: "datetime",
+                    headerFilterPlaceholder: "Search",
+                    headerFilter: "input",
+                    headerFilterFunc: "like",
+                    headerFilterParams: {
+                        allowEmpty: true
+                    },
+                    headerFilterLiveFilter: false,
+                    formatter: 'textarea',
+                    vertAlign: 'middle',
+                    minWidth: 200},
+                {title: "Name", field: "name",
+                    headerFilterPlaceholder: "Search",
+                    headerFilter: "input",
+                    headerFilterFunc: "like",
+                    headerFilterParams: {
+                        allowEmpty: true
+                    },
+                    headerFilterLiveFilter: false,
+                    formatter: 'textarea',
+                    vertAlign: 'middle',
+                    minWidth: 200},
+                {title: "ACTION", field: "action", 
+                    headerFilterPlaceholder: "Search",
+                    headerFilter: "input",
+                    headerFilterFunc: "like",
+                    headerFilterParams: {
+                        allowEmpty: true
+                    },
+                    headerFilterLiveFilter: false,
+                    formatter: 'textarea',
+                    vertAlign: 'middle',
+                        minWidth: 400},
+            ],
+            ajaxResponse: function (url, params, response) {
+                return response.data
+            },
+        });
+       
+    </script>
+ 
+</body>
+</html>

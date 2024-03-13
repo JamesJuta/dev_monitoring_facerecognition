@@ -1,37 +1,26 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    {% include "head.html" %}
-</head>
+{% include "head.html" %}
 
-<body class="d-flex flex-column h-100vh" style="background-color: #f5f8fe;">
+<body class="d-flex flex-column h-100vh">
    
     <!-- navbar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm p-2 p-2 pe-5 ps-5">
         <div class="container-fluid">
 
-            <a class="navbar-brand d-flex align-items-center" href="#">
-                <img src="{{ url_for('static', filename='img/e_monitoring_logo') }}" alt="" width="55" height="55" class="d-inline-block align-text-top p-1">
-                <span class="navbar-brand mb-0 h1 p-1"><b>e-Monitoring</b></span>
-            </a>
-
-            <button class="navbar-toggler collapsed btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="toggler-icon top-bar"></span>
-                <span class="toggler-icon middle-bar"></span>
-                <span class="toggler-icon bottom-bar"></span>
-            </button>
+            <!-- navbar logo and toggler -->
+            {% include "navbar_logo_toggler.html" %}
 
             <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
-                <ul class="navbar-nav mb-2 mb-lg-0">
+                <ul class="navbar-nav mb-2 mb-lg-0 nav-underline">
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('home') }}"><i class='bx bx-home'></i> Home</a>
+                        <a class="nav-link" href="{{ url_for('home') }}"><i class="bi bi-house-door"></i> Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" aria-current="page" href="{{ url_for('time_log') }}"><i class='bx bx-time'></i> Time Log</a>
+                        <a class="nav-link" aria-current="page" href="{{ url_for('time_log') }}"><i class="bi bi-clock"></i> Time Log</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active text-primary" href="#" id="faceRegisterBtn"><i class='bx bx-user' ></i> Face Register</a>
+                        <a class="nav-link active" style="color: var(--primary-color)" href="#" id="faceRegisterBtn"><i class="bi bi-person-bounding-box"></i> <b>Face Register</b></a>
                     </li>
+                    <!-- navbar account -->
                     {% include "navbar_account.html" %}
                 </ul>
             </div>
@@ -44,10 +33,12 @@
         <div class="row" style="padding: 20px;">
             <div class="col-12">
                 <div class="card shadow-sm">
-                    <div class="card-header bg-primary text-white fw-semibold d-flex align-items-center justify-content-between flex-wrap" style=" height: 60px;">
-                        <h4 class="p-2 text-white title"><i class='bx bx-user' ></i> Recently Added Users</h4>
+
+                    <div class="card-header bg_custom text-white fw-semibold d-flex align-items-center justify-content-between flex-wrap" style=" height: 55px;">
+                        <h5 class="p-2 text-white title"><i class="bi bi-person-square"></i> Recently Added Users</h5>
                         <button type="button" class="btn btn-outline-light btn-sm mb-3" id="register_user" data-bs-toggle="modal" data-bs-target="#register_user_modal"><i class='bx bx-scan'></i> Register Face</button>
                     </div>
+
                     <div class="card-body mt-1 bg-white">
                         <div id="recently-added-table" class="table table-sm tabulator"></div>
                     </div>
@@ -58,74 +49,55 @@
     </div>
 
     <div class="modal fade" id="register_user_modal" aria-hidden="true" aria-labelledby="registerUserModalLabel" tabindex="-1">
-        <div class="modal-dialog modal-xl modal-dialog-centered d-flex">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
             <div class="modal-content">
-
-                <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title" id="faceRegisterModalLabel"><i class='bx bx-user' ></i> Register Face</h5>
+    
+                <div class="modal-header bg_custom text-white">
+                    <h5 class="modal-title" id="faceRegisterModalLabel"><i class="bi bi-person"></i> Register Face</h5>
                     <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-
-                
-                <!-- id="face_register_form" -->
-                <form class="form d-flex" id="face_register_form" method="post" action="{{ url_for('register') }}">
-                    <img  class="card shadow-sm p-2" alt="img" src="{{ url_for('video_feed_face_register') }}" width="640" height="480">
+    
+                <form class="form" id="face_register_form" method="post" action="{{ url_for('register') }}">
+    
                     <div class="modal-body p-4">
-                        <div class="geometric_shape mx-auto">
-                            <img src="{{ url_for('static', filename='img/clock.svg') }}" width="200" alt="">
-                        </div>
-                        <h5 class="text-center m-3">Register Face Here</h5>
                         
-                        <input type="text" name="txtnbr" class="selectize" placeholder=" " maxlength="10" required><br>
-                        
-                        <!-- <div class="form__div">
-                            <input type="text" name="txtnbr" class="form__input" placeholder=" " maxlength="10" required>
-                            <label for="txtnbr" class="form__label"><i class='bx bxs-id-card'></i>  ID no</label>
-                        </div> -->
-                        <div class="form__div">
-                            <input type="text" name="txtname" class="form__input" placeholder=" " required>
-                            <label for="txtname" class="form__label"><i class='bx bxs-id-card'></i>  Name</label>
+                        <div class="row align-items-center">
+
+                            <div class="col-md-7">
+                                <div class="card shadow-sm p-2 mb-4 mb-md-0" style="max-width: 100%;">
+                                    <img class="card-img-top" alt="img" src="{{ url_for('video_feed_face_register') }}" />
+                                </div>
+                            </div>
+
+                            <div class="col-md-5">
+                                
+                                <div class="card shadow-sm p-4" style="border-bottom: 4px solid var(--primary-color);">
+
+                                    <div class="geometric_shape mx-auto">
+                                        <img src="{{ url_for('static', filename='img/clock.svg') }}" width="200" alt="">
+                                    </div>
+    
+                                    <h5 class="text-center my-3 color_custom">Register Face Here</h5>
+    
+                                    <div class="row mb-3 d-flex align-items-center">
+                                        <label for="id_no" class="col-md-4 col-lg-3 col-form-label p-2 color_custom" style="text-align: center;"><i class="bi bi-person-vcard"></i> ID No:</label>
+                                        <input type="text" name="txtnbr" class="selectize p-2 col-md-8 col-lg-9" placeholder=" " maxlength="10" required>
+                                    </div>
+    
+                                    <div class="text-center">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="bi bi-x-square"></i> Close</button>
+                                        <button type="submit" class="btn btn-primary bg_custom" id="registerUserBtn">Register <i class="bi bi-arrow-right-square"></i></button>
+                                    </div>
+                                </div>
+
+                            </div>
                         </div>
-
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <!-- <button class="btn btn-primary" data-bs-target="#exampleModalToggle2" data-bs-toggle="modal">Open second modal</button> -->
-                        <!-- <input type="submit" class="btn btn-primary" id="submitPasswordBtn" value="Register"> -->
-                        <button type="submit" class="btn btn-primary" id="registerUserBtn">Register</button>
-
+                        
                     </div>
-                
-                    <!-- Modal footer... -->
-                    <!-- <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary" id="registerUserBtn">Register</button>
-                    </div> -->
+    
                 </form>
-
+    
             </div>
-        </div>
-    </div>
-
-    <!-- generate dataset modal -->
-    <div class="modal fade" id="exampleModalToggle2" aria-hidden="true" aria-labelledby="exampleModalToggleLabel2" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
-          <div class="modal-content">
-            <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title" id="faceRegisterModalLabel"><i class='bx bx-user' ></i> Generating Dataset...</h5>
-                <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <h3>Generating Dataset {{ prs }}</h3>
-                <div class="card mx-auto" style="width: 15rem; height: 15rem;">
-                    <div class="card-body">
-                        <img src="{{ url_for('vidfeed_dataset', nbr=prs) }}" class="mx-auto" style="width: 13rem; height: 13rem;">
-                    </div>
-                </div>
-                
-            </div>
-            <div class="modal-footer">
-                <a class="btn btn-primary" href="{{ url_for('train_classifier', nbr=prs) }}"> Train Dataset </a>
-            </div>
-          </div>
         </div>
     </div>
 
@@ -139,7 +111,8 @@
             labelField: 'text',
             searchField: 'text',
             options: [], // Options will be loaded dynamically
-            create: false
+            create: false,
+            maxItems: 1 // Restrict to only one item
         });
 
         // Fetch data from the Flask route and populate the Selectize options

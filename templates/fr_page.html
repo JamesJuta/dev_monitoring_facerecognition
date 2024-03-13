@@ -1,37 +1,28 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    {% include "head.html" %}
-</head>
-<body class="d-flex flex-column h-100vh" style="background-color: #f5f8fe;">
+{% include "head.html" %}
+
+<body class="d-flex flex-column h-100vh">
 
     <!-- navbar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm p-2 p-2 pe-5 ps-5">
         <div class="container-fluid">
-            <a class="navbar-brand d-flex align-items-center" href="#">
-                <img src="{{ url_for('static', filename='img/e_monitoring_logo') }}" alt="" width="55" height="55" class="d-inline-block align-text-top p-1">
-                <span class="navbar-brand mb-0 h1 p-1"><b>e-Monitoring</b></span>
-            </a>
-            <button class="navbar-toggler collapsed btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="toggler-icon top-bar"></span>
-                <span class="toggler-icon middle-bar"></span>
-                <span class="toggler-icon bottom-bar"></span>
-            </button>
+            
+            <!-- navbar logo and toggler -->
+            {% include "navbar_logo_toggler.html" %}
+
             <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
-                <ul class="navbar-nav mb-2 mb-lg-0">
+                <ul class="navbar-nav mb-2 mb-lg-0 nav-underline">
                     <li class="nav-item">
-                        <a class="nav-link active text-primary" href="{{ url_for('home') }}"><i class='bx bx-home'></i> Home</a>
+                        <a class="nav-link active" style="color: var(--primary-color)" href="{{ url_for('home') }}"><i class="bi bi-house-door"></i> <b>Home</b></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" aria-current="page" href="{{ url_for('time_log') }}"><i class='bx bx-time'></i> Time Log</a>
+                        <a class="nav-link" aria-current="page" href="{{ url_for('time_log') }}"><i class="bi bi-clock"></i> Time Log</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" aria-current="page" href="{{ url_for('face_register_password') }}"><i class='bx bx-user' ></i> Face Register</a>
+                        <a class="nav-link" aria-current="page" href="{{ url_for('face_register_password') }}"><i class="bi bi-person-bounding-box"></i> Face Register</a>
                     </li>
-                    <!-- <li class="nav-item">
-                        <a class="nav-link" href="#" id="showPasswordModal" data-bs-toggle="modal" data-bs-target="#faceRegisterModal"><i class='bx bx-user' ></i> Face Register</a>
-                    </li> -->
-                    {% include "navbar_account.html" %}
+                    
+                   <!-- navbar account -->
+                   {% include "navbar_account.html" %}
                 </ul>
             </div>
         </div>
@@ -42,8 +33,8 @@
         <div class="row" style="padding: 20px;">
             <div class="col-12">
                 <div class="card shadow-sm">
-                    <div class="card-header bg-primary bg_custom text-white fw-semibold d-flex align-items-center justify-content-between flex-wrap" style=" height: 60px;">
-                        <h4 class="p-2 text-white title"><i class='bx bx-scan' ></i> Face Recognition</h4>
+                    <div class="card-header bg_custom text-white fw-semibold d-flex align-items-center justify-content-between flex-wrap" style=" height: 55px;">
+                        <h5 class="p-2 text-white title"><i class='bx bx-scan' ></i> Face Recognition</h5>
                     </div>
                     <div class="card-body mt-1 bg-white d-flex " style="gap: 10px;">
                        
@@ -57,14 +48,14 @@
                             <h1 class="time " id="nowTime">{{ current_time }}</h1>
                             <h1 class="date " id="nowDate">{{ current_date }}</h1>
                             
-                            <div class="d-flex mx-auto">
+                            <!-- <div class="d-flex mx-auto">
                                 <label class="p-2" for="selected_date">Select Building: </label>
                                 <select class=" p-2" name="optskill" id="optskill">
                                     <option value="Building 1">Building 1</option>
                                     <option value="Building 2">Building 2</option>
                                     <option value="Building 3">Building 3</option>
                                 </select>
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                     
@@ -73,9 +64,9 @@
         </div>
     </div>
     
-    {% include "password_modal.html" %}
+    <!-- footer -->
     {% include "footer.html" %}
-
+    
 <script>
     // set server time using moment.js library
     var set_server_time = '{{ current_time }}';
