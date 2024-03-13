@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, session, redirect, url_for, Response, jsonify, abort
+from flask import Flask, render_template, request, session, redirect, url_for, Response, jsonify
 import mysql.connector
 from db_connect import get_db_connection, close_db_connection
 import cv2
@@ -466,7 +466,6 @@ def addprsn():
     mycursor.execute("select ifnull(max(id_no) + 1, 101) from users")
     row = mycursor.fetchone()
     nbr = row[0]
-    # print(int(nbr))
  
     return render_template('addprsn.html', newnbr=int(nbr))
 
@@ -552,17 +551,13 @@ def get_data():
 @app.route('/get_recently_added_users_data', methods=['GET'])
 def get_recently_added_users_data():
     try:
-        # Get the value of the 'user_id' parameter from the GET request
         table = request.args.get('table')
 
-        # Check if 'user_id' is provided and is not empty
         if table is not None and table != '':
             mycursor = db_connect.cursor(dictionary=True)
 
-            # Use the user_id in the SQL query
             sql = 'SELECT id_no, name, time_added FROM users ORDER BY time_added DESC'
             mycursor.execute(sql)
-            # mycursor.execute('SELECT general_id,f_name FROM users WHERE user_id = %s', (table,))
             data = mycursor.fetchall()
             return jsonify(data=data)
         else:
@@ -583,7 +578,6 @@ def countTodayScan():
     mycursor.execute(sql)
     row = mycursor.fetchone()
     rowcount = row[0]
-    # print(rowcount)
  
     return jsonify({'rowcount': rowcount})
  

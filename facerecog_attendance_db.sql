@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 12, 2024 at 08:22 AM
+-- Generation Time: Mar 13, 2024 at 02:18 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -38,7 +38,9 @@ CREATE TABLE `activity_log` (
 --
 
 INSERT INTO `activity_log` (`datetime`, `name`, `action`) VALUES
-('2024-03-12 01:59:42', 'misd@ccc.edu.ph', 'SUCCESS - FACE REGISTRATION - Detail: {id_no:26262, name: misd@ccc.edu.ph, time_added: 2024-03-12 01:59:42}');
+('2024-03-12 01:59:42', 'misd@ccc.edu.ph', 'SUCCESS - FACE REGISTRATION - Detail: {id_no:26262, name: misd@ccc.edu.ph, time_added: 2024-03-12 01:59:42}'),
+('2024-03-12 03:31:37', 'unknown', 'SUCCESS - FACE REGISTRATION -[A2023-00001] Details: {id_no:195730, name: unknown, time_added: 2024-03-12 03:31:37}'),
+('2024-03-12 03:48:49', 'misd@ccc.edu.ph', 'SUCCESS - FACE REGISTRATION - [A2023-00001] Details: {id_no: 2020-898, name: Aro Sanuel D. Alca, time_added: 2024-03-12 03:48:49}');
 
 -- --------------------------------------------------------
 
@@ -167,8 +169,7 @@ INSERT INTO `time_log` (`log_id`, `name`, `id_no`, `building_name`, `time`, `dat
 (17, 'James Juta', '2020-11120', 'jmc building', '11:38:30 AM', '02-05-2024', '2024-02-05 11:38:31'),
 (18, 'James Juta', '2020-11120', 'jmc building', '11:40:20 AM', '02-05-2024', '2024-02-05 11:40:21'),
 (19, 'James Juta', '2020-11120', 'jmc building', '03:42:19 PM', '03-05-2024', '2024-03-05 15:42:20'),
-(20, 'James Juta', '2020-11120', 'jmc building', '03:42:38 PM', '03-05-2024', '2024-03-05 15:42:39'),
-(21, 'James Juta', '2020-11120', 'jmc building', '03:43:20 PM', '03-05-2024', '2024-03-05 15:43:21');
+(20, 'James Juta', '2020-11120', 'jmc building', '03:42:38 PM', '03-05-2024', '2024-03-05 15:42:39');
 
 -- --------------------------------------------------------
 
@@ -216,6 +217,16 @@ ALTER TABLE `time_log`
 --
 ALTER TABLE `users`
   ADD PRIMARY KEY (`id_no`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `time_log`
+--
+ALTER TABLE `time_log`
+  MODIFY `log_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
