@@ -649,25 +649,6 @@ def get_enrolled_users_data():
         # Close the cursor and connection
         close_db_connection(db_connect, mycursor)
 
-# Internal Server Error
-@app.errorhandler(401)
-def error_401(e):
-    play_sound("error_401.mp3")
-    return render_template("401.html"), 401
-
-# Invalid URL
-@app.errorhandler(404)
-def error_404(e):
-    # play_sound("error_404.mp3")   
-    return render_template("404.html"), 404
-
-# Internal Server Error
-@app.errorhandler(500)
-def error_500(e):
-    play_sound("error_500.mp3")
-    return render_template("500.html"), 500
-
-
 def generate_frames():
     global image_count, total_images, capture_in_progress
     # Initialize frame rate calculation
@@ -829,8 +810,8 @@ def register():
             capture_in_progress = False
 
             # If there are remaining images in the batch, insert them into the database
-            # if batch_images:
-            #     insert_batch_images(batch_images)
+            if batch_images:
+                insert_batch_images(batch_images)
 
             username = session.get('username')
             general_id = session.get('general_id')
@@ -841,7 +822,7 @@ def register():
             mycursor.execute(activity_log_query, values)
             db_connect.commit() 
 
-            # train_classifier(nbr)
+            train_classifier(nbr)
             play_sound("images_captured_successfully.mp3")
             message = "Images captured successfully!"
             return jsonify({'success': True, 'message': message})
@@ -892,6 +873,27 @@ def get_activity_log_data():
             mycursor.close()
             db_connect.close()
     return jsonify(data=[])
+
+
+# ======================================================================================================== #
+
+# Internal Server Error
+@app.errorhandler(401)
+def error_401(e):
+    play_sound("error_401.mp3")
+    return render_template("401.html"), 401
+
+# Invalid URL
+@app.errorhandler(404)
+def error_404(e):
+    # play_sound("error_404.mp3")   
+    return render_template("404.html"), 404
+
+# Internal Server Error
+@app.errorhandler(500)
+def error_500(e):
+    play_sound("error_500.mp3")
+    return render_template("500.html"), 500
 
 # logout route 
 @app.route('/logout', methods=['POST'])
