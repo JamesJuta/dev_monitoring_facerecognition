@@ -7,3 +7,6 @@ pygame
 numpy
 
 dlib
+
+jwt
+pyjwt #pip install pyjwt

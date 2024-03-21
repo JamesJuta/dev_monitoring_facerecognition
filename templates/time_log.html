@@ -3,43 +3,20 @@
 <body class="d-flex flex-column h-100vh">
 
     <!-- navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm p-2 pe-5 ps-5">
-        <div class="container-fluid">
-           
-            <!-- navbar logo and toggler -->
-            {% include "navbar_logo_toggler.html" %}
-
-            <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
-                <ul class="navbar-nav mb-2 mb-lg-0 nav-underline">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('home') }}"><i class="bi bi-house-door"></i> Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" style="color: var(--primary-color)" aria-current="page" href="{{ url_for('time_log') }}"><i class="bi bi-clock"></i> <b>Time Log</b> </a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link" aria-current="page" href="{{ url_for('face_register_password') }}"><i class="bi bi-person-bounding-box"></i> Face Register</a>
-                    </li>
-                
-                    <!-- navbar account -->
-                    {% include "navbar_account.html" %}
-                </ul>
-            </div>
-        </div>
-    </nav>
+    {% set active_page = 'time_log' %}
+    {% include "navbar.html" %}
     
     <!-- time Log Table -->
     <div class="container">
-        <div class="row" style="padding: 20px;">
+        <div class="row" style="padding: 20px 0;">
             <div class="col-12">
                 <div class="card shadow-sm rounded-3">
 
                     <div class="card-header bg_custom text-white fw-semibold d-flex align-items-center justify-content-between flex-wrap" style=" height: 70px;">
                         <h5 class="p-2 text-white title mt-1"><i class="bi bi-clock"></i> Time Log</h5>
-                        <div class="p-2 d-flex" style="margin-left:auto;" id="DateDemo">
+                        <div class="p-2 d-flex align-items-center" style="margin-left:auto;" id="DateDemo">
                             <label for="exampleDataList" class="form-label p-2 text-white"> <i class="bi bi-calendar3"></i> Filter by</label>
-                            <input type="text" id="date_range" name="date_range" class="form-control p-2 " style="width:225px; height: 35px;" value="{{current_date}}" placeholder="Select Date">
+                            <input type="text" id="date_range" name="date_range" class="form-control p-2 mb-2 text-center" style="width:225px; height: 30px;" value="{{current_date}}" placeholder="Select Date">
                         </div><br>
                     </div>
 
@@ -93,7 +70,7 @@
         });
 
         var table = new Tabulator('#example-table', {
-            height: "350px",
+            height: "600px",
             printAsHtml: true,
             headerFilterPlaceholder: "Search",
             layout: 'fitDataStretch',
@@ -108,7 +85,7 @@
             paginationSize: 20,
             ajaxSorting: true,
             ajaxFiltering: true,
-            ajaxLoader: true,
+            ajaxLoader: true, 
             ajaxLoaderLoading: 'Fetching data from Database..',
             paginationSizeSelector: [50, 100, 500, 1000, 2000],
             columns: [
@@ -175,7 +152,7 @@
         });
         // Trigger print function
         document.getElementById("print-table").addEventListener("click", function () {
-            table.print(false, true);
+            table.print("active", true, {columnGroups:false}); 
         });
     </script>
 </body>

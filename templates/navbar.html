@@ -1,0 +1,80 @@
+<nav class="navbar navbar-expand-lg bg-white sticky-top shadow-sm p-1 p-1 pe-5 ps-5">
+    <div class="container-fluid">
+        
+        <!-- navbar logo and toggler -->
+        <a class="navbar-brand d-flex align-items-center" href="#">
+            <img src="{{ url_for('static', filename='img/e_monitoring_logo.png') }}" alt="" height="50" class="d-inline-block align-text-top p-1">
+            <!-- <span class="navbar-brand mb-0 h1 p-1 color_custom"><b>e-Monitoring</b></span> -->
+        </a>
+        <button class="navbar-toggler collapsed btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="toggler-icon top-bar"></span>
+            <span class="toggler-icon middle-bar"></span>
+            <span class="toggler-icon bottom-bar"></span>
+        </button>
+
+        <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
+            <ul class="navbar-nav mb-2 mb-lg-0 nav-underline">
+                    
+                <!--  home page link -->
+                <li class="nav-item">
+                    <a class="nav-link{% if active_page == 'home' %} active{% endif %}" href="{{ url_for('home') }}"><i class="bi bi-house-door"></i> Home</a>
+                </li>
+
+                <!-- time_log link -->
+                <li class="nav-item">
+                    <a class="nav-link{% if active_page == 'time_log' %} active{% endif %}" aria-current="page" href="{{ url_for('time_log') }}"><i class="bi bi-clock"></i> Time Log</a>
+                </li>
+
+                <!-- face_register link -->
+                <li class="nav-item">
+                    {% if active_page != 'face_register' %}
+                        <a class="nav-link{% if active_page == 'face_register' %} active{% endif %}" aria-current="page" href="{{ url_for('face_register_password') }}"><i class="bi bi-person-bounding-box"></i> Face Register</a>
+                    {% else %}
+                        <a class="nav-link active" href="#"><i class="bi bi-person-bounding-box"></i> Face Register</a>
+                    {% endif %}
+                </li>
+                
+                <!-- navbar account -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link d-flex align-items-center pe-0" href="#" id="dropdownMenuClickableInside" data-bs-toggle="dropdown" data-bs-auto-close="outside">
+                        <span class="d-none d-md-block dropdown-toggle"><i class="bi bi-person"></i> Account</span>
+                    </a>
+            
+                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile" style="width: 230px;" aria-labelledby="dropdownMenuClickableInside">
+                        <li class="dropdown-header mt-3">
+                            <h6 class="text-center"><b>{{fullname}}</b></h6>
+                            <!-- <p class="text-center">{{position}}</p> -->
+                            <!-- <p class="text-center">{{fullname}}</p> -->
+                            <!-- <p class="text-center">{{token}}</p> -->
+                        </li>
+            
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+            
+                        <li>
+                            <form id="activity_log_form" action="{{ url_for('activity_log') }}" method="post">
+                                <button type="submit" class="dropdown-item d-flex align-items-center" value="submitLogout">
+                                    <span><i class="bi bi-person-lines-fill"></i> Activity Log</span>
+                                </button>
+                            </form>
+                        </li>
+                        
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+            
+                        <li>
+                            <form id="logout_form" action="{{ url_for('logout') }}" method="post">
+                                <button type="submit" class="dropdown-item d-flex align-items-center" id="logoutSubmit" name="logoutSubmit" value="submitLogout">
+                                    <span><i class="bi bi-box-arrow-left"></i> Sign Out</span>
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </li>
+
+            </ul>
+        </div>
+    </div>
+</nav>

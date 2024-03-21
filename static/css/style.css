@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Praise&display=swap');
 *{
     margin: 0;
     padding: 0;
@@ -11,13 +12,14 @@
     --body-color: #E4E9F7;
     --sidebar-color: #FFF;
     /* --primary-color: #1A73E8; */
-    --primary-color: #290c5e;
+    /* --primary-color: #290c5e; */
+    --primary-color: #413064;
     /* --primary-color: linear-gradient(to bottom right, #5837c7, #290c5e); */
     --primary-color-light: #F6F5FF;
     --secondary-color: #2f2f41;
     --toggle-color: #DDD;
     --text-color: #707070;
-    --btn-hover-color: #5837c7;
+    --btn-hover-color: #3b1d87;
     --background-color:#f5f8fe;
 
     /* ====== Transition ====== */
@@ -36,6 +38,35 @@
     --body-font: 'Roboto', sans-serif;
     --normal-font-size: 1rem;
     --small-font-size: .75rem;
+}
+
+
+/* @font-face {
+    font-family: 'steelfish';
+    src: url('/static/fonts/steelfish\ rg.otf') format('otf');
+}
+@font-face {
+    font-family: 'Compagnie';
+    src: url('/static/fonts/la\ Compagnie\ des\ Ombres.ttf') format('ttf');
+}
+@font-face {
+    font-family: 'Thinking_of_Betty';
+    src: url('/static/fonts/Thinking_of_Betty.ttf   ') format('ttf');
+} */
+
+@font-face {
+    font-family: 'steelfish';
+    src: url('/static/fonts/steelfish%20rg.otf') format('otf');
+}
+
+@font-face {
+    font-family: 'Compagnie';
+    src: url('/static/fonts/la%20Compagnie%20des%20Ombres.ttf') format('ttf');
+}
+
+@font-face {
+    font-family: 'Thinking_of_Betty';
+    src: url('/static/fonts/Thinking_of_Betty.ttf') format('ttf');
 }
 
 body {
@@ -88,7 +119,7 @@ body {
 
 .form__div{
     position: relative;
-    width: 90%; 
+    width: 100%; 
     height: 48px;
     margin-bottom: 1rem;
 }
@@ -156,16 +187,28 @@ body {
 	background-color: #f5f8fe;
 }
 .time{
-    font-size: 50px;
+    font-size: 120px;
     color: var(--text-color);
+    font-family: steelfish;
+    line-height: 0.7;
+}
+
+.day{
+    font-size: 120px;
+    color: var(--primary-color);
+    padding: 0;
+    font-family: "Praise", cursive;
+    line-height: 0.5;
 }
 
 .date{
-    background-color: var(--primary-color);
-    color: white;
+    /* background-color: var(--primary-color); */
+    color: var(--text-color);
     padding: 20px;
     border-radius: 10px;
-    font-size: 25px;
+    font-size: 50px;
+    font-family: steelfish;
+    line-height: 0.4;
 }
 .geometric_shape{
     height: 200px;
@@ -181,7 +224,12 @@ body {
 
 .bg_custom{
     /* background-color: var(--primary-color); */
-    background-image: linear-gradient(to right, #5837c7, #290c5e);
+    background-image: linear-gradient(to right, #5837c7, var(--primary-color));
+    border: none;
+}
+
+.btn_bg_custom{
+    background-color: var(--primary-color);
     border: none;
 }
 
@@ -314,10 +362,26 @@ body {
     margin-bottom: 1rem;
 }
 
-/* password toggle */
-.password-toggle{
-    position: absolute;
-    top: 13px;
-    left: 415px;
-    z-index: 100px;
+/* date range picker */
+.datepicker-button {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
 }
+
+
+/* Hover effect */
+.datepicker-button:hover {
+    background-color: var(--btn-hover-color);
+}
+
+.loading-indicator {
+    position: absolute; 
+    background-color: var(--primary-color);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: none; /* Initially hidden */
+    /* Add styling for the loading indicator */
+}
+

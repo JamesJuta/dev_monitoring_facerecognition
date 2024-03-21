@@ -3,34 +3,12 @@
 <body class="d-flex flex-column h-100vh">
 
     <!-- navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm p-2 p-2 pe-5 ps-5">
-        <div class="container-fluid">
-            
-            <!-- navbar logo and toggler -->
-            {% include "navbar_logo_toggler.html" %}
-
-            <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
-                <ul class="navbar-nav mb-2 mb-lg-0 nav-underline">
-                    <li class="nav-item">
-                        <a class="nav-link active" style="color: var(--primary-color)" href="{{ url_for('home') }}"><i class="bi bi-house-door"></i> <b>Home</b></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" aria-current="page" href="{{ url_for('time_log') }}"><i class="bi bi-clock"></i> Time Log</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" aria-current="page" href="{{ url_for('face_register_password') }}"><i class="bi bi-person-bounding-box"></i> Face Register</a>
-                    </li>
-                    
-                   <!-- navbar account -->
-                   {% include "navbar_account.html" %}
-                </ul>
-            </div>
-        </div>
-    </nav>
+    {% set active_page = 'home' %}
+    {% include "navbar.html" %}
     
     <!-- Face recognition  -->
     <div class="container">
-        <div class="row" style="padding: 20px;">
+        <div class="row" style="padding: 20px 0;">
             <div class="col-12">
                 <div class="card shadow-sm">
                     <div class="card-header bg_custom text-white fw-semibold d-flex align-items-center justify-content-between flex-wrap" style=" height: 55px;">
@@ -41,21 +19,15 @@
                         <img  class="card p-2 shadow-sm" alt="img" src="{{ url_for('video_feed') }}" width="640" height="480">
 
                         <div class="card p-2 shadow-sm p-4 align-items-center justify-content-center time_date_container">
-                            <div class="geometric_shape mx-auto">
+                            <!-- <div class="geometric_shape mx-auto">
                                 <img src="{{ url_for('static', filename='img/clock.svg') }}" width="200" alt="">
-                            </div>
-        
+                            </div><br> -->
+                            
+                            
                             <h1 class="time " id="nowTime">{{ current_time }}</h1>
+                            <h1 class="day" id="nowDay">{{ current_day }}</h1>
                             <h1 class="date " id="nowDate">{{ current_date }}</h1>
                             
-                            <!-- <div class="d-flex mx-auto">
-                                <label class="p-2" for="selected_date">Select Building: </label>
-                                <select class=" p-2" name="optskill" id="optskill">
-                                    <option value="Building 1">Building 1</option>
-                                    <option value="Building 2">Building 2</option>
-                                    <option value="Building 3">Building 3</option>
-                                </select>
-                            </div> -->
                         </div>
                     </div>
                     
@@ -69,12 +41,32 @@
     
 <script>
     // set server time using moment.js library
+    // var set_server_time = '{{ current_time }}';
+    // var serverOffset = moment(set_server_time).diff(new Date());
+    // clearInterval(clock_id);
+    // var date_now_server = moment();
+    // date_now_server.add(serverOffset, 'milliseconds');
+    // var dateNow = date_now_server.format('dddd | MMMM DD, YYYY');
+
+    // // Set time and date
+    // var clock_id = setInterval(function() {
+    //     if (document.getElementById('nowTime')) {
+    //         $('#nowDate').html(dateNow);
+    //         var now_server = moment();
+    //         now_server.add(serverOffset, 'milliseconds');
+    //         var timeNow = now_server.format('hh:mm:ss A');
+    //         $('#nowTime').html(timeNow);
+    //     } else {
+    //         clearInterval(clock_id);
+    //     }
+    // }, 1000);
+
     var set_server_time = '{{ current_time }}';
     var serverOffset = moment(set_server_time).diff(new Date());
     clearInterval(clock_id);
     var date_now_server = moment();
     date_now_server.add(serverOffset, 'milliseconds');
-    var dateNow = date_now_server.format('dddd | MMMM DD, YYYY');
+    var dateNow = date_now_server.format('MMMM DD, YYYY');
 
     // Set time and date
     var clock_id = setInterval(function() {
@@ -82,8 +74,12 @@
             $('#nowDate').html(dateNow);
             var now_server = moment();
             now_server.add(serverOffset, 'milliseconds');
-            var timeNow = now_server.format('hh:mm:ss A');
+            var timeNow = now_server.format(' ');
             $('#nowTime').html(timeNow);
+
+            // Update day of the week
+            var dayOfWeek = now_server.format('dddd');
+            $('#nowDay').html(dayOfWeek);
         } else {
             clearInterval(clock_id);
         }

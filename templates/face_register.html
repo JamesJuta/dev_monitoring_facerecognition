@@ -1,102 +1,93 @@
 {% include "head.html" %}
 
 <body class="d-flex flex-column h-100vh">
-   
+
     <!-- navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm p-2 p-2 pe-5 ps-5">
-        <div class="container-fluid">
+    {% set active_page = 'face_register' %}
+    {% include "navbar.html" %}
 
-            <!-- navbar logo and toggler -->
-            {% include "navbar_logo_toggler.html" %}
-
-            <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
-                <ul class="navbar-nav mb-2 mb-lg-0 nav-underline">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('home') }}"><i class="bi bi-house-door"></i> Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" aria-current="page" href="{{ url_for('time_log') }}"><i class="bi bi-clock"></i> Time Log</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" style="color: var(--primary-color)" href="#" id="faceRegisterBtn"><i class="bi bi-person-bounding-box"></i> <b>Face Register</b></a>
-                    </li>
-                    <!-- navbar account -->
-                    {% include "navbar_account.html" %}
-                </ul>
-            </div>
-
-        </div>
-    </nav>
-    
     <!-- Recently added users table -->
     <div class="container">
-        <div class="row" style="padding: 20px;">
+        <div class="row" style="padding: 20px 0;">
             <div class="col-12">
                 <div class="card shadow-sm">
 
-                    <div class="card-header bg_custom text-white fw-semibold d-flex align-items-center justify-content-between flex-wrap" style=" height: 55px;">
+                    <div class="card-header bg_custom text-white fw-semibold d-flex align-items-center justify-content-between flex-wrap"
+                        style=" height: 55px;">
                         <h5 class="p-2 text-white title"><i class="bi bi-person-square"></i> Recently Added Users</h5>
-                        <button type="button" class="btn btn-outline-light btn-sm mb-3" id="register_user" data-bs-toggle="modal" data-bs-target="#register_user_modal"><i class='bx bx-scan'></i> Register Face</button>
+                        <button type="button" class="btn btn-outline-light btn-sm mb-3" id="register_user"
+                            data-bs-toggle="modal" data-bs-target="#register_user_modal"><i class='bx bx-scan'></i>
+                            Register Face</button>
                     </div>
 
+                    <!-- tabulator table -->
                     <div class="card-body mt-1 bg-white">
                         <div id="recently-added-table" class="table table-sm tabulator"></div>
                     </div>
-                    
+
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="modal fade" id="register_user_modal" aria-hidden="true" aria-labelledby="registerUserModalLabel" tabindex="-1">
+    <div class="modal fade" id="register_user_modal" aria-hidden="true" aria-labelledby="registerUserModalLabel"
+        tabindex="-1">
         <div class="modal-dialog modal-xl modal-dialog-centered">
             <div class="modal-content">
-    
+
                 <div class="modal-header bg_custom text-white">
                     <h5 class="modal-title" id="faceRegisterModalLabel"><i class="bi bi-person"></i> Register Face</h5>
                     <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-    
+
                 <form class="form" id="face_register_form" method="post" action="{{ url_for('register') }}">
-    
+
                     <div class="modal-body p-4">
-                        
+
                         <div class="row align-items-center">
 
                             <div class="col-md-7">
                                 <div class="card shadow-sm p-2 mb-4 mb-md-0" style="max-width: 100%;">
-                                    <img class="card-img-top" alt="img" src="{{ url_for('video_feed_face_register') }}" />
+                                    <img class="card-img-top" id="video" alt="img" src="{{ url_for('video_feed_face_register') }}" />
                                 </div>
                             </div>
 
+
                             <div class="col-md-5">
-                                
+
                                 <div class="card shadow-sm p-4" style="border-bottom: 4px solid var(--primary-color);">
 
-                                    <div class="geometric_shape mx-auto">
-                                        <img src="{{ url_for('static', filename='img/clock.svg') }}" width="200" alt="">
+                                    <div class="text-center">
+                                        <i class="bi bi-person-bounding-box color_custom" style="font-size: 70px;"></i>
+                                        <h5 class="text-center my-3 color_custom">Register Face Here</h5>
                                     </div>
-    
-                                    <h5 class="text-center my-3 color_custom">Register Face Here</h5>
-    
-                                    <div class="row mb-3 d-flex align-items-center">
-                                        <label for="id_no" class="col-md-4 col-lg-3 col-form-label p-2 color_custom" style="text-align: center;"><i class="bi bi-person-vcard"></i> ID No:</label>
-                                        <input type="text" name="txtnbr" class="selectize p-2 col-md-8 col-lg-9" placeholder=" " maxlength="10" required>
+                                    
+                                    <div class="mb-3">
+                                        <label for="exampleFormControlInput1" class="form-label"><i class="bi bi-person-vcard"></i> ID No:</label>
+                                        <input type="text" name="txtnbr" class="selectize" placeholder=" " maxlength="10" required>
                                     </div>
-    
+
+                                    <!-- <div class="row mb-3 d-flex align-items-center">
+                                        <label for="id_no" class="col-md-4 col-lg-3 col-form-label p-2 color_custom"
+                                            style="text-align: center;"><i class="bi bi-person-vcard"></i> ID
+                                            No:</label>
+                                        <input type="text" name="txtnbr" class="selectize p-2 col-md-8 col-lg-9"
+                                            placeholder=" " maxlength="10" required>
+                                    </div> -->
+
                                     <div class="text-center">
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="bi bi-x-square"></i> Close</button>
-                                        <button type="submit" class="btn btn-primary bg_custom" id="registerUserBtn">Register <i class="bi bi-arrow-right-square"></i></button>
+                                        <button type="submit" class="btn btn-primary btn_bg_custom" id="registerUserBtn">Register <i class="bi bi-arrow-right-square"></i></button>
                                     </div>
                                 </div>
 
                             </div>
                         </div>
-                        
+
                     </div>
-    
+
                 </form>
-    
+
             </div>
         </div>
     </div>
@@ -120,42 +111,25 @@
             type: 'GET',
             url: '/get_enrolled_users_data', // Update with the correct Flask route
             dataType: 'json',
-            success: function(data) {
+            success: function (data) {
                 // Add the data to the Selectize options
                 var selectize = $('.selectize')[0].selectize;
                 selectize.clearOptions();
                 selectize.addOption(data);
             },
-            error: function(error) {
+            error: function (error) {
                 console.log('Error fetching data:', error);
             }
         });
-    </script>
 
-    <script>
-
-        var datetime = '{{current_datetime}}'
-        var global_date = '{{ initial_date_range }}';
-        var set_server_time = '{{current_datetime}}'
-        var serverOffset = moment(set_server_time).diff(new Date());
-        var now_server = moment();
-        now_server.add(serverOffset, 'milliseconds');
-        var dateLimit = now_server.format('MM-DD-YYYY');
-
-        var startDate = moment('{{current_date}}', 'MM-DD-YYYY');
-        var endDate = moment('{{current_date}}', 'MM-DD-YYYY');
 
         var table = new Tabulator('#recently-added-table', {
-            height: "350px",
+            height: "430px",
             printAsHtml: true,
             headerFilterPlaceholder: "Search",
             layout: 'fitDataStretch',
             placeholder: 'No Data Found',
             ajaxURL: '/get_recently_added_users_data',
-            ajaxParams: {
-                table: 'master_schedule',
-                status: global_date
-            },
             pagination: 'remote',
             paginationButtonCount: 5,
             paginationSize: 20,
@@ -165,7 +139,8 @@
             ajaxLoaderLoading: 'Fetching data from Database..',
             paginationSizeSelector: [50, 100, 500, 1000, 2000],
             columns: [
-                {title: "ID No.", field: "id_no",
+                {
+                    title: "ID No.", field: "student_id",
                     headerFilterPlaceholder: "Search ID No.",
                     headerFilter: "input",
                     headerFilterFunc: "like",
@@ -175,8 +150,10 @@
                     headerFilterLiveFilter: false,
                     formatter: 'textarea',
                     vertAlign: 'middle',
-                    minWidth: 330},
-                {title: "Name", field: "name",
+                    minWidth: 330
+                },
+                {
+                    title: "Name", field: "full_name",
                     headerFilterPlaceholder: "Search Name",
                     headerFilter: "input",
                     headerFilterFunc: "like",
@@ -186,8 +163,10 @@
                     headerFilterLiveFilter: false,
                     formatter: 'textarea',
                     vertAlign: 'middle',
-                    minWidth: 330},
-                {title: "Time Added", field: "time_added", 
+                    minWidth: 330
+                },
+                {
+                    title: "Time Added", field: "face_registration_date",
                     headerFilterPlaceholder: "Search Time Added",
                     headerFilter: "input",
                     headerFilterFunc: "like",
@@ -197,12 +176,14 @@
                     headerFilterLiveFilter: false,
                     formatter: 'textarea',
                     vertAlign: 'middle',
-                        minWidth: 330},
+                    minWidth: 330
+                },
             ],
             ajaxResponse: function (url, params, response) {
                 return response.data
             },
         });
+
         document.addEventListener('DOMContentLoaded', function () {
             // Get the "Register" button, the ID input, and the first modal
             var registerBtn = document.getElementById('registerUserBtn');
@@ -222,17 +203,15 @@
                 }
             });
         });
-    </script>
 
-    <script>
-        $(document).ready(function() {
-            $('#face_register_form').submit(function(event) {
+        $(document).ready(function () {
+            $('#face_register_form').submit(function (event) {
                 event.preventDefault();
                 $.ajax({
                     url: '/register',
                     type: 'POST',
                     data: $(this).serialize(),
-                    success: function(response) {
+                    success: function (response) {
                         if (response.success) {
                             Swal.fire({
                                 title: 'Success!',
@@ -242,6 +221,13 @@
                                 timer: 3000,
                                 timerProgressBar: true
                             });
+                            $("#register_user_modal").modal("hide");
+                            table.setData();
+                            var selectize = $form.find('.selectize')[0].selectize;
+                            // selectize.clear();
+                            // reloadSelectizeData();
+                            // Reload data for the Selectize input
+                            reloadSelectizeData($form);
                         } else {
                             if (response.message === 'User already registered.') {
                                 Swal.fire({
@@ -264,7 +250,7 @@
                             }
                         }
                     },
-                    error: function() {
+                    error: function () {
                         Swal.fire({
                             title: 'Error!',
                             text: 'Failed to capture images',
@@ -277,7 +263,26 @@
                 });
             });
         });
+
+        function reloadSelectizeData($form) {
+            // Fetch data from the Flask route and populate the Selectize options
+            $.ajax({
+                type: 'GET',
+                url: '/get_enrolled_users_data', // Update with the correct Flask route
+                dataType: 'json',
+                success: function (data) {
+                    // Add the data to the Selectize options
+                    var selectize = $form.find('.selectize')[0].selectize;
+                    selectize.clearOptions();
+                    selectize.addOption(data);
+                },
+                error: function (error) {
+                    console.log('Error fetching data:', error);
+                }
+            });
+        }
+
     </script>
- 
 </body>
+
 </html>

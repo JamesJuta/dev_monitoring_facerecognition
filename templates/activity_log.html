@@ -3,35 +3,11 @@
 <body class="d-flex flex-column h-100vh">
    
     <!-- navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm p-2 p-2 pe-5 ps-5">
-        <div class="container-fluid">
-
-            <!-- navbar logo and toggler -->
-            {% include "navbar_logo_toggler.html" %}
-
-            <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
-                <ul class="navbar-nav mb-2 mb-lg-0 nav-underline">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('home') }}"><i class="bi bi-house-door"></i> Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" aria-current="page" href="{{ url_for('time_log') }}"><i class="bi bi-clock"></i> Time Log</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('face_register_password') }}" id="faceRegisterBtn"><i class="bi bi-person-bounding-box"></i> Face Register</a>
-                    </li>
-                    
-                    <!-- navbar account -->
-                    {% include "navbar_account.html" %}
-                </ul>
-            </div>
-
-        </div>
-    </nav>
+    {% include "navbar.html" %}
     
     <!-- Recently added users table -->
     <div class="container">
-        <div class="row" style="padding: 20px;">
+        <div class="row" style="padding: 20px 0;">
             <div class="col-12">
                 <div class="card shadow-sm">
 
@@ -53,28 +29,13 @@
 
     <script>
 
-        var datetime = '{{current_datetime}}'
-        var global_date = '{{ initial_date_range }}';
-        var set_server_time = '{{current_datetime}}'
-        var serverOffset = moment(set_server_time).diff(new Date());
-        var now_server = moment();
-        now_server.add(serverOffset, 'milliseconds');
-        var dateLimit = now_server.format('MM-DD-YYYY');
-
-        var startDate = moment('{{current_date}}', 'MM-DD-YYYY');
-        var endDate = moment('{{current_date}}', 'MM-DD-YYYY');
-
         var table = new Tabulator('#activity-log-table', {
-            height: "400px",
+            height: "430px",
             printAsHtml: true,
             headerFilterPlaceholder: "Search",
             layout: 'fitDataStretch',
             placeholder: 'No Data Found',
             ajaxURL: '/get_activity_log_data',
-            ajaxParams: {
-                table: 'master_schedule',
-                status: global_date
-            },
             pagination: 'remote',
             paginationButtonCount: 5,
             paginationSize: 20,
